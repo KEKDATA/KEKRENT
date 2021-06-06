@@ -1,0 +1,64 @@
+{
+  "name": "kekrent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "parser": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "tsc": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fix-code": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint source --quiet"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.9",
+    "fastify": "^3.17.0",
+    "fastify-cors": "^6.0.1",
+    "playwright": "^1.11.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/node": "^7.14.2",
+    "@babel/plugin-transform-typescript": "^7.14.4",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/cheerio": "^0.22.29",
+    "@types/node": "^15.12.1",
+    "@typescript-eslint/parser": "^4.26.0",
+    "babel-eslint": "^10.1.0",
+    "electron": "^13.1.1",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.1",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.3.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./src/**/*.{js,ts}": [
+      "eslint --quiet",
+      "prettier --write"
+    ],
+    "./*.{json,eslintrc}": [
+      "prettier --write"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
