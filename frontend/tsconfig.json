@@ -30,6 +30,6 @@
     "acceptance-tests",
     "webpack",
     "jest",
-    "razzle.config.js"
+    "../razzle.config.js"
   ]
 }

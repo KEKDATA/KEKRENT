@@ -6,7 +6,7 @@ node_modules
 *.lock
 *.rar
 *.zip
-.idea
+../.idea
 .vscode
 .project
 org.eclipse*

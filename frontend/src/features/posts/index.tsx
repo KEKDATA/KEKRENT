@@ -1,43 +1,10 @@
 import React from "react";
-import { $posts, getPostsFx } from "./model";
 import { useStore } from "effector-react";
-import { Button } from "reakit/Button";
-import { css } from "@emotion/css";
 
-const className = css`
-  outline: 0;
-  color: #ffffff;
-  background: #006dff;
-  padding: 0.375em 0.75em;
-  line-height: 1.5;
-  border: transparent;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 16px;
-
-  &:focus {
-    box-shadow: 0 0 0 0.2em rgba(0, 109, 255, 0.4);
-  }
-
-  &[disabled],
-  &[aria-disabled="true"] {
-    cursor: auto;
-    opacity: 0.5;
-  }
-
-  &:not([disabled]),
-  &:not([aria-disabled="true"]) {
-    &:hover {
-      color: #ffffff;
-      background-color: #0062e6;
-    }
-    &:active,
-    &[data-active="true"] {
-      color: #ffffff;
-      background-color: #004eb8;
-    }
-  }
-`;
+import { $posts } from "./model";
+import { Submit } from "./components/submit";
+import { NumberOfPosts } from "./components/number_of_posts";
+import { Groups } from "./components/groups";
 
 // 796291153803529
 // 126101298046115
@@ -47,12 +14,9 @@ export const Posts = () => {
 
   return (
     <>
-      <Button
-        className={className}
-        onClick={() => getPostsFx([126101298046115, 796291153803529])}
-      >
-        GET POSTS
-      </Button>
+      <NumberOfPosts />
+      <Groups />
+      <Submit />
       <ul>
         {posts.map((post) => (
           <li key={post.id}>

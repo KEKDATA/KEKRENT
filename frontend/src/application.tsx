@@ -1,21 +1,20 @@
 import * as React from "react";
-
-import { Scope } from "effector/fork";
-import { Provider } from "effector-react/ssr";
-import { Provider as ReakitProvider } from "reakit/Provider";
+import { Layout, Space } from "antd";
 
 import { Pages } from "./pages";
 
-interface Props {
-  root: Scope;
-}
+import "./application.css";
 
-export const Application: React.FC<Props> = ({ root }) => (
-  <Provider value={root}>
-    <ReakitProvider>
-      <div>
+const { Header, Footer, Content } = Layout;
+
+export const Application = () => (
+  <Layout>
+    <Header />
+    <Content>
+      <Space direction="vertical" size={12}>
         <Pages />
-      </div>
-    </ReakitProvider>
-  </Provider>
+      </Space>
+    </Content>
+    <Footer>Anywhere</Footer>
+  </Layout>
 );
