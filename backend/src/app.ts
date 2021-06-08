@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import fastifyCompress from 'fastify-compress';
+import NodeCache from 'node-cache';
 
 import { getHTML } from './lib/dom/get_html';
 import { selectors } from './constants/selectors';
@@ -22,6 +23,7 @@ type Posts = Array<{
   photos: string[];
 }>;
 
+const cache = new NodeCache({ stdTTL: 7200, checkperiod: 1200 });
 const iPhone = devices['iPhone 11 Pro'];
 const elementsPerPage = 20;
 
@@ -124,17 +126,45 @@ initializedFastify.register(fastifyCompress, {
 });
 
 initializedFastify.get<{
-  Querystring: { groupsIds: string; numberOfPosts: string };
+  Querystring: {
+    groupsIds: string;
+    numberOfPosts: string;
+    timeStamps: string;
+  };
 }>('/posts', async (request, reply) => {
-  const { groupsIds, numberOfPosts } = request.query || {};
-  const groups = groupsIds.split(',');
-
-  const postsByGroup = Number(numberOfPosts) / groups.length;
-  const posts = await Promise.all(
-    groups.map(groupId => init(Number(groupId), postsByGroup)),
+  const { groupsIds, numberOfPosts, timeStamps } = request.query || {};
+  const cachedPosts: Posts | undefined = cache.get(
+    `${groupsIds}${numberOfPosts}${timeStamps}`,
   );
 
-  reply.send(posts.flat().sort((a, b) => b.timestamp - a.timestamp));
+  if (cachedPosts) {
+    reply.send(cachedPosts);
+  }
+
+  const normalizedGroupsIds = groupsIds
+    .split(',')
+    .map(groupId => Number(groupId));
+  const normalizedTimeStamps = timeStamps
+    .split(',')
+    .map(timeStamp => Number(timeStamp));
+
+  const postsByGroup = Number(numberOfPosts) / normalizedGroupsIds.length;
+  const posts = await Promise.all(
+    normalizedGroupsIds.map(groupId => init(groupId, postsByGroup)),
+  );
+
+  const normalizedPosts = posts
+    .flat()
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .filter(
+      ({ timestamp }) =>
+        timestamp >= normalizedTimeStamps[0] &&
+        timestamp <= normalizedTimeStamps[1],
+    );
+
+  cache.set(`${groupsIds}${numberOfPosts}${timeStamps}`, normalizedPosts);
+
+  reply.send(normalizedPosts);
 });
 
 const start = async () => {

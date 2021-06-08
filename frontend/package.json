@@ -30,7 +30,8 @@
     "react-router": "^5.2.0",
     "react-router-config": "^5.1.1",
     "react-router-dom": "^5.2.0",
-    "runtypes": "^6.3.0"
+    "runtypes": "^6.3.0",
+    "typescript": "^4.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -40,12 +41,12 @@
     "@eslint-kit/eslint-config-prettier": "^3.0.0",
     "@eslint-kit/eslint-config-react": "^3.0.0",
     "@eslint-kit/eslint-config-typescript": "^5.0.1",
+    "@types/express": "^4.17.12",
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.6",
     "@types/react-router": "^5.1.14",
     "@types/react-router-config": "^5.0.2",
     "@types/react-router-dom": "^5.1.7",
-    "@types/express": "^4.17.12",
     "@typescript-eslint/parser": "^4.26.0",
     "babel-preset-razzle": "4.0.4",
     "commitizen": "^4.2.4",

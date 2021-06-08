@@ -5,9 +5,7 @@ import { $posts } from "./model";
 import { Submit } from "./components/submit";
 import { NumberOfPosts } from "./components/number_of_posts";
 import { Groups } from "./components/groups";
-
-// 796291153803529
-// 126101298046115
+import { Dates } from "./components/dates";
 
 export const Posts = () => {
   const posts = useStore($posts);
@@ -16,6 +14,7 @@ export const Posts = () => {
     <>
       <NumberOfPosts />
       <Groups />
+      <Dates />
       <Submit />
       <ul>
         {posts.map((post) => (

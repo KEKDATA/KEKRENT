@@ -13,6 +13,7 @@ const getPostsFx = createEffect<
   {
     numberOfPosts: number;
     groupsIds: Array<number>;
+    timeStamps: Array<number>;
   },
   unknown
 >(getPostsApi);
@@ -35,8 +36,15 @@ export const $numberOfPosts = restore(numberOfPostsChanged, 1);
 export const groupsIdsSelected = createEvent<Array<number>>();
 export const $groupsIds = restore(groupsIdsSelected, []);
 
+export const timeStampsSelected = createEvent<Array<number>>();
+export const $timeStamps = restore(timeStampsSelected, []);
+
 export const getPosts = attach({
   effect: getPostsFx,
-  source: { numberOfPosts: $numberOfPosts, groupsIds: $groupsIds },
+  source: {
+    numberOfPosts: $numberOfPosts,
+    groupsIds: $groupsIds,
+    timeStamps: $timeStamps,
+  },
   mapParams: (_, source) => source,
 });
