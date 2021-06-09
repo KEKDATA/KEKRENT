@@ -1,9 +1,9 @@
-import { RouteConfig } from 'react-router-config';
+import { RouteConfig } from "react-router-config";
 
-import { paths } from './paths';
+import { paths } from "./paths";
 
-import { HomePage } from './home';
-import { Error404Page } from './error404';
+import { HomePage } from "./home/page";
+import { Error404Page } from "./error404/page";
 
 export const ROUTES: RouteConfig[] = [
   {
@@ -12,7 +12,7 @@ export const ROUTES: RouteConfig[] = [
     component: HomePage,
   },
   {
-    path: '*',
+    path: "*",
     component: Error404Page,
   },
 ];

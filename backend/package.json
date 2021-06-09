@@ -14,14 +14,14 @@
     "lint": "eslint source --quiet"
   },
   "dependencies": {
-    "bull": "^3.22.7",
-    "cheerio": "^1.0.0-rc.9",
+    "bull": "^3.22.8",
+    "cheerio": "^1.0.0-rc.10",
     "fastify": "^3.17.0",
     "fastify-compress": "^3.5.0",
     "fastify-cors": "^6.0.1",
     "nanoid": "^3.1.23",
     "node-cache": "^5.1.2",
-    "playwright": "^1.11.1",
+    "playwright": "^1.12.0",
     "redis": "^3.1.2"
   },
   "devDependencies": {
@@ -33,9 +33,9 @@
     "@babel/preset-typescript": "^7.13.0",
     "@types/bull": "^3.15.1",
     "@types/cheerio": "^0.22.29",
-    "@types/node": "^15.12.1",
+    "@types/node": "^15.12.2",
     "@types/redis": "^2.8.29",
-    "@typescript-eslint/parser": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.1",
     "babel-eslint": "^10.1.0",
     "electron": "^13.1.1",
     "eslint": "^7.28.0",

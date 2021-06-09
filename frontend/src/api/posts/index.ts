@@ -7,10 +7,16 @@ export const getPostsApi = ({
 }: {
   numberOfPosts: number;
   groupsIds: Array<number>;
-  timeStamps: Array<number>;
-}) =>
-  apiConfig
-    .get(
-      `posts?groupsIds=${groupsIds}&numberOfPosts=${numberOfPosts}&timeStamps=${timeStamps}`
-    )
-    .json();
+  timeStamps: Array<number> | null;
+}) => {
+  const params = new URLSearchParams();
+
+  params.set("numberOfPosts", String(numberOfPosts));
+  params.set("groupsIds", String(groupsIds));
+
+  if (timeStamps) {
+    params.set("timeStamps", String(timeStamps));
+  }
+
+  return apiConfig.get(`posts?${params.toString()}`).json();
+};
