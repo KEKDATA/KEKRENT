@@ -16,16 +16,12 @@ const parser = (value?: string) => value?.replace(/\$\s?|(฿ ,*)/g, "") ?? "";
 const minParser = (value?: string) => {
   const parsedValue = parser(value);
 
-  console.log(parsedValue);
-
   handleChangeMinPrice(parsedValue);
 
   return parsedValue;
 };
 const maxParser = (value?: string) => {
   const parsedValue = parser(value);
-
-  console.log(parsedValue);
 
   handleChangeMaxPrice(parsedValue);
 
@@ -36,7 +32,7 @@ const setupMinMaxPrice = (price?: number) => price?.toString() ?? undefined;
 
 export const Price = () => {
   const { min, max } = useStore($price);
-  console.log(min, max);
+
   return (
     <div>
       <InputNumber
