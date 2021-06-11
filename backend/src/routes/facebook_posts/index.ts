@@ -8,44 +8,64 @@ export const facebookPosts = () => {
       groupsIds: string;
       numberOfPosts: string;
       timeStamps?: string;
+      minPrice?: string;
+      maxPrice?: string;
     };
   }>('/posts', async (request, reply) => {
-    const { groupsIds, numberOfPosts, timeStamps } = request.query || {};
-    const cachedPosts: Posts | undefined = nodeCache.get(
-      `${groupsIds}${numberOfPosts}${timeStamps}`,
-    );
+    try {
+      const { groupsIds, numberOfPosts, timeStamps, maxPrice, minPrice } =
+        request.query || {};
+      const cacheKey = `${groupsIds}${numberOfPosts}${timeStamps}${minPrice}${maxPrice}`;
+      const cachedPosts: Posts | undefined = nodeCache.get(cacheKey);
 
-    if (cachedPosts) {
-      reply.send(cachedPosts);
-    }
+      if (cachedPosts) {
+        return cachedPosts;
+      }
 
-    const normalizedGroupsIds = groupsIds
-      .split(',')
-      .map(groupId => Number(groupId));
-    const normalizedTimeStamps = timeStamps
-      ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
-      : null;
+      const normalizedGroupsIds = groupsIds.split(',');
+      const normalizedTimeStamps = timeStamps
+        ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
+        : null;
 
-    const postsByGroup = Number(numberOfPosts) / normalizedGroupsIds.length;
-    const posts = await Promise.all(
-      normalizedGroupsIds.map(groupId =>
-        parseFacebookGroups(groupId, postsByGroup),
-      ),
-    );
-
-    let normalizedPosts = posts
-      .flat()
-      .sort((a, b) => b.timestamp - a.timestamp);
-
-    if (normalizedTimeStamps) {
-      const [from, to] = normalizedTimeStamps;
-      normalizedPosts = normalizedPosts.filter(
-        ({ timestamp }) => timestamp >= from && timestamp <= to,
+      const postsByGroup = Number(numberOfPosts) / normalizedGroupsIds.length;
+      const posts = await Promise.all(
+        normalizedGroupsIds.map(groupId =>
+          parseFacebookGroups(groupId, postsByGroup),
+        ),
       );
+
+      let normalizedPosts = posts
+        .flat()
+        .sort((a, b) => b.timestamp - a.timestamp);
+
+      if (normalizedTimeStamps) {
+        const [from, to] = normalizedTimeStamps;
+        normalizedPosts = normalizedPosts.filter(
+          ({ timestamp }) => timestamp >= from && timestamp <= to,
+        );
+      }
+
+      if (minPrice || maxPrice) {
+        normalizedPosts = normalizedPosts.filter(({ price }) => {
+          let priceMoreThanMin = true;
+          if (minPrice) {
+            priceMoreThanMin = Number(price) >= Number(minPrice);
+          }
+
+          let priceLessThanMax = true;
+          if (maxPrice) {
+            priceLessThanMax = Number(price) <= Number(maxPrice);
+          }
+
+          return priceMoreThanMin || priceLessThanMax;
+        });
+      }
+
+      nodeCache.set(cacheKey, normalizedPosts);
+
+      return normalizedPosts;
+    } catch (err) {
+      console.log(err);
     }
-
-    nodeCache.set(`${groupsIds}${numberOfPosts}${timeStamps}`, normalizedPosts);
-
-    reply.send(normalizedPosts);
   });
 };

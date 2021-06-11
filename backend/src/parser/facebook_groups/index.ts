@@ -11,11 +11,25 @@ const iPhone = devices['iPhone 11 Pro'];
 const elementsPerPage = 20;
 
 export const parseFacebookGroups = async (
-  groupId: number,
+  groupId: number | string,
   postsByGroup: number,
 ) => {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext(iPhone);
+
+  await context.addCookies([
+    {
+      name: 'locale',
+      value: 'en_GB',
+      domain: '.facebook.com',
+      path: '/',
+      expires: -1,
+      httpOnly: false,
+      secure: true,
+      sameSite: 'None',
+    },
+  ]);
+
   const page = await context.newPage();
 
   await page.goto(`https://m.facebook.com/groups/${groupId}`);
@@ -62,16 +76,18 @@ export const parseFacebookGroups = async (
         const price = postNode.find(selectors.price).text();
         const address = postNode.find(selectors.address).text();
         const description = postNode.find(selectors.description).text();
-        const link = postNode.find(selectors.someTimesAgo).attr('href');
+        const someTimesAgo = postNode.find(selectors.someTimesAgo);
+        const link = someTimesAgo.attr('href');
         const photosContainer = postNode.find(selectors.photosContainer);
 
         const dataFt = postNode.attr('data-ft');
         const parsedDataFt = JSON.parse(dataFt as string);
         const publishTime =
           parsedDataFt?.page_insights[groupId]?.post_context?.publish_time;
-        const date = new Date(publishTime * 1000);
-        const timestamp = date.getTime();
-        const publishDate = date.toLocaleDateString('en-US');
+        const date = publishTime ? new Date(publishTime * 1000) : null;
+        const timestamp = date?.getTime() ?? new Date().getTime();
+        const publishDate =
+          date?.toLocaleDateString('en-US') ?? someTimesAgo.text();
 
         const photos: string[] = [];
 

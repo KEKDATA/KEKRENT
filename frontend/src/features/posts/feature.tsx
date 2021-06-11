@@ -4,18 +4,25 @@ import { useStore } from "effector-react";
 import { $posts } from "../../models/posts/model";
 import { Submit } from "./components/submit/component";
 import { NumberOfPosts } from "./components/number_of_posts/component";
-import { Groups } from "../groups/feature";
 import { Dates } from "./components/dates/component";
+import { Col, Row } from "antd";
+import { Price } from "./components/price/component";
 
 export const Posts = () => {
   const posts = useStore($posts);
 
   return (
     <>
-      <NumberOfPosts />
-      <Groups />
-      <Dates />
-      <Submit />
+      <Row justify="center">
+        <Col>
+          <NumberOfPosts />
+          <Dates />
+          <Price />
+        </Col>
+        <Col span={24}>
+          <Submit />
+        </Col>
+      </Row>
       <ul>
         {posts.map((post) => (
           <li key={post.id}>
@@ -36,7 +43,7 @@ export const Posts = () => {
             <ul>
               {post.photos.map((photo) => (
                 <li key={photo}>
-                  <img src={photo} alt="some photo" />
+                  <img loading="lazy" src={photo} alt="some photo" />
                 </li>
               ))}
             </ul>
