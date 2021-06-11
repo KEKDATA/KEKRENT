@@ -11,7 +11,7 @@ export const facebookPosts = () => {
       minPrice?: string;
       maxPrice?: string;
     };
-  }>('/posts', async (request, reply) => {
+  }>('/posts', async request => {
     try {
       const { groupsIds, numberOfPosts, timeStamps, maxPrice, minPrice } =
         request.query || {};
