@@ -17,7 +17,7 @@ import { AddGroupSettings } from "./components/add_group_settings/component";
 const styles = css`
   display: flex;
   flex-direction: column;
-  max-width: 250px;
+  max-width: 100%;
 `;
 
 const Groups = () => {

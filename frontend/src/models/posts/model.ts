@@ -14,7 +14,5 @@ const postsReceived = guard<unknown, PostsType>(
 
 export const clearPosts = createEvent();
 export const $posts = createStore<PostsType>([])
-  .on(postsReceived, (prevPosts, posts) =>
-    [...prevPosts, ...posts].sort((a, b) => b.timestamp - a.timestamp)
-  )
+  .on(postsReceived, (prevPosts, posts) => [...prevPosts, ...posts])
   .reset(clearPosts);

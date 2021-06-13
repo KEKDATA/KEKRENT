@@ -6,6 +6,11 @@ import {
   $selectedGroupsIds,
   groupSettingsEvents,
 } from "../../../../models/group_settings/model";
+import { css } from "@emotion/css";
+
+const styles = css`
+  width: 100%;
+`;
 
 const { Option } = Select;
 
@@ -23,7 +28,7 @@ export const SelectGroups = () => {
       mode="multiple"
       placeholder="Please select"
       value={selectedGroupsIds}
-      style={{ width: "100%" }}
+      className={styles}
       onSelect={handleAddGroup}
       onDeselect={handleRemoveGroup}
     >
