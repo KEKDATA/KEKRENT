@@ -1,11 +1,7 @@
 import React from "react";
 import { InputNumber } from "antd";
-import { useStoreMap } from "effector-react";
 import { css } from "@emotion/css";
-import {
-  $groupsSettings,
-  groupSettingsEvents,
-} from "../../../../models/group_settings/model";
+import { groupSettingsEvents } from "../../../../models/group_settings/model";
 
 const styles = css`
   width: 125px !important;
@@ -15,14 +11,15 @@ const setupMinMaxPrice = (price?: number) => price?.toString() ?? undefined;
 const formatter = (value?: string) => (value ? `฿ ${value}` : "");
 const parser = (value?: string) => value?.replace(/\$\s?|(฿ ,*)/g, "") ?? "";
 
-export const Price = ({ id }: { id: string }) => {
-  const { min, max } = useStoreMap({
-    store: $groupsSettings,
-    keys: [id],
-    fn: (groupsSettings) =>
-      groupsSettings.find((groupSettings) => groupSettings.id === id)!.price,
-  });
-
+export const Price = ({
+  id,
+  min,
+  max,
+}: {
+  id: string;
+  min?: number;
+  max?: number;
+}) => {
   const handleChangeMinPrice = (value: string) =>
     groupSettingsEvents.minPriceChanged({
       id,

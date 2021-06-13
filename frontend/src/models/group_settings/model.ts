@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 
 export interface GroupSettings {
   id: string;
-  selectedGroupId: string | null;
+  selectedGroupId: string | undefined;
   numberOfPosts: number;
   timeStamps: Array<number> | null;
   price: { min?: number; max?: number };
@@ -15,7 +15,7 @@ const numberOfPostsChanged = createEvent<{
 }>();
 const groupIdChanged = createEvent<{
   id: string;
-  selectedGroupId: string | null;
+  selectedGroupId: string | undefined;
 }>();
 const timeStampsChanged = createEvent<{
   id: string;
@@ -30,6 +30,8 @@ const minPriceChanged = createEvent<{
   min: number;
 }>();
 const addGroup = createEvent<unknown>();
+const addSelectedGroup = createEvent<{ selectedGroupId: string }>();
+const removeSelectedGroup = createEvent<{ selectedGroupId: string }>();
 
 const changeGroupSettings = (
   groupsSettings: GroupSettings[],
@@ -43,19 +45,26 @@ const changeGroupSettings = (
 
 const initialGroupSettings = {
   id: nanoid(),
-  selectedGroupId: null,
-  numberOfPosts: 5,
+  selectedGroupId: undefined,
+  numberOfPosts: 20,
   timeStamps: null,
-  price: { min: 0, max: undefined },
+  price: { min: undefined, max: undefined },
 };
 
-export const $groupsSettings = createStore<GroupSettings[]>([
-  initialGroupSettings,
-])
+export const $groupsSettings = createStore<GroupSettings[]>([])
   .on(addGroup, (groupsSettings) => [
     ...groupsSettings,
     { ...initialGroupSettings, id: nanoid() },
   ])
+  .on(addSelectedGroup, (groupsSettings, { selectedGroupId }) => [
+    ...groupsSettings,
+    { ...initialGroupSettings, id: nanoid(), selectedGroupId },
+  ])
+  .on(removeSelectedGroup, (groupsSettings, { selectedGroupId }) =>
+    groupsSettings.filter(
+      (groupSettings) => groupSettings.selectedGroupId !== selectedGroupId
+    )
+  )
   .on(numberOfPostsChanged, (groupsSettings, { id, numberOfPosts }) =>
     changeGroupSettings(groupsSettings, id, "numberOfPosts", numberOfPosts)
   )
@@ -80,6 +89,13 @@ export const $groupsSettings = createStore<GroupSettings[]>([
     )
   );
 
+export const $selectedGroupsIds = $groupsSettings.map(
+  (groupsSettings) =>
+    groupsSettings
+      .map(({ selectedGroupId }) => selectedGroupId)
+      .filter(Boolean) as [] | string[]
+);
+
 export const groupSettingsEvents = {
   numberOfPostsChanged,
   groupIdChanged,
@@ -87,4 +103,6 @@ export const groupSettingsEvents = {
   maxPriceChanged,
   minPriceChanged,
   addGroup,
+  addSelectedGroup,
+  removeSelectedGroup,
 };

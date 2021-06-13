@@ -1,21 +1,15 @@
 import React from "react";
-import { useStoreMap } from "effector-react";
 import { InputNumber } from "antd";
 
-import {
-  $groupsSettings,
-  groupSettingsEvents,
-} from "../../../../models/group_settings/model";
+import { groupSettingsEvents } from "../../../../models/group_settings/model";
 
-export const NumberOfPosts = ({ id }: { id: string }) => {
-  const numberOfPosts = useStoreMap({
-    store: $groupsSettings,
-    keys: [id],
-    fn: (groupsSettings) =>
-      groupsSettings.find((groupSettings) => groupSettings.id === id)!
-        .numberOfPosts,
-  });
-
+export const NumberOfPosts = ({
+  id,
+  numberOfPosts,
+}: {
+  id: string;
+  numberOfPosts: number;
+}) => {
   const handleChange = (numberOfPosts: number) => {
     groupSettingsEvents.numberOfPostsChanged({ id, numberOfPosts });
   };
@@ -25,7 +19,7 @@ export const NumberOfPosts = ({ id }: { id: string }) => {
       <InputNumber
         placeholder="How much posts from group"
         value={numberOfPosts}
-        min={5}
+        min={1}
         max={110}
         onChange={handleChange}
       />

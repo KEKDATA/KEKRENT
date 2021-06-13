@@ -11,7 +11,13 @@ const styles = css`
   max-width: 250px;
 `;
 
-export const SelectGroup = ({ id }: { id: string }) => {
+export const SelectGroup = ({
+  id,
+  selectedGroupId,
+}: {
+  id: string;
+  selectedGroupId: string | undefined;
+}) => {
   const groups = useStore($groups);
 
   const handleChange = (value: string) =>
@@ -20,6 +26,7 @@ export const SelectGroup = ({ id }: { id: string }) => {
   return (
     <Select
       className={styles}
+      value={selectedGroupId}
       allowClear
       showSearch
       style={{ width: 250 }}

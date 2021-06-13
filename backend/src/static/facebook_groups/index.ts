@@ -53,23 +53,24 @@ export const staticListFacebookGroups = [
     size: '3k+',
     posts: '~60',
   },
-  {
-    id: 'PhuketEstate.Asia',
-    title: 'Phuket Real Estate - Property Sales and Rentals',
-    size: '2k+',
-    posts: '~50',
-  },
-  {
-    id: '1857287744498018',
-    title:
-      'หาห้องเช่าบ้านเช่าในจังหวัดภูเก็ต Rooms and Houses for Rent in Phuket',
-    size: '76k+',
-    posts: '~110',
-  },
+  // TAI LANG ONLY
+  // {
+  //   id: '1857287744498018',
+  //   title:
+  //     'หาห้องเช่าบ้านเช่าในจังหวัดภูเก็ต Rooms and Houses for Rent in Phuket',
+  //   size: '76k+',
+  //   posts: '~110',
+  // },
   {
     id: '1453127094951019',
     title: 'Phuket property house,land ,for sale and rent.',
     size: '2k+',
     posts: '~60',
+  },
+  {
+    id: '340003479469240',
+    title: 'Phuket All Rent',
+    size: '3k+',
+    posts: '~50',
   },
 ];

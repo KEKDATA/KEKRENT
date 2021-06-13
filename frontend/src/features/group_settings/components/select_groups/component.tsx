@@ -1,0 +1,39 @@
+import React from "react";
+import { Select } from "antd";
+import { useStore } from "effector-react";
+import { $groups } from "../../../../models/groups/model";
+import {
+  $selectedGroupsIds,
+  groupSettingsEvents,
+} from "../../../../models/group_settings/model";
+
+const { Option } = Select;
+
+const handleAddGroup = (value: string) =>
+  groupSettingsEvents.addSelectedGroup({ selectedGroupId: value });
+const handleRemoveGroup = (value: string) =>
+  groupSettingsEvents.removeSelectedGroup({ selectedGroupId: value });
+
+export const SelectGroups = () => {
+  const groups = useStore($groups);
+  const selectedGroupsIds = useStore($selectedGroupsIds);
+
+  return (
+    <Select
+      mode="multiple"
+      placeholder="Please select"
+      value={selectedGroupsIds}
+      style={{ width: "100%" }}
+      onSelect={handleAddGroup}
+      onDeselect={handleRemoveGroup}
+    >
+      {groups.map((group) => (
+        <Option key={group.id} value={group.id}>
+          <div>{group.title}</div>
+          <div>{group.size}</div>
+          <div>{group.posts}</div>
+        </Option>
+      ))}
+    </Select>
+  );
+};
