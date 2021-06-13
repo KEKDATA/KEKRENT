@@ -5,7 +5,8 @@ import { parseFacebookGroups } from '../../parser/facebook_groups';
 export const facebookPosts = () => {
   return initializedFastify.get<{
     Querystring: {
-      groupsIds: string;
+      id: string;
+      selectedGroupId: string;
       numberOfPosts: string;
       timeStamps?: string;
       minPrice?: string;
@@ -13,26 +14,27 @@ export const facebookPosts = () => {
     };
   }>('/posts', async request => {
     try {
-      const { groupsIds, numberOfPosts, timeStamps, maxPrice, minPrice } =
-        request.query || {};
-      const cacheKey = `${groupsIds}${numberOfPosts}${timeStamps}${minPrice}${maxPrice}`;
+      const {
+        id,
+        selectedGroupId,
+        numberOfPosts,
+        timeStamps,
+        maxPrice,
+        minPrice,
+      } = request.query || {};
+      const cacheKey = `${id}${selectedGroupId}${numberOfPosts}${timeStamps}${minPrice}${maxPrice}`;
       const cachedPosts: Posts | undefined = nodeCache.get(cacheKey);
 
       if (cachedPosts) {
         return cachedPosts;
       }
 
-      const normalizedGroupsIds = groupsIds.split(',');
       const normalizedTimeStamps = timeStamps
         ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
         : null;
 
-      const postsByGroup = Number(numberOfPosts) / normalizedGroupsIds.length;
-      const posts = await Promise.all(
-        normalizedGroupsIds.map(groupId =>
-          parseFacebookGroups(groupId, postsByGroup),
-        ),
-      );
+      const postsByGroup = Number(numberOfPosts);
+      const posts = await parseFacebookGroups(selectedGroupId, postsByGroup);
 
       let normalizedPosts = posts
         .flat()

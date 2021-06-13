@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 
+import { GroupSettings } from "../../features/group_settings/feature";
 import { Posts } from "../../features/posts/feature";
-import { Groups } from "../../features/groups/feature";
-import { Col, Row } from "antd";
+import { getGroupsFx } from "../../models/groups/model";
+import { AddGroupSettings } from "../../features/add_group_settings/feature";
+import { GetPosts } from "../../features/get_posts/feature";
 
 export const HomePage = () => {
+  useEffect(() => {
+    getGroupsFx();
+  }, []);
+
   return (
-    <Row justify="center">
-      <Col span={24}>
-        <Groups />
-      </Col>
-      <Col>
-        <Posts />
-      </Col>
-    </Row>
+    <>
+      <GroupSettings />
+      <AddGroupSettings />
+      <GetPosts />
+      <Posts />
+    </>
   );
 };

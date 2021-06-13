@@ -1,23 +1,9 @@
-import {
-  createEffect,
-  createEvent,
-  createStore,
-  guard,
-  attach,
-  restore,
-} from "effector-root";
+import { createEffect, createEvent, createStore, guard } from "effector-root";
 import { getPostsApi } from "../../api/posts";
 import { PostsContract, PostsType } from "../../contracts/posts/contract";
+import { GroupSettings } from "../group_settings/model";
 
-const getPostsFx = createEffect<
-  {
-    numberOfPosts: number;
-    groupsIds: Array<number>;
-    timeStamps: Array<number> | null;
-    price: { min?: number; max?: number };
-  },
-  unknown
->(getPostsApi);
+export const getPostsFx = createEffect<GroupSettings, unknown>(getPostsApi);
 
 const postsReceived = guard<unknown, PostsType>(
   getPostsFx.doneData.map((data) => data),
@@ -26,36 +12,9 @@ const postsReceived = guard<unknown, PostsType>(
   }
 );
 
-export const $posts = createStore<PostsType>([]).on(
-  postsReceived,
-  (_, posts) => posts
-);
-
-export const numberOfPostsChanged = createEvent<number>();
-export const $numberOfPosts = restore(numberOfPostsChanged, 1);
-
-export const groupsIdsSelected = createEvent<Array<number>>();
-export const $groupsIds = restore(groupsIdsSelected, []);
-
-export const timeStampsSelected = createEvent<Array<number>>();
-export const $timeStamps = restore(timeStampsSelected, null);
-
-export const minPriceChanged = createEvent<number>();
-export const maxPriceChanged = createEvent<number>();
-export const $price = createStore<{ min?: number; max?: number }>({
-  min: 0,
-  max: undefined,
-})
-  .on(minPriceChanged, (prev, minPrice) => ({ min: minPrice, max: prev.max }))
-  .on(maxPriceChanged, (prev, maxPrice) => ({ min: prev.min, max: maxPrice }));
-
-export const getPosts = attach({
-  effect: getPostsFx,
-  source: {
-    numberOfPosts: $numberOfPosts,
-    groupsIds: $groupsIds,
-    timeStamps: $timeStamps,
-    price: $price,
-  },
-  mapParams: (_, source) => source,
-});
+export const clearPosts = createEvent();
+export const $posts = createStore<PostsType>([])
+  .on(postsReceived, (prevPosts, posts) =>
+    [...prevPosts, ...posts].sort((a, b) => b.timestamp - a.timestamp)
+  )
+  .reset(clearPosts);

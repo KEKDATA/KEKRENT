@@ -1,20 +1,17 @@
 import { apiConfig } from "../config";
+import { GroupSettings } from "../../models/group_settings/model";
 
 export const getPostsApi = ({
   numberOfPosts,
-  groupsIds,
+  selectedGroupId,
+  id,
   timeStamps,
   price,
-}: {
-  numberOfPosts: number;
-  groupsIds: Array<number>;
-  timeStamps: Array<number> | null;
-  price: { min?: number; max?: number };
-}) => {
+}: GroupSettings) => {
   const params = new URLSearchParams();
 
+  params.set("id", id);
   params.set("numberOfPosts", String(numberOfPosts));
-  params.set("groupsIds", String(groupsIds));
 
   if (timeStamps) {
     params.set("timeStamps", String(timeStamps));
@@ -26,6 +23,10 @@ export const getPostsApi = ({
 
   if (price.max) {
     params.set("maxPrice", String(price.max));
+  }
+
+  if (selectedGroupId) {
+    params.set("selectedGroupId", selectedGroupId);
   }
 
   return apiConfig.get(`posts?${params.toString()}`).json();
