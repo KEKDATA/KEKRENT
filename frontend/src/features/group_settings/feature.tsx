@@ -13,6 +13,7 @@ import {
 import { Button, Modal } from "antd";
 import { SelectGroups } from "./components/select_groups/component";
 import { AddGroupSettings } from "./components/add_group_settings/component";
+import { SettingOutlined } from "@ant-design/icons";
 
 const styles = css`
   display: flex;
@@ -66,9 +67,12 @@ const GroupsSettingsModal = () => {
 
   return (
     <>
-      <Button type="primary" shape="round" onClick={showModal}>
-        Open groups settings
-      </Button>
+      <Button
+        type="primary"
+        shape="round"
+        onClick={showModal}
+        icon={<SettingOutlined />}
+      />
       <Modal
         title="Groups settings"
         visible={isModalVisible}

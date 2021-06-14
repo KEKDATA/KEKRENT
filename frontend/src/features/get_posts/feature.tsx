@@ -3,6 +3,7 @@ import { Button } from "antd";
 import { getPostsFx } from "../../models/posts/model";
 import { useStore } from "effector-react";
 import { $groupsSettings } from "../../models/group_settings/model";
+import { SearchOutlined } from "@ant-design/icons";
 
 export const GetPosts = () => {
   const groupsSettings = useStore($groupsSettings);
@@ -12,8 +13,13 @@ export const GetPosts = () => {
   };
 
   return (
-    <Button type="primary" shape="round" onClick={handleClick}>
-      GET POSTS
+    <Button
+      type="primary"
+      shape="round"
+      onClick={handleClick}
+      icon={<SearchOutlined />}
+    >
+      Search
     </Button>
   );
 };

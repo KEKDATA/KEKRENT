@@ -1,6 +1,7 @@
 import { initializedFastify, nodeCache } from '../../config';
 import { Posts } from '../../types/posts';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
+import { getFilteredPostsBySettings } from '../../parser/facebook_groups/lib/get_filtered_posts_by_settings';
 
 export const facebookPosts = () => {
   return initializedFastify.get<{
@@ -34,38 +35,18 @@ export const facebookPosts = () => {
         : null;
 
       const postsByGroup = Number(numberOfPosts);
-      const posts = await parseFacebookGroups(selectedGroupId, postsByGroup);
 
-      let normalizedPosts = posts
-        .flat()
-        .sort((a, b) => b.timestamp - a.timestamp);
+      const posts = await parseFacebookGroups({
+        selectedGroupId,
+        postsByGroup,
+        timeStamps: normalizedTimeStamps,
+        minPrice,
+        maxPrice,
+      });
 
-      if (normalizedTimeStamps) {
-        const [from, to] = normalizedTimeStamps;
-        normalizedPosts = normalizedPosts.filter(
-          ({ timestamp }) => timestamp >= from && timestamp <= to,
-        );
-      }
+      nodeCache.set(cacheKey, posts);
 
-      if (minPrice || maxPrice) {
-        normalizedPosts = normalizedPosts.filter(({ price }) => {
-          let priceMoreThanMin = true;
-          if (minPrice) {
-            priceMoreThanMin = Number(price) >= Number(minPrice);
-          }
-
-          let priceLessThanMax = true;
-          if (maxPrice) {
-            priceLessThanMax = Number(price) <= Number(maxPrice);
-          }
-
-          return priceMoreThanMin || priceLessThanMax;
-        });
-      }
-
-      nodeCache.set(cacheKey, normalizedPosts);
-
-      return normalizedPosts;
+      return posts;
     } catch (err) {
       console.log(err);
     }
