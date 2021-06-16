@@ -1,10 +1,10 @@
-import { chromium, devices } from 'playwright';
-import { selectors } from '../../constants/selectors';
+import { chromium } from 'playwright';
 import { searchPosts } from './lib/search_posts';
 import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
-
-const iPhone = devices['iPhone 11 Pro'];
+import { Posts } from '../../types/posts';
+import { nodeCache } from '../../config';
+import { FastifyReply } from 'fastify';
 
 export const parseFacebookGroups = async ({
   selectedGroupId,
@@ -12,16 +12,20 @@ export const parseFacebookGroups = async ({
   maxPrice,
   minPrice,
   timeStamps,
+  cacheKey,
+  reply,
 }: {
   selectedGroupId: number | string;
   postsByGroup: number;
   timeStamps: number[] | null;
+  cacheKey: string;
+  reply: FastifyReply;
   minPrice?: string;
   maxPrice?: string;
 }) => {
   const browser = await chromium.launch({ headless: true });
 
-  const context = await browser.newContext(iPhone);
+  const context = await browser.newContext();
 
   await context.addCookies([
     {
@@ -40,55 +44,43 @@ export const parseFacebookGroups = async ({
 
   await page.goto(`https://m.facebook.com/groups/${selectedGroupId}`);
 
-  await searchPosts({ page, postsByGroup });
+  let totalPosts: Posts = [];
+  let numberOfLatestParsedPost = 0;
+  let noisyPopupClosed = false;
+  let isSendingReply = false;
 
-  const postsHandledElements = await page.$$(selectors.post);
-  const isEnoughNonFiltersPosts = postsHandledElements.length >= postsByGroup;
+  while (totalPosts.length < postsByGroup) {
+    noisyPopupClosed = await searchPosts({ page, noisyPopupClosed });
 
-  if (!isEnoughNonFiltersPosts) {
-    await searchPosts({
+    const posts = await normalizeSearchedPosts({
       page,
-      postsByGroup: postsByGroup - postsHandledElements.length,
-    });
-  }
-
-  const posts = await normalizeSearchedPosts({
-    page,
-    postsByGroup,
-    selectedGroupId,
-  });
-
-  let filteredPosts = getFilteredPostsBySettings({
-    posts,
-    maxPrice,
-    minPrice,
-    timeStamps,
-  });
-
-  const isEnoughFiltersPosts = filteredPosts.length >= postsByGroup;
-  const remainingPosts = postsByGroup - filteredPosts.length;
-
-  if (!isEnoughFiltersPosts && remainingPosts > 5) {
-    await searchPosts({
-      page,
-      postsByGroup: remainingPosts,
-    });
-
-    const updatedPosts = await normalizeSearchedPosts({
-      page,
-      postsByGroup,
       selectedGroupId,
+      numberOfLatestParsedPost,
+      postsByGroup,
     });
 
-    filteredPosts = getFilteredPostsBySettings({
-      posts: updatedPosts,
+    numberOfLatestParsedPost = posts.length;
+
+    const filteredPosts = getFilteredPostsBySettings({
+      posts,
       maxPrice,
       minPrice,
       timeStamps,
     });
+
+    const cachedPosts: Posts = nodeCache.get(cacheKey) || [];
+
+    totalPosts = [...cachedPosts, ...filteredPosts];
+
+    nodeCache.set(cacheKey, totalPosts);
+
+    if (!isSendingReply) {
+      const response = { status: 'success', postsByGroup, cacheKey };
+      reply.send(response);
+
+      isSendingReply = true;
+    }
   }
 
   await browser.close();
-
-  return filteredPosts;
 };

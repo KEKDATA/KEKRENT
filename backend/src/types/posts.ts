@@ -9,3 +9,19 @@ export type Posts = Array<{
   link?: string;
   photos: string[];
 }>;
+
+export interface PostsSettings {
+  id: string;
+  selectedGroupId: string;
+  numberOfPosts: string;
+  timeStamps?: string;
+  minPrice?: string;
+  maxPrice?: string;
+}
+
+export interface PartPostsSettings {
+  from: string;
+  to: string;
+  cacheKey: string;
+  postsByGroup: string;
+}

@@ -1,33 +1,10 @@
 import { apiConfig } from "../config";
-import { GroupSettings } from "../../models/group_settings/model";
+import { getSearchParams } from "../../lib/get_search_params";
+import { PartPosts, SavePosts } from "../../../typings/posts";
+import { PostsType, SavePostsType } from "../../contracts/posts/contract";
 
-export const getPostsApi = ({
-  numberOfPosts,
-  selectedGroupId,
-  id,
-  timeStamps,
-  price,
-}: GroupSettings) => {
-  const params = new URLSearchParams();
+export const savePostsApi = (params: SavePosts): Promise<SavePostsType> =>
+  apiConfig.post(`savePosts?${getSearchParams(params).toString()}`).json();
 
-  params.set("id", id);
-  params.set("numberOfPosts", String(numberOfPosts));
-
-  if (timeStamps) {
-    params.set("timeStamps", String(timeStamps));
-  }
-
-  if (price.min) {
-    params.set("minPrice", String(price.min));
-  }
-
-  if (price.max) {
-    params.set("maxPrice", String(price.max));
-  }
-
-  if (selectedGroupId) {
-    params.set("selectedGroupId", selectedGroupId);
-  }
-
-  return apiConfig.get(`posts?${params.toString()}`).json();
-};
+export const partPostsApi = (params: PartPosts): Promise<PostsType> =>
+  apiConfig.get(`partPosts?${getSearchParams(params).toString()}`).json();

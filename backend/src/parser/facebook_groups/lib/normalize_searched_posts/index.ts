@@ -7,12 +7,14 @@ import { Page } from 'playwright';
 
 export const normalizeSearchedPosts = async ({
   page,
-  postsByGroup,
   selectedGroupId,
+  numberOfLatestParsedPost,
+  postsByGroup,
 }: {
   page: Page;
-  postsByGroup: number;
   selectedGroupId: number | string;
+  numberOfLatestParsedPost: number;
+  postsByGroup: number;
 }) => {
   const posts: Posts = [];
 
@@ -20,7 +22,7 @@ export const normalizeSearchedPosts = async ({
   const $ = cheerio.load(contentPage);
 
   $(selectors.post)
-    .slice(0, postsByGroup)
+    .slice(numberOfLatestParsedPost, postsByGroup)
     .each(async (index, post) => {
       const postNode = $(post);
       const title = postNode.find(selectors.title).text();

@@ -1,7 +1,7 @@
 import { initializedFastify } from '../../config';
-import { staticListFacebookGroups } from '../../static/facebook_groups';
+import { staticListFacebookGroups } from './static_list';
 
-export const facebookGroups = () => {
+export const facebookGroupsRoute = () => {
   return initializedFastify.get('/groups', async (request, reply) => {
     reply.send(staticListFacebookGroups);
   });

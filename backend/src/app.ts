@@ -1,11 +1,22 @@
 import fastifyCors from 'fastify-cors';
 import fastifyCompress from 'fastify-compress';
 import { initializedFastify } from './config';
-import { facebookPosts } from './routes/facebook_posts';
-import { facebookGroups } from './routes/facebook_groups';
+import { facebookSavePostsRoute } from './routes/facebook_save_posts';
+import { facebookGroupsRoute } from './routes/facebook_groups';
 import zlib from 'zlib';
+import { facebookPartPosts } from './routes/facebook_part_posts';
 
-initializedFastify.register(fastifyCors);
+initializedFastify.register(fastifyCors, {
+  origin: (origin, cb) => {
+    if (/localhost/.test(origin)) {
+      //  Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error('Not allowed'), false);
+  },
+});
 initializedFastify.register(fastifyCompress, {
   threshold: 2048,
   encodings: ['gzip', 'deflate'],
@@ -32,5 +43,6 @@ const start = async () => {
 
 start();
 
-facebookPosts();
-facebookGroups();
+facebookSavePostsRoute();
+facebookGroupsRoute();
+facebookPartPosts();
