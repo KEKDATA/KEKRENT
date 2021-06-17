@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "antd";
-import { savePostsFx } from "../../models/posts/model";
+import { getPostsFx } from "../../models/posts/model";
 import { useStore } from "effector-react";
 import { $groupsSettings } from "../../models/group_settings/model";
 import { SearchOutlined } from "@ant-design/icons";
@@ -10,7 +10,7 @@ export const GetPosts = () => {
 
   const handleClick = () => {
     groupsSettings.forEach((groupSettings) =>
-      savePostsFx({
+      getPostsFx({
         timeStamps: groupSettings.timeStamps,
         numberOfPosts: groupSettings.numberOfPosts,
         selectedGroupId: groupSettings.selectedGroupId,

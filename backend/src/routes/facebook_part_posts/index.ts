@@ -26,19 +26,19 @@ export const facebookPartPosts = () => {
 
       const intervalId = setInterval(() => {
         const updatedCachedPosts: Posts | undefined = nodeCache.get(cacheKey);
-        if (
-          updatedCachedPosts &&
-          updatedCachedPosts.length !== cachedPosts.length
-        ) {
-          reply.send(
-            updatedCachedPosts.slice(
-              normalizedValues.from,
-              normalizedValues.to,
-            ),
+
+        if (updatedCachedPosts) {
+          const partOfUpdatedPosts = updatedCachedPosts.slice(
+            normalizedValues.from,
+            normalizedValues.to,
           );
-          clearInterval(intervalId);
+
+          if (partOfUpdatedPosts.length > normalizedValues.to / 3) {
+            reply.send(partOfUpdatedPosts);
+            clearInterval(intervalId);
+          }
         }
-      }, 500);
+      }, 1000);
     } catch (err) {
       console.log('partPosts', err);
       return {};

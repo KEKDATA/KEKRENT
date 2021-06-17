@@ -3,9 +3,7 @@ import { searchPosts } from './lib/search_posts';
 import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
 import { Posts } from '../../types/posts';
-import { nodeCache } from '../../config';
-import { FastifyReply } from 'fastify';
-import fetch from 'undici-fetch';
+import { getPredictedPosts } from './lib/predict';
 
 export const parseFacebookGroups = async ({
   selectedGroupId,
@@ -13,14 +11,10 @@ export const parseFacebookGroups = async ({
   maxPrice,
   minPrice,
   timeStamps,
-  cacheKey,
-  reply,
 }: {
   selectedGroupId: number | string;
   postsByGroup: number;
   timeStamps: number[] | null;
-  cacheKey: string;
-  reply: FastifyReply;
   minPrice?: string;
   maxPrice?: string;
 }) => {
@@ -48,7 +42,6 @@ export const parseFacebookGroups = async ({
   let totalPosts: Posts = [];
   let numberOfLatestParsedPost = 0;
   let noisyPopupClosed = false;
-  let isSendingReply = false;
 
   while (totalPosts.length < postsByGroup) {
     noisyPopupClosed = await searchPosts({ page, noisyPopupClosed });
@@ -67,40 +60,14 @@ export const parseFacebookGroups = async ({
       timeStamps,
     });
 
-    const result = await Promise.all(
-      filteredPosts.map(async filteredPost => {
-        const res = await fetch(
-          `http://127.0.0.1:8000/predict_advertisement?text=${filteredPost.description}`,
-          {
-            method: 'POST',
-          },
-        );
-        const { classIndex, prob }: { classIndex: number; prob: number } =
-          await res.json();
+    const predictedPosts = await getPredictedPosts(filteredPosts);
 
-        return {
-          ...filteredPost,
-          classIndex,
-          prob,
-        };
-      }),
-    );
+    numberOfLatestParsedPost = predictedPosts.length;
 
-    numberOfLatestParsedPost = result.length;
-
-    const cachedPosts: Posts = nodeCache.get(cacheKey) || [];
-
-    totalPosts = [...cachedPosts, ...result];
-
-    nodeCache.set(cacheKey, totalPosts);
-
-    if (!isSendingReply) {
-      const response = { status: 'success', postsByGroup, cacheKey };
-      reply.send(response);
-
-      isSendingReply = true;
-    }
+    totalPosts = [...totalPosts, ...predictedPosts];
   }
 
   await browser.close();
+
+  return totalPosts;
 };

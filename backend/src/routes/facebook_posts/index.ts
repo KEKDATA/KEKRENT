@@ -3,9 +3,9 @@ import { Posts, PostsSettings } from '../../types/posts';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
 
 export const facebookSavePostsRoute = () => {
-  return initializedFastify.post<{
+  return initializedFastify.get<{
     Querystring: PostsSettings;
-  }>('/savePosts', async (request, reply) => {
+  }>('/posts', async request => {
     try {
       const {
         id,
@@ -27,28 +27,29 @@ export const facebookSavePostsRoute = () => {
         .join(',');
       const cachedPosts: Posts | undefined = nodeCache.get(cacheKey);
       const postsByGroup = Number(numberOfPosts);
-      const response = { status: 'success', postsByGroup, cacheKey };
 
       if (cachedPosts) {
-        return response;
+        return cachedPosts;
       }
 
       const normalizedTimeStamps = timeStamps
         ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
         : null;
 
-      await parseFacebookGroups({
+      const posts = await parseFacebookGroups({
         selectedGroupId,
         postsByGroup,
         timeStamps: normalizedTimeStamps,
         minPrice,
         maxPrice,
-        cacheKey,
-        reply,
       });
+
+      nodeCache.set(cacheKey, posts);
+
+      return posts;
     } catch (err) {
       console.log('savePosts', err);
-      return { status: 'failed', postsByGroup: null, cacheKey: null };
+      return [];
     }
   });
 };

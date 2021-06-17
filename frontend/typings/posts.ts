@@ -1,4 +1,4 @@
-export interface SavePosts {
+export interface Posts {
   id: string;
   selectedGroupId: string | undefined;
   numberOfPosts: number;

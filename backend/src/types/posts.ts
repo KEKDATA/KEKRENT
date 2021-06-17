@@ -1,4 +1,4 @@
-export type Posts = Array<{
+interface Post {
   id: string;
   title: string;
   price: string;
@@ -8,7 +8,15 @@ export type Posts = Array<{
   timestamp: number;
   link?: string;
   photos: string[];
-}>;
+}
+
+interface PredictedPost extends Post {
+  classIndex: number;
+  prob: number;
+}
+
+export type Posts = Array<Post>;
+export type PredictedPosts = Array<PredictedPost>;
 
 export interface PostsSettings {
   id: string;
