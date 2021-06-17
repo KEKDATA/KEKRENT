@@ -5,6 +5,7 @@ import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings
 import { Posts } from '../../types/posts';
 import { nodeCache } from '../../config';
 import { FastifyReply } from 'fastify';
+import fetch from 'undici-fetch';
 
 export const parseFacebookGroups = async ({
   selectedGroupId,
@@ -59,8 +60,6 @@ export const parseFacebookGroups = async ({
       postsByGroup,
     });
 
-    numberOfLatestParsedPost = posts.length;
-
     const filteredPosts = getFilteredPostsBySettings({
       posts,
       maxPrice,
@@ -68,9 +67,30 @@ export const parseFacebookGroups = async ({
       timeStamps,
     });
 
+    const result = await Promise.all(
+      filteredPosts.map(async filteredPost => {
+        const res = await fetch(
+          `http://127.0.0.1:8000/predict_advertisement?text=${filteredPost.description}`,
+          {
+            method: 'POST',
+          },
+        );
+        const { classIndex, prob }: { classIndex: number; prob: number } =
+          await res.json();
+
+        return {
+          ...filteredPost,
+          classIndex,
+          prob,
+        };
+      }),
+    );
+
+    numberOfLatestParsedPost = result.length;
+
     const cachedPosts: Posts = nodeCache.get(cacheKey) || [];
 
-    totalPosts = [...cachedPosts, ...filteredPosts];
+    totalPosts = [...cachedPosts, ...result];
 
     nodeCache.set(cacheKey, totalPosts);
 

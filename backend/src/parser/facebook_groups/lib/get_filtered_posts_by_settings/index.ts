@@ -13,7 +13,7 @@ export const getFilteredPostsBySettings = ({
   minPrice,
   maxPrice,
 }: FilteredPostsBySettings) => {
-  let normalizedPosts = posts;
+  let normalizedPosts = posts.filter(({ description }) => description?.length);
 
   if (timeStamps) {
     const [from, to] = timeStamps;

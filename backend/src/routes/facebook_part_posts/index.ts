@@ -19,7 +19,7 @@ export const facebookPartPosts = () => {
         return [];
       }
 
-      const isInitialPart = from === 0 && to === 30;
+      const isInitialPart = from === 0 && to <= 30;
       if (isInitialPart) {
         return cachedPosts.slice(normalizedValues.from, normalizedValues.to);
       }
