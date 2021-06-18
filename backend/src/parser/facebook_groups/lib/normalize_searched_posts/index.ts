@@ -5,6 +5,39 @@ import { mobileSelectors } from '../../../../constants/selectors/mobile';
 import { nanoid } from 'nanoid';
 import { Page } from 'playwright';
 import { desktopSelectors } from '../../../../constants/selectors/desktop';
+import { links } from '../../../../constants/links';
+
+const getSelectedSelector = ({
+  desktopSelector,
+  mobileSelector,
+  isDesktop,
+}: {
+  desktopSelector: string;
+  mobileSelector: string;
+  isDesktop: boolean;
+}) => {
+  const selectedSelector = isDesktop ? desktopSelector : mobileSelector;
+
+  return selectedSelector;
+};
+
+const getText = ({
+  desktopSelector,
+  mobileSelector,
+  node,
+  isDesktop,
+}: {
+  desktopSelector: string;
+  mobileSelector: string;
+  node: cheerio.Cheerio;
+  isDesktop: boolean;
+}) => {
+  const text = node
+    .find(getSelectedSelector({ desktopSelector, mobileSelector, isDesktop }))
+    .text();
+
+  return text;
+};
 
 export const normalizeSearchedPosts = async ({
   page,
@@ -31,46 +64,61 @@ export const normalizeSearchedPosts = async ({
     .each(async (index, post) => {
       const postNode = $(post);
 
-      const titleNode = isDesktop
-        ? desktopSelectors.title
-        : mobileSelectors.title;
-      const title = postNode.find(titleNode).text();
+      const title = getText({
+        mobileSelector: mobileSelectors.title,
+        desktopSelector: desktopSelectors.title,
+        node: postNode,
+        isDesktop,
+      });
 
-      const priceNode = isDesktop
-        ? desktopSelectors.price
-        : mobileSelectors.price;
-      const price = postNode.find(priceNode).text();
+      const price = getText({
+        mobileSelector: mobileSelectors.price,
+        desktopSelector: desktopSelectors.price,
+        node: postNode,
+        isDesktop,
+      });
 
-      const addressNode = isDesktop
-        ? desktopSelectors.address
-        : mobileSelectors.address;
-      const address = postNode.find(addressNode).text();
+      const address = getText({
+        mobileSelector: mobileSelectors.address,
+        desktopSelector: desktopSelectors.address,
+        node: postNode,
+        isDesktop,
+      });
 
-      const descriptionNode = isDesktop
-        ? desktopSelectors.description
-        : mobileSelectors.description;
-      const description = postNode.find(descriptionNode).text();
+      const description = getText({
+        mobileSelector: mobileSelectors.description,
+        desktopSelector: desktopSelectors.description,
+        node: postNode,
+        isDesktop,
+      });
 
       const linkedDescription = isDesktop
         ? ''
         : postNode.find(mobileSelectors.linkedDescription).text();
 
-      const someTimesAgoNode = isDesktop
-        ? desktopSelectors.someTimesAgo
-        : mobileSelectors.someTimesAgo;
-      const someTimesAgo = postNode.find(someTimesAgoNode);
+      const someTimesAgo = postNode.find(
+        getSelectedSelector({
+          desktopSelector: desktopSelectors.someTimesAgo,
+          mobileSelector: mobileSelectors.someTimesAgo,
+          isDesktop,
+        }),
+      );
       let link = isDesktop ? null : someTimesAgo.attr('href');
 
-      const photosNode = isDesktop
-        ? desktopSelectors.photos
-        : mobileSelectors.photosContainer;
-      const photosContainer = postNode.find(photosNode);
+      const photosContainer = postNode.find(
+        getSelectedSelector({
+          desktopSelector: desktopSelectors.photos,
+          mobileSelector: mobileSelectors.photosContainer,
+          isDesktop,
+        }),
+      );
 
-      const photosContainerSecondVariantNode = isDesktop
-        ? desktopSelectors.photosSecondVariant
-        : mobileSelectors.photosContainerSecondVariant;
       const photosContainerSecondVariant = postNode.find(
-        photosContainerSecondVariantNode,
+        getSelectedSelector({
+          desktopSelector: desktopSelectors.photosSecondVariant,
+          mobileSelector: mobileSelectors.photosContainerSecondVariant,
+          isDesktop,
+        }),
       );
 
       let timestamp = new Date().getTime();
@@ -92,8 +140,10 @@ export const normalizeSearchedPosts = async ({
       $(photosContainer)
         .children()
         .each((_, photoContainer) => {
-          if (!link) {
-            link = $(photoContainer).find('a').attr('href');
+          if (!link && isDesktop) {
+            link = `${links.facebookDesktop}${$(photoContainer)
+              .find('a')
+              .attr('href')}`;
           }
 
           const src = $(photoContainer).find('img').attr('src');
@@ -105,7 +155,9 @@ export const normalizeSearchedPosts = async ({
 
       if (photosContainerSecondVariant && photos.length === 0) {
         if (isDesktop) {
-          link = photosContainerSecondVariant.attr('href');
+          link = `${links.facebookDesktop}${photosContainerSecondVariant.attr(
+            'href',
+          )}`;
           const src = photosContainerSecondVariant.find('img').attr('src');
 
           if (src) {

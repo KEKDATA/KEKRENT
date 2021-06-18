@@ -4,6 +4,7 @@ import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
 import { Posts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
+import { links } from '../../constants/links';
 
 const isDesktop = true;
 
@@ -39,7 +40,7 @@ export const parseFacebookGroups = async ({
 
   const page = await context.newPage();
 
-  const url = isDesktop ? 'https://facebook.com' : 'https://m.facebook.com';
+  const url = isDesktop ? links.facebookDesktop : links.facebookMobile;
 
   await page.goto(`${url}/groups/${selectedGroupId}`);
 
