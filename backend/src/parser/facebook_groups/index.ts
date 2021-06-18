@@ -5,6 +5,8 @@ import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings
 import { Posts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
 
+const isDesktop = true;
+
 export const parseFacebookGroups = async ({
   selectedGroupId,
   postsByGroup,
@@ -37,20 +39,23 @@ export const parseFacebookGroups = async ({
 
   const page = await context.newPage();
 
-  await page.goto(`https://m.facebook.com/groups/${selectedGroupId}`);
+  const url = isDesktop ? 'https://facebook.com' : 'https://m.facebook.com';
+
+  await page.goto(`${url}/groups/${selectedGroupId}`);
 
   let totalPosts: Posts = [];
   let numberOfLatestParsedPost = 0;
   let noisyPopupClosed = false;
 
   while (totalPosts.length < postsByGroup) {
-    noisyPopupClosed = await searchPosts({ page, noisyPopupClosed });
+    noisyPopupClosed = await searchPosts({ page, noisyPopupClosed, isDesktop });
 
     const posts = await normalizeSearchedPosts({
       page,
       selectedGroupId,
       numberOfLatestParsedPost,
       postsByGroup,
+      isDesktop,
     });
 
     const filteredPosts = getFilteredPostsBySettings({
@@ -62,7 +67,7 @@ export const parseFacebookGroups = async ({
 
     const predictedPosts = await getPredictedPosts(filteredPosts);
 
-    numberOfLatestParsedPost = predictedPosts.length;
+    numberOfLatestParsedPost = posts.length;
 
     totalPosts = [...totalPosts, ...predictedPosts];
   }

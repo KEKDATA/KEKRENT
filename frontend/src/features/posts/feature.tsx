@@ -1,5 +1,6 @@
 import React from "react";
 import { useStore } from "effector-react";
+
 import { $posts } from "../../models/posts/model";
 
 export const Posts = () => {
@@ -23,13 +24,13 @@ export const Posts = () => {
           <a href={post.link} target="_blank" rel="noopener noreferrer">
             OPEN
           </a>
-          <ul>
+          <div>
             {post.photos.map((photo) => (
-              <li key={photo}>
+              <div key={photo}>
                 <img loading="lazy" src={photo} alt="some photo" />
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </li>
       ))}
     </ul>

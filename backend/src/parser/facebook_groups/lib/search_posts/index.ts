@@ -1,13 +1,15 @@
 import { sleep } from '../../../../lib/timeout/sleep';
-import { selectors } from '../../../../constants/selectors';
+import { mobileSelectors } from '../../../../constants/selectors/mobile';
 import { Page } from 'playwright';
 
 export const searchPosts = async ({
   page,
   noisyPopupClosed,
+  isDesktop,
 }: {
   page: Page;
   noisyPopupClosed: boolean;
+  isDesktop: boolean;
 }) => {
   let updatedNoisyPopupStatus = noisyPopupClosed;
 
@@ -15,24 +17,28 @@ export const searchPosts = async ({
 
   await sleep(100);
 
-  const loadMore = await page.$(selectors.moreItem);
-  if (loadMore) {
-    await loadMore.click();
-  }
+  if (!isDesktop) {
+    const loadMore = await page.$(mobileSelectors.moreItem);
+    if (loadMore) {
+      await loadMore.click();
+    }
 
-  if (!noisyPopupClosed) {
+    if (!noisyPopupClosed) {
+      await sleep(100);
+
+      const noisyPopup = await page.$(mobileSelectors.noisyLoginPopup);
+      if (noisyPopup) {
+        await noisyPopup.click();
+        updatedNoisyPopupStatus = true;
+      }
+    }
+
     await sleep(100);
 
-    const noisyPopup = await page.$(selectors.noisyLoginPopup);
-    if (noisyPopup) {
-      await noisyPopup.click();
-      updatedNoisyPopupStatus = true;
-    }
+    await page.waitForSelector(mobileSelectors.withoutLoader, {
+      timeout: 10000,
+    });
   }
-
-  await sleep(100);
-
-  await page.waitForSelector(selectors.withoutLoader, { timeout: 10000 });
 
   return updatedNoisyPopupStatus;
 };
