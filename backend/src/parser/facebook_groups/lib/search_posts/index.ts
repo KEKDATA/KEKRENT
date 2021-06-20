@@ -15,9 +15,9 @@ export const searchPosts = async ({
 
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
-  await sleep(100);
-
   if (!isDesktop) {
+    await sleep(100);
+
     const loadMore = await page.$(mobileSelectors.moreItem);
     if (loadMore) {
       await loadMore.click();

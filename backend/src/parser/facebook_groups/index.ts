@@ -2,9 +2,11 @@ import { chromium } from 'playwright';
 import { searchPosts } from './lib/search_posts';
 import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
-import { Posts } from '../../types/posts';
+import { UniqPosts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
 import { links } from '../../constants/links';
+import { desktopSelectors } from '../../constants/selectors/desktop';
+import { sleep } from '../../lib/timeout/sleep';
 
 const isDesktop = true;
 
@@ -44,12 +46,26 @@ export const parseFacebookGroups = async ({
 
   await page.goto(`${url}/groups/${selectedGroupId}`);
 
-  let totalPosts: Posts = [];
+  const totalPosts: UniqPosts = {};
   let numberOfLatestParsedPost = 0;
   let noisyPopupClosed = false;
 
-  while (totalPosts.length < postsByGroup) {
-    noisyPopupClosed = await searchPosts({ page, noisyPopupClosed, isDesktop });
+  while (Object.keys(totalPosts).length < postsByGroup) {
+    noisyPopupClosed = await searchPosts({
+      page,
+      noisyPopupClosed,
+      isDesktop,
+    });
+
+    await sleep(100);
+
+    await page.evaluate(
+      ([selector]) =>
+        document
+          .querySelectorAll(selector)
+          .forEach((node: HTMLButtonElement) => node?.click()),
+      [desktopSelectors.showAllDescription],
+    );
 
     const posts = await normalizeSearchedPosts({
       page,
@@ -66,14 +82,18 @@ export const parseFacebookGroups = async ({
       timeStamps,
     });
 
-    const predictedPosts = await getPredictedPosts(filteredPosts);
+    // const predictedPosts = await getPredictedPosts(filteredPosts);
 
-    numberOfLatestParsedPost = posts.length;
+    numberOfLatestParsedPost = Object.keys(posts).length;
 
-    totalPosts = [...totalPosts, ...predictedPosts];
+    Object.entries(filteredPosts).forEach(([stupidId, post]) => {
+      totalPosts[stupidId] = post;
+    });
+
+    await sleep(300);
   }
 
   await browser.close();
 
-  return totalPosts;
+  return Object.values(totalPosts);
 };

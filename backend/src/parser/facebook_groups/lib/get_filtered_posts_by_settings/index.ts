@@ -1,7 +1,7 @@
-import { Posts } from '../../../../types/posts';
+import { UniqPosts } from '../../../../types/posts';
 
 interface FilteredPostsBySettings {
-  posts: Posts;
+  posts: UniqPosts;
   timeStamps: number[] | null;
   minPrice?: string;
   maxPrice?: string;
@@ -13,30 +13,48 @@ export const getFilteredPostsBySettings = ({
   minPrice,
   maxPrice,
 }: FilteredPostsBySettings) => {
-  let normalizedPosts = posts.filter(({ description }) => description?.length);
+  let filteredPosts: UniqPosts = {};
+  const normalizedPosts = Object.entries(posts);
+  const [from, to] = timeStamps || [];
 
-  if (timeStamps) {
-    const [from, to] = timeStamps;
-    normalizedPosts = normalizedPosts.filter(
-      ({ timestamp }) => timestamp >= from && timestamp <= to,
-    );
-  }
+  for (let i = 0; i < normalizedPosts.length; i++) {
+    const post = normalizedPosts[i];
+    const stupidId = post[0];
+    const bodyOfPost = post[1];
+    const isDescription = bodyOfPost.description.length > 0;
 
-  if (minPrice || maxPrice) {
-    normalizedPosts = normalizedPosts.filter(({ price }) => {
+    if (!isDescription) {
+      break;
+    }
+
+    if (timeStamps) {
+      const isTimeStampsEnough =
+        bodyOfPost.timestamp >= from && bodyOfPost.timestamp <= to;
+
+      if (!isTimeStampsEnough) {
+        break;
+      }
+    }
+
+    if (minPrice || maxPrice) {
       let priceMoreThanMin = true;
+
       if (minPrice) {
-        priceMoreThanMin = Number(price) >= Number(minPrice);
+        priceMoreThanMin = Number(bodyOfPost.price) >= Number(minPrice);
       }
 
       let priceLessThanMax = true;
       if (maxPrice) {
-        priceLessThanMax = Number(price) <= Number(maxPrice);
+        priceLessThanMax = Number(bodyOfPost.price) <= Number(maxPrice);
       }
 
-      return priceMoreThanMin || priceLessThanMax;
-    });
+      if (!priceMoreThanMin && !priceLessThanMax) {
+        break;
+      }
+    }
+
+    filteredPosts[stupidId] = bodyOfPost;
   }
 
-  return normalizedPosts;
+  return filteredPosts;
 };

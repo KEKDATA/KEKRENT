@@ -1,12 +1,14 @@
-import { Posts } from '../../../../types/posts';
+import { UniqPosts } from '../../../../types/posts';
 import fetch from 'undici-fetch';
 
-export const getPredictedPosts = async (posts: Posts) => {
-  const predictedPosts: Posts = [];
-
-  for (const filteredPost of posts) {
+export const getPredictedPosts = async (posts: UniqPosts) => {
+  const predictedPosts: UniqPosts = {};
+  const filteredPosts = Object.entries(posts);
+  for (const filteredPost of filteredPosts) {
+    const stupidId = filteredPost[0];
+    const post = filteredPost[1];
     const res = await fetch(
-      `http://127.0.0.1:8000/predict_advertisement?text=${filteredPost.description}`,
+      `http://127.0.0.1:8000/predict_advertisement?text=${post.description}`,
       {
         method: 'POST',
       },
@@ -16,7 +18,7 @@ export const getPredictedPosts = async (posts: Posts) => {
 
     const successPredicted = classIndex === 1;
     if (successPredicted) {
-      predictedPosts.push(filteredPost);
+      predictedPosts[stupidId] = post;
     }
   }
 

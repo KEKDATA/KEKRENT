@@ -1,4 +1,4 @@
-interface Post {
+export interface Post {
   id: string;
   title: string;
   price: string;
@@ -15,6 +15,7 @@ interface PredictedPost extends Post {
   prob: number;
 }
 
+export type UniqPosts = { [key: string]: Post };
 export type Posts = Array<Post>;
 export type PredictedPosts = Array<PredictedPost>;
 

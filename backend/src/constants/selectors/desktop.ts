@@ -13,6 +13,9 @@ const photosContainerSecondVariantSelector =
   '.rq0escxv.l9j0dhe7.du4w35lb.hybvsw6c.io0zqebd.m5lcvass.fbipl8qg.nwvqtn77.k4urcfbm.ni8dbmo4.stjgntxs.sbcfpzgs > div > div > div > div:nth-child(3) > div > .l9j0dhe7:nth-child(3) > div > a';
 const photoSelector =
   'img.i09qtzwb.n7fi1qx3.datstx6m.pmk7jnqg.j9ispegn.kr520xx4.k4urcfbm';
+const showAllDescriptionSelector =
+  ".oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p[role='button']";
+const partOfDescriptionSelector = '.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql';
 
 export const desktopSelectors = {
   someTimesAgo: someTimesAgoSelector,
@@ -24,4 +27,6 @@ export const desktopSelectors = {
   photos: photosContainerSelector,
   photosSecondVariant: photosContainerSecondVariantSelector,
   photo: photoSelector,
+  showAllDescription: showAllDescriptionSelector,
+  partOfDescription: partOfDescriptionSelector,
 };
