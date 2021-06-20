@@ -1,5 +1,5 @@
 import React from "react";
-import { InputNumber } from "antd";
+import { InputNumber, Row } from "antd";
 
 import { groupSettingsEvents } from "../../../../models/group_settings/model";
 
@@ -15,14 +15,15 @@ export const NumberOfPosts = ({
   };
 
   return (
-    <div>
+    <Row>
       <InputNumber
-        placeholder="How much posts from group"
+        style={{ width: "100%" }}
+        placeholder="Number of posts"
         value={numberOfPosts}
         min={1}
         max={110}
         onChange={handleChange}
       />
-    </div>
+    </Row>
   );
 };

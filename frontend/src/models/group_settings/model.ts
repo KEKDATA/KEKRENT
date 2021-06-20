@@ -31,7 +31,8 @@ const minPriceChanged = createEvent<{
 }>();
 const addGroup = createEvent<unknown>();
 const addSelectedGroup = createEvent<{ selectedGroupId: string }>();
-const removeSelectedGroup = createEvent<{ selectedGroupId: string }>();
+const removeSelectedGroup =
+  createEvent<{ id?: string; selectedGroupId?: string }>();
 
 const changeGroupSettings = (
   groupsSettings: GroupSettings[],
@@ -60,10 +61,18 @@ export const $groupsSettings = createStore<GroupSettings[]>([])
     ...groupsSettings,
     { ...initialGroupSettings, id: nanoid(), selectedGroupId },
   ])
-  .on(removeSelectedGroup, (groupsSettings, { selectedGroupId }) =>
-    groupsSettings.filter(
-      (groupSettings) => groupSettings.selectedGroupId !== selectedGroupId
-    )
+  .on(removeSelectedGroup, (groupsSettings, { id, selectedGroupId }) =>
+    groupsSettings.filter((groupSettings) => {
+      if (id) {
+        return groupSettings.id !== id;
+      }
+
+      if (selectedGroupId) {
+        return groupSettings.selectedGroupId !== selectedGroupId;
+      }
+
+      return true;
+    })
   )
   .on(numberOfPostsChanged, (groupsSettings, { id, numberOfPosts }) =>
     changeGroupSettings(groupsSettings, id, "numberOfPosts", numberOfPosts)

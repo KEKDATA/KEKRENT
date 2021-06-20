@@ -3,12 +3,15 @@ import { Select } from "antd";
 import { $groups } from "../../../../models/groups/model";
 import { useStore } from "effector-react";
 import { css } from "@emotion/css";
-import { groupSettingsEvents } from "../../../../models/group_settings/model";
+import {
+  $selectedGroupsIds,
+  groupSettingsEvents,
+} from "../../../../models/group_settings/model";
 
 const { Option } = Select;
 
 const styles = css`
-  max-width: 250px;
+  width: 100%;
 `;
 
 export const SelectGroup = ({
@@ -19,6 +22,7 @@ export const SelectGroup = ({
   selectedGroupId: string | undefined;
 }) => {
   const groups = useStore($groups);
+  const selectedGroupsIds = useStore($selectedGroupsIds);
 
   const handleChange = (value: string) =>
     groupSettingsEvents.groupIdChanged({ id, selectedGroupId: value });
@@ -29,12 +33,19 @@ export const SelectGroup = ({
       value={selectedGroupId}
       allowClear
       showSearch
-      style={{ width: 250 }}
       placeholder="Select a group"
       onChange={handleChange}
     >
       {groups.map((group) => (
-        <Option value={group.id} key={group.id}>
+        <Option
+          value={group.id}
+          key={group.id}
+          disabled={Boolean(
+            selectedGroupsIds.find(
+              (id) => group.id === id && selectedGroupId !== id
+            )
+          )}
+        >
           <div>
             <div>Name: {group.title}</div>
             <div>Group size: {group.size}</div>

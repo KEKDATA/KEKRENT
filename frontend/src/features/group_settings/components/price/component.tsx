@@ -1,5 +1,5 @@
 import React from "react";
-import { InputNumber } from "antd";
+import { InputNumber, Row } from "antd";
 import { css } from "@emotion/css";
 import { groupSettingsEvents } from "../../../../models/group_settings/model";
 
@@ -9,7 +9,9 @@ const styles = css`
 
 const setupMinMaxPrice = (price?: number) => price?.toString() ?? undefined;
 const formatter = (value?: string) => (value ? `฿ ${value}` : "");
-const parser = (value?: string) => value?.replace(/\$\s?|(฿ ,*)/g, "") ?? "";
+const parser = (value?: string) =>
+  value?.replace(/\$\s?|(฿ ,*)/g, "").replace(/[^0-9.]/g, "") ?? "";
+const normalizeChangedValue = (value: string | number) => Number(value);
 
 export const Price = ({
   id,
@@ -20,16 +22,22 @@ export const Price = ({
   min?: number;
   max?: number;
 }) => {
-  const handleChangeMinPrice = (value: string) =>
-    groupSettingsEvents.minPriceChanged({
-      id,
-      min: +value,
-    });
-  const handleChangeMaxPrice = (value: string) =>
-    groupSettingsEvents.maxPriceChanged({
-      id,
-      max: +value,
-    });
+  const handleChangeMinPrice = (value: string | number) => {
+    if (value) {
+      groupSettingsEvents.minPriceChanged({
+        id,
+        min: normalizeChangedValue(value),
+      });
+    }
+  };
+  const handleChangeMaxPrice = (value: string | number) => {
+    if (value) {
+      groupSettingsEvents.maxPriceChanged({
+        id,
+        max: normalizeChangedValue(value),
+      });
+    }
+  };
 
   const minParser = (value?: string) => {
     const parsedValue = parser(value);
@@ -47,10 +55,10 @@ export const Price = ({
   };
 
   return (
-    <div>
+    <Row wrap={false}>
       <InputNumber
         className={styles}
-        placeholder="Write min price"
+        placeholder="Min price"
         value={setupMinMaxPrice(min)}
         min="0"
         max={setupMinMaxPrice(max)}
@@ -60,13 +68,13 @@ export const Price = ({
       />
       <InputNumber
         className={styles}
-        placeholder="Write max price"
+        placeholder="Max price"
         value={setupMinMaxPrice(max)}
         min={setupMinMaxPrice(min)}
         formatter={formatter}
         parser={maxParser}
         onChange={handleChangeMaxPrice}
       />
-    </div>
+    </Row>
   );
 };

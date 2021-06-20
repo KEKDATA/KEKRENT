@@ -35,8 +35,8 @@ export const SelectGroups = () => {
       {groups.map((group) => (
         <Option key={group.id} value={group.id}>
           <div>{group.title}</div>
-          <div>{group.size}</div>
-          <div>{group.posts}</div>
+          <div>size: {group.size}</div>
+          <div>posts: {group.posts}</div>
         </Option>
       ))}
     </Select>
