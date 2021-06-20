@@ -7,6 +7,9 @@ import { getPredictedPosts } from './lib/predict';
 import { links } from '../../constants/links';
 import { desktopSelectors } from '../../constants/selectors/desktop';
 import { sleep } from '../../lib/timeout/sleep';
+import { getHTML } from '../../lib/dom/get_html';
+import cheerio from 'cheerio';
+import { mobileSelectors } from '../../constants/selectors/mobile';
 
 const isDesktop = true;
 
@@ -50,6 +53,9 @@ export const parseFacebookGroups = async ({
   let numberOfLatestParsedPost = 0;
   let noisyPopupClosed = false;
 
+  let fromIndexPost = 0;
+  let toIndexPost = postsByGroup;
+
   while (Object.keys(totalPosts).length < postsByGroup) {
     noisyPopupClosed = await searchPosts({
       page,
@@ -67,12 +73,21 @@ export const parseFacebookGroups = async ({
       [desktopSelectors.showAllDescription],
     );
 
+    const contentPage = await page.evaluate(getHTML);
+    const root = cheerio.load(contentPage);
+
+    const postSelector = isDesktop
+      ? desktopSelectors.post
+      : mobileSelectors.post;
+    const postNode = root(postSelector);
+
     const posts = await normalizeSearchedPosts({
-      page,
       selectedGroupId,
-      numberOfLatestParsedPost,
-      postsByGroup,
       isDesktop,
+      fromIndexPost,
+      toIndexPost,
+      root,
+      postNode,
     });
 
     const filteredPosts = getFilteredPostsBySettings({
@@ -89,6 +104,9 @@ export const parseFacebookGroups = async ({
     Object.entries(filteredPosts).forEach(([stupidId, post]) => {
       totalPosts[stupidId] = post;
     });
+
+    fromIndexPost = toIndexPost;
+    toIndexPost = postNode.length;
 
     await sleep(300);
   }

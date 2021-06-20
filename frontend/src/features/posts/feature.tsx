@@ -20,7 +20,11 @@ export const Posts = () => {
             {post.address}
           </a>
           <p>{post.price}</p>
-          <p>{post.description}</p>
+          <ul>
+            {post.description.map((partOfDescription) => (
+              <li key={partOfDescription}>{partOfDescription}</li>
+            ))}
+          </ul>
           <a href={post.link} target="_blank" rel="noopener noreferrer">
             OPEN
           </a>

@@ -3,7 +3,7 @@ export interface Post {
   title: string;
   price: string;
   address: string;
-  description: string;
+  description: string[];
   publishDate: string;
   timestamp: number;
   link?: string;

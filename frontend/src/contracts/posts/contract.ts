@@ -14,7 +14,7 @@ const Post = Record({
   title: String,
   price: String,
   address: String,
-  description: String,
+  description: Array(String),
   publishDate: String,
   timestamp: Number,
   link: Optional(String),

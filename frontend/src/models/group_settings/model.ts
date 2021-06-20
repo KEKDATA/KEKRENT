@@ -3,8 +3,8 @@ import { nanoid } from "nanoid";
 
 export interface GroupSettings {
   id: string;
-  selectedGroupId: string | undefined;
-  numberOfPosts: number;
+  selectedGroupId?: string;
+  numberOfPosts: number | null;
   timeStamps: Array<number> | null;
   price: { min?: number; max?: number };
 }
@@ -47,7 +47,7 @@ const changeGroupSettings = (
 const initialGroupSettings = {
   id: nanoid(),
   selectedGroupId: undefined,
-  numberOfPosts: 20,
+  numberOfPosts: null,
   timeStamps: null,
   price: { min: undefined, max: undefined },
 };

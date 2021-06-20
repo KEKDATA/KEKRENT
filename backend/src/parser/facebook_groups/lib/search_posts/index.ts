@@ -38,6 +38,8 @@ export const searchPosts = async ({
     await page.waitForSelector(mobileSelectors.withoutLoader, {
       timeout: 10000,
     });
+  } else {
+    await sleep(300);
   }
 
   return updatedNoisyPopupStatus;

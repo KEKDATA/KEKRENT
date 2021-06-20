@@ -8,7 +8,9 @@ export const getPredictedPosts = async (posts: UniqPosts) => {
     const stupidId = filteredPost[0];
     const post = filteredPost[1];
     const res = await fetch(
-      `http://127.0.0.1:8000/predict_advertisement?text=${post.description}`,
+      `http://127.0.0.1:8000/predict_advertisement?text=${post.description.join(
+        ' ',
+      )}`,
       {
         method: 'POST',
       },

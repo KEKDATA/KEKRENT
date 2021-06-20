@@ -46,11 +46,9 @@ export const SelectGroup = ({
             )
           )}
         >
-          <div>
-            <div>Name: {group.title}</div>
-            <div>Group size: {group.size}</div>
-            <div>Posts per day: {group.posts}</div>
-          </div>
+          <div>Name: {group.title}</div>
+          <div>Group size: {group.size}</div>
+          <div>Posts per day: {group.posts}</div>
         </Option>
       ))}
     </Select>

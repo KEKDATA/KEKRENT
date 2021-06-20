@@ -8,7 +8,7 @@ export const NumberOfPosts = ({
   numberOfPosts,
 }: {
   id: string;
-  numberOfPosts: number;
+  numberOfPosts: number | null;
 }) => {
   const handleChange = (numberOfPosts: number) => {
     groupSettingsEvents.numberOfPostsChanged({ id, numberOfPosts });
@@ -18,8 +18,8 @@ export const NumberOfPosts = ({
     <Row>
       <InputNumber
         style={{ width: "100%" }}
-        placeholder="Number of posts"
-        value={numberOfPosts}
+        placeholder="Number of posts (default: 20)"
+        value={numberOfPosts || undefined}
         min={1}
         max={110}
         onChange={handleChange}
