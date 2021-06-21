@@ -63,12 +63,23 @@ export const normalizeSearchedPosts = async ({
       isDesktop,
     });
 
-    const price = getText({
+    let price = '';
+    const priceContent = findNode({
       mobileSelector: mobileSelectors.price,
       desktopSelector: desktopSelectors.price,
       node: postNode,
       isDesktop,
-    });
+    }).contents()[0]?.data;
+    if (isDesktop && priceContent) {
+      price = priceContent;
+    } else {
+      price = getText({
+        mobileSelector: mobileSelectors.price,
+        desktopSelector: desktopSelectors.price,
+        node: postNode,
+        isDesktop,
+      });
+    }
 
     const address = getText({
       mobileSelector: mobileSelectors.address,

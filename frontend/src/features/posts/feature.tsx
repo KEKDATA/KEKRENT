@@ -1,41 +1,23 @@
-import React from "react";
-import { useStore } from "effector-react";
+import React from 'react';
+import { useStore } from 'effector-react';
 
-import { $posts } from "../../models/posts/model";
+import { $posts } from 'models/posts/model';
+import { css } from '@emotion/css';
+import { Post } from './components/post/component';
+
+const listStyle = css`
+  list-style: none;
+  padding: 0;
+  margin: 0 20px;
+`;
 
 export const Posts = () => {
   const posts = useStore($posts);
 
   return (
-    <ul>
+    <ul className={listStyle}>
       {posts.map((post) => (
-        <li key={post.id}>
-          <h1>{post.title}</h1>
-          <span>{post.publishDate}</span>
-          <a
-            href={`https://www.google.ru/maps/place/${post.address}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {post.address}
-          </a>
-          <p>{post.price}</p>
-          <ul>
-            {post.description.map((partOfDescription) => (
-              <li key={partOfDescription}>{partOfDescription}</li>
-            ))}
-          </ul>
-          <a href={post.link} target="_blank" rel="noopener noreferrer">
-            OPEN
-          </a>
-          <div>
-            {post.photos.map((photo) => (
-              <div key={photo}>
-                <img loading="lazy" src={photo} alt="some photo" />
-              </div>
-            ))}
-          </div>
-        </li>
+        <Post post={post} />
       ))}
     </ul>
   );

@@ -40,6 +40,7 @@ export const searchPosts = async ({
     });
   } else {
     await sleep(300);
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   }
 
   return updatedNoisyPopupStatus;

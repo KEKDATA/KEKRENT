@@ -4,10 +4,10 @@ import {
   createStore,
   forward,
   guard,
-} from "effector-root";
-import { partPostsApi, postsApi } from "../../api/posts";
-import { PostsContract, PostsType } from "../../contracts/posts/contract";
-import { PartPosts, Posts } from "../../../typings/posts";
+} from 'effector-root';
+import { partPostsApi, postsApi } from '../../api/posts';
+import { PostsContract, PostsType } from '../../contracts/posts/contract';
+import { PartPosts, Posts } from '../../typings/posts';
 
 export const getPostsFx = createEffect<Posts, PostsType>(postsApi);
 
