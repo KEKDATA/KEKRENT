@@ -11,13 +11,13 @@ import { NumberOfPosts } from '../number_of_posts/component';
 import { Button, Typography, Row, Col, Space, Divider } from 'antd';
 import React from 'react';
 
-const groupsStyles = css`
+const groupsStyle = css`
   display: flex;
   flex-direction: column;
   max-width: 100%;
 `;
 
-const deleteStyles = css`
+const deleteStyle = css`
   width: 100%;
   margin-top: 10px;
 `;
@@ -36,7 +36,7 @@ export const Groups = () => {
           <>
             <Space
               direction="vertical"
-              className={groupsStyles}
+              className={groupsStyle}
               key={id}
               size={12}
             >
@@ -51,7 +51,7 @@ export const Groups = () => {
                 </Col>
               </Row>
               <Button
-                className={deleteStyles}
+                className={deleteStyle}
                 type="primary"
                 danger
                 shape="round"

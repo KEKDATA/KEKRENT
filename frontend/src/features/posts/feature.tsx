@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { useStore } from 'effector-react';
 
 import { $posts } from 'models/posts/model';
 import { css } from '@emotion/css';
 import { Post } from './components/post/component';
+import { Divider } from 'antd';
 
 const listStyle = css`
   list-style: none;
@@ -17,7 +18,10 @@ export const Posts = () => {
   return (
     <ul className={listStyle}>
       {posts.map((post) => (
-        <Post post={post} />
+        <Fragment key={post.id}>
+          <Post post={post} />
+          <Divider />
+        </Fragment>
       ))}
     </ul>
   );

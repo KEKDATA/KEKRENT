@@ -1,14 +1,14 @@
-import React from "react";
-import { Select } from "antd";
-import { useStore } from "effector-react";
-import { $groups } from "../../../../models/groups/model";
+import React from 'react';
+import { Select } from 'antd';
+import { useStore } from 'effector-react';
+import { $groups } from '../../../../models/groups/model';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
-} from "../../../../models/group_settings/model";
-import { css } from "@emotion/css";
+} from '../../../../models/group_settings/model';
+import { css } from '@emotion/css';
 
-const styles = css`
+const style = css`
   width: 100%;
 `;
 
@@ -28,7 +28,7 @@ export const SelectGroups = () => {
       mode="multiple"
       placeholder="Please select"
       value={selectedGroupsIds}
-      className={styles}
+      className={style}
       onSelect={handleAddGroup}
       onDeselect={handleRemoveGroup}
     >

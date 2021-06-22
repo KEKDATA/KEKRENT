@@ -1,16 +1,16 @@
-import React from "react";
-import { Select } from "antd";
-import { $groups } from "../../../../models/groups/model";
-import { useStore } from "effector-react";
-import { css } from "@emotion/css";
+import React from 'react';
+import { Select } from 'antd';
+import { $groups } from '../../../../models/groups/model';
+import { useStore } from 'effector-react';
+import { css } from '@emotion/css';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
-} from "../../../../models/group_settings/model";
+} from '../../../../models/group_settings/model';
 
 const { Option } = Select;
 
-const styles = css`
+const style = css`
   width: 100%;
 `;
 
@@ -29,7 +29,7 @@ export const SelectGroup = ({
 
   return (
     <Select
-      className={styles}
+      className={style}
       value={selectedGroupId}
       allowClear
       showSearch
@@ -42,8 +42,8 @@ export const SelectGroup = ({
           key={group.id}
           disabled={Boolean(
             selectedGroupsIds.find(
-              (id) => group.id === id && selectedGroupId !== id
-            )
+              (id) => group.id === id && selectedGroupId !== id,
+            ),
           )}
         >
           <div>Name: {group.title}</div>

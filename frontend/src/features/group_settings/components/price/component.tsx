@@ -1,16 +1,16 @@
-import React from "react";
-import { InputNumber, Row } from "antd";
-import { css } from "@emotion/css";
-import { groupSettingsEvents } from "../../../../models/group_settings/model";
+import React from 'react';
+import { InputNumber, Row } from 'antd';
+import { css } from '@emotion/css';
+import { groupSettingsEvents } from '../../../../models/group_settings/model';
 
-const styles = css`
+const style = css`
   width: 125px !important;
 `;
 
 const setupMinMaxPrice = (price?: number) => price?.toString() ?? undefined;
-const formatter = (value?: string) => (value ? `฿ ${value}` : "");
+const formatter = (value?: string) => (value ? `฿ ${value}` : '');
 const parser = (value?: string) =>
-  value?.replace(/\$\s?|(฿ ,*)/g, "").replace(/[^0-9.]/g, "") ?? "";
+  value?.replace(/\$\s?|(฿ ,*)/g, '').replace(/[^0-9.]/g, '') ?? '';
 const normalizeChangedValue = (value: string | number) => Number(value);
 
 export const Price = ({
@@ -57,7 +57,7 @@ export const Price = ({
   return (
     <Row wrap={false}>
       <InputNumber
-        className={styles}
+        className={style}
         placeholder="Min price"
         value={setupMinMaxPrice(min)}
         min="0"
@@ -67,7 +67,7 @@ export const Price = ({
         onChange={handleChangeMinPrice}
       />
       <InputNumber
-        className={styles}
+        className={style}
         placeholder="Max price"
         value={setupMinMaxPrice(max)}
         min={setupMinMaxPrice(min)}

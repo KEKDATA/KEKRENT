@@ -16,7 +16,6 @@ export const facebookSavePostsRoute = () => {
         minPrice,
       } = request.query || {};
       const cacheKey = [
-        id,
         selectedGroupId,
         numberOfPosts,
         timeStamps,
