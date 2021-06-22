@@ -1,11 +1,10 @@
-import { Button, Card, Modal } from 'antd';
-import React, { useState } from 'react';
+import { Button, Card, Image } from 'antd';
+import React from 'react';
 import { css } from '@emotion/css';
 import { Typography } from 'antd';
-// @ts-ignore
-import ImageGallery from 'react-image-gallery';
 
 import { PostType } from 'contracts/posts/contract';
+import { Description } from '../description/component';
 
 const postStyle = css`
   background-color: white;
@@ -14,8 +13,8 @@ const postStyle = css`
 `;
 
 const imageStyle = css`
-  width: 300px;
-  height: 200px;
+  width: 300px !important;
+  height: 200px !important;
 `;
 
 const imageContainerStyle = css`
@@ -26,11 +25,6 @@ const imagesStyle = css`
   display: flex;
   flex-direction: row;
   overflow-y: auto;
-`;
-
-const listStyle = css`
-  padding: 0;
-  margin: 4px 0;
 `;
 
 const openPostStyle = css`
@@ -60,31 +54,9 @@ const postTitleStyle = css`
   }
 `;
 
-const modalStyle = css`
-  .ant-modal-close {
-    right: -15px;
-    top: -15px;
-  }
-`;
-
 const { Title, Link } = Typography;
 
 export const Post = ({ post }: { post: PostType }) => {
-  const [isGalleryVisible, setGalleryVisibleStatus] = useState(false);
-
-  const showModal = () => {
-    setGalleryVisibleStatus(true);
-  };
-
-  const handleCancel = () => {
-    setGalleryVisibleStatus(false);
-  };
-
-  const normalizedPhotos = post.photos.map((photo) => ({
-    original: photo,
-    thumbnail: photo,
-  }));
-
   return (
     <>
       <Card
@@ -121,25 +93,23 @@ export const Post = ({ post }: { post: PostType }) => {
         >
           Open post
         </Button>
-        <Title level={5}>
-          <Link
-            href={`https://www.google.ru/maps/place/${post.address}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Location: {post.address}
-          </Link>
-        </Title>
+        {post.address && (
+          <Title level={5}>
+            <Link
+              href={`https://www.google.ru/maps/place/${post.address}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Location: {post.address}
+            </Link>
+          </Title>
+        )}
         <Title level={5}>{post.price}</Title>
-        <div className={listStyle}>
-          {post.description.map((partOfDescription) => (
-            <Typography key={partOfDescription}>{partOfDescription}</Typography>
-          ))}
-        </div>
-        <div className={imagesStyle} onClick={showModal}>
+        <Description description={post.description} />
+        <div className={imagesStyle}>
           {post.photos.map((photo) => (
             <div key={photo} className={imageContainerStyle}>
-              <img
+              <Image
                 className={imageStyle}
                 loading="lazy"
                 src={photo}
@@ -149,15 +119,6 @@ export const Post = ({ post }: { post: PostType }) => {
           ))}
         </div>
       </Card>
-      <Modal
-        className={modalStyle}
-        visible={isGalleryVisible}
-        onCancel={handleCancel}
-        closable
-        footer={null}
-      >
-        <ImageGallery items={normalizedPhotos} />
-      </Modal>
     </>
   );
 };

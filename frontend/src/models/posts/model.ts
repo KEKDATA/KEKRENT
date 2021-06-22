@@ -21,6 +21,9 @@ export const postsCleared = createEvent();
 export const $posts = createStore<PostsType>([])
   .on(postsReceived, (prevPosts, posts) => [...prevPosts, ...posts])
   .reset(postsCleared);
+export const $somePartOfPostsLoaded = createStore(false)
+  .on(postsReceived, () => true)
+  .reset(postsCleared);
 
 forward({
   from: getPostsFx,

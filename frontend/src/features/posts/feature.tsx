@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
 import { useStore } from 'effector-react';
 
-import { $posts } from 'models/posts/model';
+import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
 import { css } from '@emotion/css';
 import { Post } from './components/post/component';
-import { Divider } from 'antd';
+import { Divider, Row, Spin } from 'antd';
 
 const listStyle = css`
   list-style: none;
@@ -14,9 +14,16 @@ const listStyle = css`
 
 export const Posts = () => {
   const posts = useStore($posts);
+  const isLoading = useStore(getPostsFx.pending);
+  const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
 
   return (
     <ul className={listStyle}>
+      {isLoading && !somePartOfPostsLoaded && (
+        <Row justify="center">
+          <Spin size="large" tip="Loading" />
+        </Row>
+      )}
       {posts.map((post) => (
         <Fragment key={post.id}>
           <Post post={post} />
