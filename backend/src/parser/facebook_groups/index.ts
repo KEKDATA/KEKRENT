@@ -4,7 +4,7 @@ import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
 import { UniqPosts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
-import { links } from '../../constants/links';
+import { facebookLinks } from '../../constants/links/facebook';
 import { desktopSelectors } from '../../constants/selectors/desktop';
 import { sleep } from '../../lib/timeout/sleep';
 import { getHTML } from '../../lib/dom/get_html';
@@ -45,7 +45,7 @@ export const parseFacebookGroups = async ({
 
   const page = await context.newPage();
 
-  const url = isDesktop ? links.facebookDesktop : links.facebookMobile;
+  const url = isDesktop ? facebookLinks.desktop : facebookLinks.mobile;
 
   await page.goto(`${url}/groups/${selectedGroupId}`);
 

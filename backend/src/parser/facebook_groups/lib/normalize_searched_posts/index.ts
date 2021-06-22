@@ -3,7 +3,7 @@ import cheerio from 'cheerio';
 import { mobileSelectors } from '../../../../constants/selectors/mobile';
 import { nanoid } from 'nanoid';
 import { desktopSelectors } from '../../../../constants/selectors/desktop';
-import { links } from '../../../../constants/links';
+import { facebookLinks } from '../../../../constants/links/facebook';
 import Root = cheerio.Root;
 import Cheerio = cheerio.Cheerio;
 
@@ -163,7 +163,7 @@ export const normalizeSearchedPosts = async ({
 
     photosContainer.children().each((_, photoContainer) => {
       if (!link && isDesktop) {
-        link = `${links.facebookDesktop}${root(photoContainer)
+        link = `${facebookLinks.desktop}${root(photoContainer)
           .find('a')
           .attr('href')}`;
       }
@@ -177,7 +177,7 @@ export const normalizeSearchedPosts = async ({
 
     if (photosContainerSecondVariant && photos.length === 0) {
       if (isDesktop) {
-        link = `${links.facebookDesktop}${photosContainerSecondVariant.attr(
+        link = `${facebookLinks.desktop}${photosContainerSecondVariant.attr(
           'href',
         )}`;
         const src = photosContainerSecondVariant.find('img').attr('src');
