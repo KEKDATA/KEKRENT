@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium, devices } from 'playwright';
 import { searchPosts } from './lib/search_posts';
 import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
@@ -28,7 +28,9 @@ export const parseFacebookGroups = async ({
 }) => {
   const browser = await chromium.launch({ headless: true });
 
-  const context = await browser.newContext();
+  const context = await browser.newContext(
+    isDesktop ? undefined : devices['iPhone X'],
+  );
 
   await context.addCookies([
     {
@@ -65,13 +67,15 @@ export const parseFacebookGroups = async ({
 
     await sleep(100);
 
-    await page.evaluate(
-      ([selector]) =>
-        document
-          .querySelectorAll(selector)
-          .forEach((node: HTMLButtonElement) => node?.click()),
-      [desktopSelectors.showAllDescription],
-    );
+    if (isDesktop) {
+      await page.evaluate(
+        ([selector]) =>
+          document
+            .querySelectorAll(selector)
+            .forEach((node: HTMLButtonElement) => node?.click()),
+        [desktopSelectors.showAllDescription],
+      );
+    }
 
     const contentPage = await page.evaluate(getHTML);
     const root = cheerio.load(contentPage);

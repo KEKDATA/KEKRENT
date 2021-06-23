@@ -2,32 +2,16 @@ import * as React from 'react';
 import { Layout, Row, Space, Typography, BackTop } from 'antd';
 import { css } from '@emotion/css';
 
-import { Pages } from './pages';
+import { Pages } from 'pages';
+import { BackToTop } from 'ui/back_to_top/ui';
 
 import './application.css';
-import { UpOutlined } from '@ant-design/icons';
 
 const { Header, Footer, Content } = Layout;
 const { Title } = Typography;
 
 const style = css`
   height: 100%;
-`;
-
-const backTopButtonStyle = css`
-  height: 30px;
-  width: 30px;
-  line-height: 30px;
-  border-radius: 4px;
-  background-color: #1088e9;
-  color: #fff;
-  text-align: center;
-  font-size: 14px;
-`;
-
-const backTopStyle = css`
-  right: 20px !important;
-  bottom: 20px !important;
 `;
 
 export const Application = () => (
@@ -43,10 +27,6 @@ export const Application = () => (
       </Space>
     </Content>
     <Footer />
-    <BackTop className={backTopStyle}>
-      <div className={backTopButtonStyle}>
-        <UpOutlined />
-      </div>
-    </BackTop>
+    <BackToTop />
   </Layout>
 );

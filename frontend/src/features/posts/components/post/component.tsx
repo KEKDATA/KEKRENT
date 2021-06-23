@@ -47,7 +47,7 @@ const openPostStyle = css`
 `;
 
 const postTitleStyle = css`
-  white-space: break-spaces;
+  white-space: initial;
 
   @media screen and (max-width: 720px) {
     font-size: 22px !important;
@@ -63,7 +63,7 @@ export const Post = ({ post }: { post: PostType }) => {
         hoverable
         className={postStyle}
         title={
-          <Title className={postTitleStyle} level={2}>
+          <Title className={postTitleStyle} level={3}>
             {post.title}
           </Title>
         }
