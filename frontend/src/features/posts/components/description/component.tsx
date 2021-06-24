@@ -22,15 +22,23 @@ export const Description = ({ description }: { description: string[] }) => {
     () => (
       <div className={listStyle}>
         {description.map((partOfDescription, index) => {
-          // const aboutSearchedNumber = findPhoneNumbersInText(partOfDescription);
-          // console.log(findPhoneNumbersInText(partOfDescription));
+          const aboutSearchedNumber = findPhoneNumbersInText(partOfDescription);
+          let normalizedPartOfDescription = partOfDescription;
+
+          aboutSearchedNumber.forEach((searchedNumber) => {
+            const phoneNumber = searchedNumber.number.number.toString();
+            normalizedPartOfDescription = normalizedPartOfDescription.replace(
+              phoneNumber,
+              `<a href="tel:${phoneNumber}">${phoneNumber}</a>`,
+            );
+          });
+
           return (
             <span
               key={`${partOfDescription}${index}`}
               className={descriptionStyle}
-            >
-              {partOfDescription}
-            </span>
+              dangerouslySetInnerHTML={{ __html: normalizedPartOfDescription }}
+            />
           );
         })}
       </div>
