@@ -23,7 +23,7 @@ export const Description = ({ description }: { description: string[] }) => {
       <div className={listStyle}>
         {description.map((partOfDescription, index) => {
           // const aboutSearchedNumber = findPhoneNumbersInText(partOfDescription);
-          console.log(findPhoneNumbersInText(partOfDescription));
+          // console.log(findPhoneNumbersInText(partOfDescription));
           return (
             <span
               key={`${partOfDescription}${index}`}

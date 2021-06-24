@@ -21,9 +21,10 @@ export const getFilteredPostsBySettings = ({
     const post = normalizedPosts[i];
     const stupidId = post[0];
     const bodyOfPost = post[1];
-    const isDescription = bodyOfPost.description.length > 0;
+    const isContentExist =
+      bodyOfPost.description.length > 0 || bodyOfPost.title.length > 0;
 
-    if (!isDescription) {
+    if (!isContentExist) {
       break;
     }
 

@@ -6,10 +6,10 @@ import { UniqPosts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
 import { facebookLinks } from '../../constants/links/facebook';
 import { desktopSelectors } from '../../constants/selectors/desktop';
-import { sleep } from '../../lib/timeout/sleep';
-import { getHTML } from '../../lib/dom/get_html';
 import cheerio from 'cheerio';
-import { mobileSelectors } from '../../constants/selectors/mobile';
+import Cheerio = cheerio.Cheerio;
+import Root = cheerio.Root;
+import { generatePostNode } from './lib/generate_post_node';
 
 const isDesktop = true;
 
@@ -59,31 +59,52 @@ export const parseFacebookGroups = async ({
   let toIndexPost = postsByGroup;
 
   while (Object.keys(totalPosts).length < postsByGroup) {
-    noisyPopupClosed = await searchPosts({
-      page,
-      noisyPopupClosed,
-      isDesktop,
-    });
+    let counter = 1;
+    let searchedPostsLength = 0;
+    let postNode: null | Cheerio = null;
+    let root: null | Root = null;
 
-    await sleep(100);
+    const calculatedPartByTotalPosts = Object.keys(totalPosts).length / 10 || 1;
+
+    while (searchedPostsLength < postsByGroup) {
+      if (counter >= 10) {
+        break;
+      }
+
+      noisyPopupClosed = await searchPosts({
+        page,
+        noisyPopupClosed,
+        isDesktop,
+        postsByGroup:
+          postsByGroup / counter / Math.ceil(calculatedPartByTotalPosts),
+      });
+
+      const generatedNode = await generatePostNode(page, isDesktop);
+
+      root = generatedNode.root;
+      postNode = generatedNode.postNode;
+
+      searchedPostsLength = postNode.length;
+
+      counter++;
+    }
 
     if (isDesktop) {
       await page.evaluate(
         ([selector]) =>
           document
             .querySelectorAll(selector)
-            .forEach((node: HTMLButtonElement) => node?.click()),
+            .forEach((node: HTMLButtonElement) => node?.click && node.click()),
         [desktopSelectors.showAllDescription],
       );
     }
 
-    const contentPage = await page.evaluate(getHTML);
-    const root = cheerio.load(contentPage);
+    if (!root || !postNode) {
+      const generatedNode = await generatePostNode(page, isDesktop);
 
-    const postSelector = isDesktop
-      ? desktopSelectors.post
-      : mobileSelectors.post;
-    const postNode = root(postSelector);
+      root = generatedNode.root;
+      postNode = generatedNode.postNode;
+    }
 
     const posts = await normalizeSearchedPosts({
       selectedGroupId,
@@ -111,8 +132,6 @@ export const parseFacebookGroups = async ({
 
     fromIndexPost = toIndexPost;
     toIndexPost = postNode.length;
-
-    await sleep(300);
   }
 
   await browser.close();

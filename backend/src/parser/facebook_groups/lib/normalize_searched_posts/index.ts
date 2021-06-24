@@ -202,7 +202,8 @@ export const normalizeSearchedPosts = async ({
     if (linkedDescription) {
       resultedDescription.push(linkedDescription);
     }
-    const stupidId = `${resultedDescription.join('').slice(0, 50)}`;
+    const stupidId =
+      link || `${title}${price}${resultedDescription.join('').slice(0, 50)}`;
 
     posts[stupidId] = {
       id: nanoid(10),
