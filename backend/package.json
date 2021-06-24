@@ -8,7 +8,7 @@
   },
   "scripts": {
     "parser": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "generate_to_csv": "ts-node-dev --respawn --transpile-only src/generate_to_csv.ts",
+    "generate_to_csv": "ts-node-dev --respawn --transpile-only src/generate_csv/index.ts",
     "tsc": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "fix-code": "prettier --write 'src/**/*.ts'",
