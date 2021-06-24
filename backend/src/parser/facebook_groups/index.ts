@@ -87,16 +87,18 @@ export const parseFacebookGroups = async ({
       searchedPostsLength = postNode.length;
 
       counter++;
-    }
 
-    if (isDesktop) {
-      await page.evaluate(
-        ([selector]) =>
-          document
-            .querySelectorAll(selector)
-            .forEach((node: HTMLButtonElement) => node?.click && node.click()),
-        [desktopSelectors.showAllDescription],
-      );
+      if (isDesktop) {
+        await page.evaluate(
+          ([selector]) =>
+            document
+              .querySelectorAll(selector)
+              .forEach(
+                (node: HTMLButtonElement) => node?.click && node.click(),
+              ),
+          [desktopSelectors.showAllDescription],
+        );
+      }
     }
 
     if (!root || !postNode) {

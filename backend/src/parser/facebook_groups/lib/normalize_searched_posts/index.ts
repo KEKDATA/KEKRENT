@@ -6,6 +6,7 @@ import { desktopSelectors } from '../../../../constants/selectors/desktop';
 import { facebookLinks } from '../../../../constants/links/facebook';
 import Root = cheerio.Root;
 import Cheerio = cheerio.Cheerio;
+import { parsePostDate } from '../parse_post_date';
 
 interface ParseNodeParams {
   desktopSelector: string;
@@ -145,20 +146,6 @@ export const normalizeSearchedPosts = async ({
       }),
     );
 
-    let timestamp = new Date().getTime();
-    let publishDate = '';
-
-    if (!isDesktop) {
-      const dataFt = postNode.attr('data-ft');
-      const parsedDataFt = JSON.parse(dataFt as string);
-      const publishTime =
-        parsedDataFt?.page_insights[selectedGroupId]?.post_context
-          ?.publish_time;
-      const date = publishTime ? new Date(publishTime * 1000) : null;
-      timestamp = date?.getTime() ?? timestamp;
-      publishDate = date?.toLocaleDateString('en-US') ?? someTimesAgo.text();
-    }
-
     const photos: string[] = [];
 
     photosContainer.children().each((_, photoContainer) => {
@@ -196,6 +183,34 @@ export const normalizeSearchedPosts = async ({
           }
         });
       }
+    }
+
+    let timestamp = new Date().getTime();
+    let publishDate = '';
+
+    if (isDesktop) {
+      const timeNode = postNode.find(
+        getSelectedSelector({
+          mobileSelector: '',
+          desktopSelector: desktopSelectors.date,
+          isDesktop,
+        }),
+      );
+
+      const timeDate = parsePostDate(timeNode, root);
+
+      timestamp = timeDate.getTime();
+      publishDate =
+        timeDate?.toLocaleDateString('en-US') ?? someTimesAgo.text();
+    } else {
+      const dataFt = postNode.attr('data-ft');
+      const parsedDataFt = JSON.parse(dataFt as string);
+      const publishTime =
+        parsedDataFt?.page_insights[selectedGroupId]?.post_context
+          ?.publish_time;
+      const date = publishTime ? new Date(publishTime * 1000) : null;
+      timestamp = date?.getTime() ?? timestamp;
+      publishDate = date?.toLocaleDateString('en-US') ?? someTimesAgo.text();
     }
 
     const resultedDescription = descriptions;

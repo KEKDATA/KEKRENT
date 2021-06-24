@@ -3,8 +3,8 @@ import { useStore } from 'effector-react';
 
 import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
 import { css } from '@emotion/css';
-import { Post } from './components/post/component';
 import { Divider, Row, Spin } from 'antd';
+import { Post } from './components/post/component';
 
 const listStyle = css`
   list-style: none;

@@ -18,8 +18,10 @@ const postsReceived = guard(getPostsFx.doneData, {
 });
 
 export const postsCleared = createEvent();
+export const postsUpdated = createEvent<PostsType>();
 export const $posts = createStore<PostsType>([])
   .on(postsReceived, (prevPosts, posts) => [...prevPosts, ...posts])
+  .on(postsUpdated, (_, posts) => posts)
   .reset(postsCleared);
 export const $somePartOfPostsLoaded = createStore(false)
   .on(postsReceived, () => true)
