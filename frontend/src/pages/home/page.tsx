@@ -14,8 +14,8 @@ export const HomePage = () => {
   return (
     <>
       <GroupSettings />
-      <PostsFilters />
       <Divider />
+      <PostsFilters />
       <Posts />
     </>
   );
