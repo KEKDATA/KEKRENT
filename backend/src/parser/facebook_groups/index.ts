@@ -12,6 +12,10 @@ import Root = cheerio.Root;
 import { generatePostNode } from './lib/generate_post_node';
 import { sleep } from '../../lib/timeout/sleep';
 import { privatePass, privatePhone } from '../../../private/data';
+import { updateUsersCookies } from './lib/update_users_cookies';
+import { nodeCache } from '../../config';
+import { CacheKeys } from '../../constants/cache_keys';
+import { CachedCookies, Cookies } from '../../types/cookies';
 
 const isDesktop = true;
 const isAuth = true;
@@ -30,14 +34,14 @@ export const parseFacebookGroups = async ({
   maxPrice?: string;
 }) => {
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
   });
 
   const context = await browser.newContext(
     isDesktop ? undefined : devices['iPhone X'],
   );
 
-  await context.addCookies([
+  const cookiesForUpload: Array<Cookies> = [
     {
       name: 'locale',
       value: 'en_GB',
@@ -48,7 +52,20 @@ export const parseFacebookGroups = async ({
       secure: true,
       sameSite: 'None',
     },
-  ]);
+  ];
+
+  if (isAuth) {
+    const authCookies: CachedCookies = nodeCache.get(CacheKeys.Cookies) || {};
+
+    const cookiesKey = `${privatePhone}${privatePass}`;
+    const savedUserCookies = authCookies[cookiesKey];
+
+    if (savedUserCookies) {
+      cookiesForUpload.push(...savedUserCookies);
+    }
+  }
+
+  await context.addCookies(cookiesForUpload);
 
   const page = await context.newPage();
 
@@ -57,14 +74,18 @@ export const parseFacebookGroups = async ({
   await page.goto(`${url}/groups/${selectedGroupId}`);
 
   if (isAuth) {
-    await page.fill('input[name="email"]', privatePhone);
-    await page.fill('input[name="pass"]', privatePass);
+    const authBar = await page.$(desktopSelectors.authBar);
 
-    if (isDesktop) {
-      await page.click(desktopSelectors.loginButton);
+    if (!authBar) {
+      await page.fill('input[name="email"]', privatePhone);
+      await page.fill('input[name="pass"]', privatePass);
+
+      if (isDesktop) {
+        await page.click(desktopSelectors.loginButton);
+      }
+
+      await sleep(1000);
     }
-
-    await sleep(1000);
   }
 
   const totalPosts: UniqPosts = {};
@@ -151,7 +172,9 @@ export const parseFacebookGroups = async ({
     toIndexPost = postNode.length;
   }
 
-  const cookies = await context.cookies();
+  if (isAuth) {
+    await updateUsersCookies(context);
+  }
 
   await browser.close();
 

@@ -7,14 +7,8 @@ export const facebookSavePostsRoute = () => {
     Querystring: PostsSettings;
   }>('/posts', async request => {
     try {
-      const {
-        id,
-        selectedGroupId,
-        numberOfPosts,
-        timeStamps,
-        maxPrice,
-        minPrice,
-      } = request.query || {};
+      const { selectedGroupId, numberOfPosts, timeStamps, maxPrice, minPrice } =
+        request.query || {};
       const cacheKey = [
         selectedGroupId,
         numberOfPosts,
@@ -25,6 +19,7 @@ export const facebookSavePostsRoute = () => {
         .filter(Boolean)
         .join(',');
       const cachedPosts: Posts | undefined = nodeCache.get(cacheKey);
+
       const postsByGroup = Number(numberOfPosts);
 
       if (cachedPosts) {
