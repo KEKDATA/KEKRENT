@@ -44,6 +44,7 @@ export const normalizeSearchedPosts = async ({
   toIndexPost,
   root,
   postNode,
+  isAuth,
 }: {
   selectedGroupId: number | string;
   isDesktop: boolean;
@@ -51,6 +52,7 @@ export const normalizeSearchedPosts = async ({
   toIndexPost: number;
   root: Root;
   postNode: Cheerio;
+  isAuth: boolean;
 }) => {
   let posts: UniqPosts = {};
 
@@ -64,34 +66,50 @@ export const normalizeSearchedPosts = async ({
       isDesktop,
     });
 
+    let address = '';
     let price = '';
-    const priceContent = findNode({
-      mobileSelector: mobileSelectors.price,
-      desktopSelector: desktopSelectors.price,
-      node: postNode,
-      isDesktop,
-    }).contents()[0]?.data;
-    if (isDesktop && priceContent) {
-      price = priceContent;
+
+    if (isAuth) {
+      const priceContent = findNode({
+        mobileSelector: mobileSelectors.price,
+        desktopSelector: desktopSelectors.priceAuth,
+        node: postNode,
+        isDesktop,
+      }).contents();
+
+      price = priceContent[0]?.data ?? '';
+      address = priceContent[2]?.data ?? '';
     } else {
-      price = getText({
+      address = getText({
+        mobileSelector: mobileSelectors.address,
+        desktopSelector: desktopSelectors.address,
+        node: postNode,
+        isDesktop,
+      });
+
+      const priceContent = findNode({
         mobileSelector: mobileSelectors.price,
         desktopSelector: desktopSelectors.price,
         node: postNode,
         isDesktop,
-      });
+      }).contents()[0]?.data;
+      if (isDesktop && priceContent) {
+        price = priceContent;
+      } else {
+        price = getText({
+          mobileSelector: mobileSelectors.price,
+          desktopSelector: desktopSelectors.price,
+          node: postNode,
+          isDesktop,
+        });
+      }
     }
-
-    const address = getText({
-      mobileSelector: mobileSelectors.address,
-      desktopSelector: desktopSelectors.address,
-      node: postNode,
-      isDesktop,
-    });
 
     const descriptionNode = findNode({
       mobileSelector: mobileSelectors.description,
-      desktopSelector: desktopSelectors.description,
+      desktopSelector: isAuth
+        ? desktopSelectors.descriptionAuth
+        : desktopSelectors.description,
       node: postNode,
       isDesktop,
     });
@@ -100,19 +118,27 @@ export const normalizeSearchedPosts = async ({
 
     if (isDesktop) {
       descriptionNode.children().each((_, node) => {
-        const nodeHtml = root(node).html();
-        if (nodeHtml) {
-          nodeHtml.split('<br>').forEach(partOfHtml => {
-            const isHTML = /^/.test(partOfHtml);
+        const partOfDescription = root(node).children();
 
-            let result = partOfHtml;
+        partOfDescription.each((_, partOfDescriptionElement) => {
+          descriptions.push(root(partOfDescriptionElement).text());
+        });
 
-            if (isHTML) {
-              result = root(cheerio.parseHTML(partOfHtml)).text();
-            }
+        if (partOfDescription.length === 0) {
+          const nodeHtml = root(node).html();
+          if (nodeHtml) {
+            nodeHtml.split('<br>').forEach(partOfHtml => {
+              const isHTML = /^/.test(partOfHtml);
 
-            descriptions.push(result);
-          });
+              let result = partOfHtml;
+
+              if (isHTML) {
+                result = root(cheerio.parseHTML(partOfHtml)).text();
+              }
+
+              descriptions.push(result);
+            });
+          }
         }
       });
     }
@@ -132,16 +158,10 @@ export const normalizeSearchedPosts = async ({
 
     const photosContainer = postNode.find(
       getSelectedSelector({
-        desktopSelector: desktopSelectors.photos,
+        desktopSelector: isAuth
+          ? desktopSelectors.photosAuth
+          : desktopSelectors.photos,
         mobileSelector: mobileSelectors.photosContainer,
-        isDesktop,
-      }),
-    );
-
-    const photosContainerSecondVariant = postNode.find(
-      getSelectedSelector({
-        desktopSelector: desktopSelectors.photosSecondVariant,
-        mobileSelector: mobileSelectors.photosContainerSecondVariant,
         isDesktop,
       }),
     );
@@ -162,6 +182,13 @@ export const normalizeSearchedPosts = async ({
       }
     });
 
+    const photosContainerSecondVariant = postNode.find(
+      getSelectedSelector({
+        desktopSelector: desktopSelectors.photosSecondVariant,
+        mobileSelector: mobileSelectors.photosContainerSecondVariant,
+        isDesktop,
+      }),
+    );
     if (photosContainerSecondVariant && photos.length === 0) {
       if (isDesktop) {
         link = `${facebookLinks.desktop}${photosContainerSecondVariant.attr(

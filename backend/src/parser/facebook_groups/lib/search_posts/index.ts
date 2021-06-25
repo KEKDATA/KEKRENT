@@ -19,7 +19,7 @@ export const searchPosts = async ({
   let updatedNoisyPopupStatus = noisyPopupClosed;
 
   for await (const num of asyncGenerator(postsByGroup / postsPerCycle)) {
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.evaluate(() => window.scrollTo(0, document.body?.scrollHeight));
 
     if (!isDesktop) {
       await sleep(100);

@@ -10,8 +10,11 @@ import cheerio from 'cheerio';
 import Cheerio = cheerio.Cheerio;
 import Root = cheerio.Root;
 import { generatePostNode } from './lib/generate_post_node';
+import { sleep } from '../../lib/timeout/sleep';
+import { privatePass, privatePhone } from '../../../private/data';
 
 const isDesktop = true;
+const isAuth = true;
 
 export const parseFacebookGroups = async ({
   selectedGroupId,
@@ -26,7 +29,9 @@ export const parseFacebookGroups = async ({
   minPrice?: string;
   maxPrice?: string;
 }) => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: false,
+  });
 
   const context = await browser.newContext(
     isDesktop ? undefined : devices['iPhone X'],
@@ -50,6 +55,17 @@ export const parseFacebookGroups = async ({
   const url = isDesktop ? facebookLinks.desktop : facebookLinks.mobile;
 
   await page.goto(`${url}/groups/${selectedGroupId}`);
+
+  if (isAuth) {
+    await page.fill('input[name="email"]', privatePhone);
+    await page.fill('input[name="pass"]', privatePass);
+
+    if (isDesktop) {
+      await page.click(desktopSelectors.loginButton);
+    }
+
+    await sleep(1000);
+  }
 
   const totalPosts: UniqPosts = {};
   let numberOfLatestParsedPost = 0;
@@ -93,9 +109,7 @@ export const parseFacebookGroups = async ({
           ([selector]) =>
             document
               .querySelectorAll(selector)
-              .forEach(
-                (node: HTMLButtonElement) => node?.click && node.click(),
-              ),
+              .forEach((node: HTMLButtonElement) => node?.click()),
           [desktopSelectors.showAllDescription],
         );
       }
@@ -111,6 +125,7 @@ export const parseFacebookGroups = async ({
     const posts = await normalizeSearchedPosts({
       selectedGroupId,
       isDesktop,
+      isAuth,
       fromIndexPost,
       toIndexPost,
       root,
@@ -135,6 +150,8 @@ export const parseFacebookGroups = async ({
     fromIndexPost = toIndexPost;
     toIndexPost = postNode.length;
   }
+
+  const cookies = await context.cookies();
 
   await browser.close();
 
