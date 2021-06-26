@@ -116,17 +116,19 @@ export const parsePostDate = (
 
         date.setDate(+day);
 
-        const [hours, minutes] = hoursAndMinutes.split(':');
+        if (hoursAndMinutes) {
+          const [hours, minutes] = hoursAndMinutes.split(':');
 
-        const normalizedHours = +hours;
-        const normalizedMinutes = +minutes;
+          const normalizedHours = +hours;
+          const normalizedMinutes = +minutes;
 
-        if (normalizedMinutes) {
-          date.setMinutes(normalizedMinutes);
-        }
+          if (normalizedMinutes) {
+            date.setMinutes(normalizedMinutes);
+          }
 
-        if (normalizedHours) {
-          date.setHours(normalizedHours);
+          if (normalizedHours) {
+            date.setHours(normalizedHours);
+          }
         }
 
         break;

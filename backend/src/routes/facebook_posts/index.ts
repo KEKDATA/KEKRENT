@@ -1,11 +1,14 @@
-import { initializedFastify, nodeCache } from '../../config';
+import { initializedFastify } from '../../config';
 import { Posts, PostsSettings } from '../../types/posts';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
+import { get, set } from 'node-cache-redis';
 
 export const facebookSavePostsRoute = () => {
   return initializedFastify.get<{
     Querystring: PostsSettings;
   }>('/posts', async request => {
+    console.info(`Posts by pid ${process.pid} requested`);
+
     try {
       const { selectedGroupId, numberOfPosts, timeStamps, maxPrice, minPrice } =
         request.query || {};
@@ -18,7 +21,7 @@ export const facebookSavePostsRoute = () => {
       ]
         .filter(Boolean)
         .join(',');
-      const cachedPosts: Posts | undefined = nodeCache.get(cacheKey);
+      const cachedPosts: Posts | undefined = await get(cacheKey);
 
       const postsByGroup = Number(numberOfPosts);
 
@@ -30,7 +33,7 @@ export const facebookSavePostsRoute = () => {
         ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
         : null;
 
-      const posts = await parseFacebookGroups({
+      const { posts, isError } = await parseFacebookGroups({
         selectedGroupId,
         postsByGroup,
         timeStamps: normalizedTimeStamps,
@@ -38,9 +41,27 @@ export const facebookSavePostsRoute = () => {
         maxPrice,
       });
 
-      nodeCache.set(cacheKey, posts);
+      let actualPosts = posts;
 
-      return posts;
+      if (isError) {
+        const afterError = await parseFacebookGroups({
+          selectedGroupId,
+          postsByGroup,
+          timeStamps: normalizedTimeStamps,
+          minPrice,
+          maxPrice,
+        });
+
+        if (afterError.isError) {
+          return [];
+        }
+
+        actualPosts = afterError.posts;
+      }
+
+      set(cacheKey, actualPosts);
+
+      return actualPosts;
     } catch (err) {
       console.log('savePosts', err);
       return [];

@@ -1,6 +1,6 @@
-import ky from "ky";
+import ky from 'ky';
 
 export const apiConfig = ky.create({
-  prefixUrl: "http://localhost:3000",
-  timeout: false,
+  prefixUrl: 'http://localhost:3000',
+  timeout: 300000,
 });

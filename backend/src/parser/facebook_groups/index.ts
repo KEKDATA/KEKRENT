@@ -10,12 +10,12 @@ import cheerio from 'cheerio';
 import Cheerio = cheerio.Cheerio;
 import Root = cheerio.Root;
 import { generatePostNode } from './lib/generate_post_node';
-import { sleep } from '../../lib/timeout/sleep';
 import { privatePass, privatePhone } from '../../../private/data';
 import { updateUsersCookies } from './lib/update_users_cookies';
-import { nodeCache } from '../../config';
 import { CacheKeys } from '../../constants/cache_keys';
 import { CachedCookies, Cookies } from '../../types/cookies';
+import { authUser } from './lib/auth_user';
+import { get } from 'node-cache-redis';
 
 const isDesktop = true;
 const isAuth = true;
@@ -54,13 +54,17 @@ export const parseFacebookGroups = async ({
     },
   ];
 
+  let isSavedCookies = false;
+  let isAuthCompleted = false;
+
   if (isAuth) {
-    const authCookies: CachedCookies = nodeCache.get(CacheKeys.Cookies) || {};
+    const authCookies: CachedCookies = (await get(CacheKeys.Cookies)) || {};
 
     const cookiesKey = `${privatePhone}${privatePass}`;
     const savedUserCookies = authCookies[cookiesKey];
 
     if (savedUserCookies) {
+      isSavedCookies = true;
       cookiesForUpload.push(...savedUserCookies);
     }
   }
@@ -73,20 +77,20 @@ export const parseFacebookGroups = async ({
 
   await page.goto(`${url}/groups/${selectedGroupId}`);
 
-  if (isAuth) {
-    const authBar = await page.$(desktopSelectors.authBar);
-
-    if (!authBar) {
-      await page.fill('input[name="email"]', privatePhone);
-      await page.fill('input[name="pass"]', privatePass);
-
-      if (isDesktop) {
-        await page.click(desktopSelectors.loginButton);
-      }
-
-      await sleep(1000);
-    }
+  if (isAuth && !isSavedCookies) {
+    isAuthCompleted = await authUser(page, isDesktop);
   }
+
+  try {
+    const headerCriticalError = await page.$('.uiHeaderTitle');
+
+    if (headerCriticalError) {
+      await browser.close();
+
+      return { posts: [], isError: true };
+    }
+    // eslint-disable-next-line no-empty
+  } catch {}
 
   const totalPosts: UniqPosts = {};
   let numberOfLatestParsedPost = 0;
@@ -96,6 +100,10 @@ export const parseFacebookGroups = async ({
   let toIndexPost = postsByGroup;
 
   while (Object.keys(totalPosts).length < postsByGroup) {
+    if (isAuth && !isSavedCookies && !isAuthCompleted) {
+      await authUser(page, isDesktop);
+    }
+
     let counter = 1;
     let searchedPostsLength = 0;
     let postNode: null | Cheerio = null;
@@ -178,5 +186,5 @@ export const parseFacebookGroups = async ({
 
   await browser.close();
 
-  return Object.values(totalPosts);
+  return { posts: Object.values(totalPosts), isError: false };
 };

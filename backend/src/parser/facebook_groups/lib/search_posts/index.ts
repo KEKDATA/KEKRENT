@@ -46,6 +46,9 @@ export const searchPosts = async ({
       });
     } else {
       await sleep(500);
+
+      // Fallback - trigger to load new posts
+      await page.evaluate(() => window.scrollTo(0, 0));
     }
   }
 

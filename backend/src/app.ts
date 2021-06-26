@@ -1,10 +1,22 @@
 import fastifyCors from 'fastify-cors';
 import fastifyCompress from 'fastify-compress';
+
+import zlib from 'zlib';
+
 import { initializedFastify } from './config';
 import { facebookSavePostsRoute } from './routes/facebook_posts';
 import { facebookGroupsRoute } from './routes/facebook_groups';
-import zlib from 'zlib';
-import { facebookPartPosts } from './routes/facebook_part_posts';
+import { init } from 'node-cache-redis';
+
+console.info(`Process pid ${process.pid} started...`);
+
+init({
+  defaultTtlInS: 3600,
+  redisOptions: {
+    host: 'localhost',
+    port: 6379,
+  },
+});
 
 initializedFastify.register(fastifyCors, {
   origin: (origin, cb) => {
@@ -45,4 +57,3 @@ start();
 
 facebookSavePostsRoute();
 facebookGroupsRoute();
-facebookPartPosts();
