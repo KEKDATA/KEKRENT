@@ -5,27 +5,11 @@ import fetch from 'undici-fetch';
 import { staticListFacebookGroups } from '../routes/facebook_groups/static_list';
 
 const generateToCsv = async (id: string) => {
-  const { posts, isError } = await parseFacebookGroups({
+  const actualPosts = await parseFacebookGroups({
     selectedGroupId: id,
     postsByGroup: 1000,
     timeStamps: null,
   });
-
-  let actualPosts = posts;
-
-  if (isError) {
-    const afterError = await parseFacebookGroups({
-      selectedGroupId: id,
-      postsByGroup: 1000,
-      timeStamps: null,
-    });
-
-    if (afterError.isError) {
-      return;
-    }
-
-    actualPosts = afterError.posts;
-  }
 
   const postsWithPredicted: { content: string; classIndex: number }[] = [];
 
@@ -51,8 +35,8 @@ const generateToCsv = async (id: string) => {
   await csv.toDisk(`./list-${id}.csv`);
 };
 
-export const generateManyCsv = async () => {
-  staticListFacebookGroups.forEach(({ id }, index) => {
+export const generateManyCsv = () => {
+  staticListFacebookGroups.forEach(({ id }) => {
     generateToCsv(id);
   });
 };

@@ -170,9 +170,11 @@ export const normalizeSearchedPosts = async ({
 
     photosContainer.children().each((_, photoContainer) => {
       if (!link && isDesktop) {
-        link = `${facebookLinks.desktop}${root(photoContainer)
-          .find('a')
-          .attr('href')}`;
+        const href = root(photoContainer).find('a').attr('href');
+
+        if (href) {
+          link = `${facebookLinks.desktop}${href}`;
+        }
       }
 
       const src = root(photoContainer).find('img').attr('src');
@@ -219,16 +221,17 @@ export const normalizeSearchedPosts = async ({
       const timeNode = postNode.find(
         getSelectedSelector({
           mobileSelector: '',
-          desktopSelector: desktopSelectors.date,
+          desktopSelector: isAuth
+            ? desktopSelectors.dateAuth
+            : desktopSelectors.date,
           isDesktop,
         }),
       );
 
-      const timeDate = parsePostDate(timeNode, root);
+      const date = parsePostDate(timeNode, root, isAuth);
 
-      timestamp = timeDate.getTime();
-      publishDate =
-        timeDate?.toLocaleDateString('en-US') ?? someTimesAgo.text();
+      timestamp = date.getTime();
+      publishDate = date?.toLocaleDateString('en-US') ?? someTimesAgo.text();
     } else {
       const dataFt = postNode.attr('data-ft');
       const parsedDataFt = JSON.parse(dataFt as string);
@@ -244,8 +247,11 @@ export const normalizeSearchedPosts = async ({
     if (linkedDescription) {
       resultedDescription.push(linkedDescription);
     }
+    link = link || '';
     const stupidId =
-      link || `${title}${price}${resultedDescription.join('').slice(0, 50)}`;
+      link.length > 0
+        ? link
+        : `${title}${price}${resultedDescription.join('').slice(0, 50)}`;
 
     posts[stupidId] = {
       id: nanoid(10),
@@ -255,7 +261,7 @@ export const normalizeSearchedPosts = async ({
       description: resultedDescription,
       publishDate,
       timestamp,
-      link: link as string,
+      link,
       photos,
     };
   });

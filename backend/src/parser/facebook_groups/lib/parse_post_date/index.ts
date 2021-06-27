@@ -1,5 +1,21 @@
 import cheerio from 'cheerio';
 
+const convertTime12to24 = (time12h: string) => {
+  const [time, modifier] = time12h.split(' ');
+
+  let [hours, minutes] = time.split(':');
+
+  if (hours === '12') {
+    hours = '00';
+  }
+
+  if (modifier === 'PM') {
+    hours = String(parseInt(hours, 10) + 12);
+  }
+
+  return `${hours}:${minutes}`;
+};
+
 const months = [
   'January',
   'February',
@@ -15,13 +31,15 @@ const months = [
   'December',
 ];
 
-export const parsePostDate = (
+const parseNonAuthPostDate = (
   timeNode: cheerio.Cheerio,
   root: cheerio.Root,
 ) => {
-  try {
-    let time = timeNode.text().slice(0, 1);
+  const date = new Date();
 
+  let time = timeNode.text().slice(0, 1);
+
+  try {
     timeNode.children().each((index, partOfTimeElement) => {
       const partOfTimeNode = root(partOfTimeElement);
       const isStyleExist = Boolean(partOfTimeNode.attr('style'));
@@ -59,8 +77,6 @@ export const parsePostDate = (
     const isMinutes = time.includes('min');
     const isHours = time.includes('hr');
     const isYesterday = time.includes('Yesterday');
-
-    const date = new Date();
 
     if (!time) {
       return date;
@@ -134,10 +150,94 @@ export const parsePostDate = (
         break;
       }
     }
-
-    return date;
   } catch (err) {
     console.log(err);
-    return new Date();
   }
+
+  return date;
+};
+
+export const parsePostDate = (
+  timeNode: cheerio.Cheerio,
+  root: cheerio.Root,
+  isAuth: boolean,
+) => {
+  if (!isAuth) {
+    return parseNonAuthPostDate(timeNode, root);
+  }
+
+  const time = timeNode.text();
+  const date = new Date();
+
+  try {
+    const timeWithoutNumbers = time.replace(/[0-9]/g, '');
+    const isMinutes = timeWithoutNumbers === 'm';
+    const isHours = timeWithoutNumbers === 'h';
+    const isDays = timeWithoutNumbers === 'd';
+
+    switch (true) {
+      case isMinutes: {
+        const minutes = +time.replace('m', '');
+
+        if (minutes) {
+          date.setMinutes(date.getMinutes() - minutes);
+        }
+
+        break;
+      }
+
+      case isHours: {
+        const hours = +time.replace('h', '');
+
+        if (hours) {
+          date.setHours(date.getHours() - hours);
+        }
+
+        break;
+      }
+
+      case isDays: {
+        const days = +time.replace('d', '');
+
+        if (days) {
+          date.setDate(date.getDate() - days);
+        }
+
+        break;
+      }
+
+      default: {
+        const [month, day, at, hoursAndMinutes, hourFormat] = time.split(' ');
+
+        const selectedMonth = months.findIndex(m => m === month);
+
+        date.setMonth(selectedMonth);
+
+        date.setDate(+day);
+
+        if (hoursAndMinutes) {
+          const normalizedHoursAndMinutes = convertTime12to24(
+            `${hoursAndMinutes} ${hourFormat}`,
+          );
+
+          const [hours, minutes] = normalizedHoursAndMinutes.split(':');
+
+          const normalizedHours = +hours;
+          const normalizedMinutes = +minutes;
+
+          if (normalizedMinutes) {
+            date.setMinutes(normalizedMinutes);
+          }
+
+          if (normalizedHours) {
+            date.setHours(normalizedHours);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  return date;
 };

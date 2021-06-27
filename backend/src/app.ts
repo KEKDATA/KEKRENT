@@ -1,12 +1,12 @@
 import fastifyCors from 'fastify-cors';
 import fastifyCompress from 'fastify-compress';
-
 import zlib from 'zlib';
 
 import { initializedFastify } from './config';
 import { facebookSavePostsRoute } from './routes/facebook_posts';
 import { facebookGroupsRoute } from './routes/facebook_groups';
 import { init } from 'node-cache-redis';
+import { scheduleParseGroups } from './schedule/parse_groups';
 
 console.info(`Process pid ${process.pid} started...`);
 
@@ -57,3 +57,5 @@ start();
 
 facebookSavePostsRoute();
 facebookGroupsRoute();
+
+scheduleParseGroups();

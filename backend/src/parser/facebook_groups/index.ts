@@ -17,6 +17,14 @@ import { CachedCookies, Cookies } from '../../types/cookies';
 import { authUser } from './lib/auth_user';
 import { get } from 'node-cache-redis';
 
+interface ParseParams {
+  selectedGroupId: number | string;
+  postsByGroup: number;
+  timeStamps: number[] | null;
+  minPrice?: string;
+  maxPrice?: string;
+}
+
 const isDesktop = true;
 const isAuth = true;
 
@@ -26,13 +34,43 @@ export const parseFacebookGroups = async ({
   maxPrice,
   minPrice,
   timeStamps,
-}: {
-  selectedGroupId: number | string;
-  postsByGroup: number;
-  timeStamps: number[] | null;
-  minPrice?: string;
-  maxPrice?: string;
-}) => {
+}: ParseParams) => {
+  const { posts, isError } = await getParsedFacebookGroups({
+    selectedGroupId,
+    postsByGroup,
+    timeStamps,
+    minPrice,
+    maxPrice,
+  });
+
+  let actualPosts = posts;
+
+  if (isError) {
+    const afterError = await getParsedFacebookGroups({
+      selectedGroupId,
+      postsByGroup,
+      timeStamps,
+      minPrice,
+      maxPrice,
+    });
+
+    if (afterError.isError) {
+      return [];
+    }
+
+    actualPosts = afterError.posts;
+  }
+
+  return actualPosts;
+};
+
+const getParsedFacebookGroups = async ({
+  selectedGroupId,
+  postsByGroup,
+  maxPrice,
+  minPrice,
+  timeStamps,
+}: ParseParams) => {
   const browser = await chromium.launch({
     headless: true,
   });
@@ -186,5 +224,8 @@ export const parseFacebookGroups = async ({
 
   await browser.close();
 
-  return { posts: Object.values(totalPosts), isError: false };
+  return {
+    posts: Object.values(totalPosts),
+    isError: false,
+  };
 };
