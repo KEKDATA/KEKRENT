@@ -1,8 +1,11 @@
+import { Modes } from './groups';
+
 export interface Posts {
   id: string;
   selectedGroupId: string | undefined;
   numberOfPosts: number;
   timeStamps: Array<number> | null;
+  mode: Modes;
   min?: number;
   max?: number;
 }

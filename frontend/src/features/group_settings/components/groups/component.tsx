@@ -10,6 +10,7 @@ import { Price } from '../price/component';
 import { NumberOfPosts } from '../number_of_posts/component';
 import { Button, Typography, Row, Col, Space, Divider } from 'antd';
 import React from 'react';
+import { Mode } from '../mode/component';
 
 const groupsStyle = css`
   display: flex;
@@ -50,6 +51,7 @@ export const Groups = () => {
                   <NumberOfPosts id={id} numberOfPosts={numberOfPosts} />
                 </Col>
               </Row>
+              <Mode id={id} />
               <Button
                 className={deleteStyle}
                 type="primary"

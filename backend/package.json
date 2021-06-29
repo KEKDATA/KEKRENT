@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "prod": "redis-server && npm run tsc && pm2 start ./src/app.js -i max",
+    "pre_prod": "npm run tsc",
+    "prod": "npm run pre_prod && npm run schedule && npm run parse",
+    "schedule": "pm2 start ./src/schedule/index.js -i 1",
+    "parse": "pm2 start ./src/app.js -i max",
     "generate_to_csv": "ts-node-dev --respawn --transpile-only src/generate_csv/index.ts",
     "tsc": "tsc --project ./",
     "test": "echo \"Error: no test specified\" && exit 1",

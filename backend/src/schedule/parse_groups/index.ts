@@ -16,7 +16,7 @@ export const scheduleParseGroups = () => {
 
     const currentDate = new Date();
     console.info(
-      `Completed parse groupd: ${selectedGroupId} by time ${currentDate.getHours()}:${currentDate.getMinutes()}`,
+      `Completed parse group: ${selectedGroupId} by time ${currentDate.getHours()}:${currentDate.getMinutes()}`,
     );
 
     set(selectedGroupId, posts);

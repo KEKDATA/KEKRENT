@@ -22,6 +22,7 @@ export const GetPosts = () => {
           id: groupSettings.id,
           min: groupSettings.price.min,
           max: groupSettings.price.max,
+          mode: groupSettings.mode,
         });
       }
     });

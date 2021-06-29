@@ -1,3 +1,8 @@
+export enum PostMode {
+  Slowpoke = 'slowpoke',
+  Faster = 'faster',
+}
+
 export interface Post {
   id: string;
   title: string;
@@ -23,6 +28,7 @@ export interface PostsSettings {
   id: string;
   selectedGroupId: string;
   numberOfPosts: string;
+  mode: PostMode;
   timeStamps?: string;
   minPrice?: string;
   maxPrice?: string;

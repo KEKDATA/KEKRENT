@@ -1,18 +1,24 @@
 import { initializedFastify } from '../../config';
-import { Posts, PostsSettings } from '../../types/posts';
+import { PostMode, Posts, PostsSettings } from '../../types/posts';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
 import { get, set } from 'node-cache-redis';
 import { getFilteredScheduledPosts } from './lib/get_filtered_scheduled_posts';
 
-export const facebookSavePostsRoute = () => {
+export const facebookPostsRoute = () => {
   return initializedFastify.get<{
     Querystring: PostsSettings;
   }>('/posts', async request => {
     console.info(`Posts by pid ${process.pid} requested`);
 
     try {
-      const { selectedGroupId, numberOfPosts, timeStamps, maxPrice, minPrice } =
-        request.query || {};
+      const {
+        selectedGroupId,
+        numberOfPosts,
+        timeStamps,
+        maxPrice,
+        minPrice,
+        mode,
+      } = request.query || {};
       const cacheKey = [
         selectedGroupId,
         numberOfPosts,
@@ -26,27 +32,28 @@ export const facebookSavePostsRoute = () => {
       const normalizedTimeStamps = timeStamps
         ? timeStamps.split(',').map(timeStamp => Number(timeStamp))
         : null;
+      const postsByGroup = Number(numberOfPosts);
 
-      const cachedPosts: Posts | undefined = await get(cacheKey);
+      if (mode === PostMode.Faster) {
+        const scheduledPosts: Posts = await get(selectedGroupId);
 
-      const scheduledPosts = await get(selectedGroupId);
+        if (scheduledPosts) {
+          const oneOfFilterChosenByUser =
+            normalizedTimeStamps || maxPrice || minPrice;
+          if (oneOfFilterChosenByUser) {
+            return getFilteredScheduledPosts({
+              posts: scheduledPosts,
+              timeStamps: normalizedTimeStamps,
+              maxPrice,
+              minPrice,
+            });
+          }
 
-      if (scheduledPosts) {
-        const oneOfFilterChosenByUser =
-          normalizedTimeStamps || maxPrice || minPrice;
-        if (oneOfFilterChosenByUser) {
-          return getFilteredScheduledPosts({
-            posts: scheduledPosts,
-            timeStamps: normalizedTimeStamps,
-            maxPrice,
-            minPrice,
-          });
+          return scheduledPosts.slice(0, postsByGroup);
         }
-
-        return scheduledPosts.slice(0, numberOfPosts);
       }
 
-      const postsByGroup = Number(numberOfPosts);
+      const cachedPosts: Posts | undefined = await get(cacheKey);
 
       if (cachedPosts) {
         return cachedPosts;
@@ -60,7 +67,7 @@ export const facebookSavePostsRoute = () => {
         maxPrice,
       });
 
-      set(cacheKey, actualPosts);
+      set(cacheKey, actualPosts, 1800);
 
       return actualPosts;
     } catch (err) {

@@ -19,8 +19,7 @@ import { $somePartOfPostsLoaded } from '../../models/posts/model';
 import { css } from '@emotion/css';
 
 const style = css`
-  margin-left: 20px;
-  margin-right: 20px;
+  margin: 0 20px 20px 20px;
 `;
 
 const Filter = ({
