@@ -1,15 +1,20 @@
-import { createEvent, createStore, sample } from 'effector-root';
+import {
+  createEvent,
+  createStore,
+  guard,
+  restore,
+  sample,
+} from 'effector-root';
 import {
   $nonFiltersPosts,
   $posts,
+  $somePartOfPostsLoaded,
   postsCleared,
   postsUpdated,
 } from 'models/posts/model';
-
-export enum PostsFilter {
-  FromMin = 'from_min',
-  FromMax = 'from_max',
-}
+import { PostsFilter } from 'typings/posts_filters';
+import { $groups } from '../groups/model';
+import { $selectedGroupsIds } from '../group_settings/model';
 
 const toggleFilter = (filterValue: PostsFilter | null) => {
   if (filterValue === null || filterValue === PostsFilter.FromMax) {
@@ -25,6 +30,8 @@ const toggleFilter = (filterValue: PostsFilter | null) => {
 
 export const filterPostsByPriceToggled = createEvent<unknown>();
 export const filterPostsByDateToggled = createEvent<unknown>();
+export const filterPostsByCheckedGroupsSelected = createEvent<string[]>();
+export const filterPostsByCheckedGroupsSubmitted = createEvent();
 export const filterPostsCleared = createEvent<unknown>();
 
 export const $priceFilter = createStore<PostsFilter | null>(null)
@@ -34,6 +41,57 @@ export const $priceFilter = createStore<PostsFilter | null>(null)
 export const $dateFilter = createStore<PostsFilter | null>(null)
   .on(filterPostsByDateToggled, toggleFilter)
   .reset([postsCleared, filterPostsByPriceToggled, filterPostsCleared]);
+
+export const $submittedGroups = createStore<string[]>([]).reset([
+  postsCleared,
+  filterPostsCleared,
+]);
+
+export const $checkedGroups = restore(
+  filterPostsByCheckedGroupsSelected,
+  [],
+).reset([postsCleared, filterPostsCleared]);
+
+sample({
+  source: [$checkedGroups, $nonFiltersPosts],
+  clock: filterPostsByCheckedGroupsSubmitted,
+  fn: ([checkedGroups, posts]) => {
+    const normalizedPosts = posts.filter(
+      ({ groupTitle }) => groupTitle && checkedGroups.includes(groupTitle),
+    );
+
+    return normalizedPosts;
+  },
+  target: postsUpdated,
+});
+
+const selectedGroupsSubmitted = createEvent();
+
+guard({
+  source: $somePartOfPostsLoaded,
+  clock: $somePartOfPostsLoaded,
+  filter: Boolean,
+  target: selectedGroupsSubmitted,
+});
+
+sample({
+  clock: selectedGroupsSubmitted,
+  source: [$groups, $selectedGroupsIds],
+  fn: ([groups, selectedGroupsIds]) => {
+    const selectedGroupsTitles: string[] = [];
+
+    selectedGroupsIds.forEach((selectedId) => {
+      const selectedGroup = groups.find(({ id }) => id === selectedId);
+
+      if (selectedGroup) {
+        selectedGroupsTitles.push(selectedGroup.title);
+      }
+    });
+
+    return selectedGroupsTitles;
+  },
+  target: $submittedGroups,
+});
 
 const getPriceFromString = (value: string) =>
   parseFloat(value.replace(/[^0-9]+/g, '')) || 0;

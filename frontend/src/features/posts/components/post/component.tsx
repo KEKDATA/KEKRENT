@@ -7,8 +7,6 @@ import { PostType } from 'contracts/posts/contract';
 import { Description } from '../description/component';
 
 const postStyle = css`
-  background-color: white;
-  padding: 12px;
   cursor: initial !important;
 `;
 
@@ -32,7 +30,7 @@ const openPostStyle = css`
     display: none !important;
   }
 
-  @media screen and (max-width: 720px) {
+  @media screen and (max-width: 768px) {
     &[data-desktop='true'] {
       display: none !important;
     }
@@ -49,7 +47,7 @@ const openPostStyle = css`
 const postTitleStyle = css`
   white-space: initial;
 
-  @media screen and (max-width: 720px) {
+  @media screen and (max-width: 768px) {
     font-size: 22px !important;
   }
 `;
@@ -58,33 +56,18 @@ const { Title, Link } = Typography;
 
 export const Post = ({ post }: { post: PostType }) => {
   return (
-    <>
-      <Card
-        hoverable
-        className={postStyle}
-        title={
-          <Title className={postTitleStyle} level={3}>
-            {post.title}
-          </Title>
-        }
-        extra={
-          <Button
-            className={openPostStyle}
-            data-desktop="true"
-            type="link"
-            href={post.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            size="large"
-          >
-            Open post
-          </Button>
-        }
-      >
-        {post.publishDate && <Title level={3}>{post.publishDate}</Title>}
+    <Card
+      hoverable
+      className={postStyle}
+      title={
+        <Title className={postTitleStyle} level={3}>
+          {post.title}
+        </Title>
+      }
+      extra={
         <Button
           className={openPostStyle}
-          data-desktop="false"
+          data-desktop="true"
           type="link"
           href={post.link}
           target="_blank"
@@ -93,32 +76,45 @@ export const Post = ({ post }: { post: PostType }) => {
         >
           Open post
         </Button>
-        {post.address && (
-          <Title level={5}>
-            <Link
-              href={`https://www.google.ru/maps/place/${post.address}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Location: {post.address}
-            </Link>
-          </Title>
-        )}
-        <Title level={5}>{post.price}</Title>
-        <Description description={post.description} />
-        <div className={imagesStyle}>
-          {post.photos.map((photo) => (
-            <div key={photo} className={imageContainerStyle}>
-              <Image
-                className={imageStyle}
-                loading="lazy"
-                src={photo}
-                alt="some photo"
-              />
-            </div>
-          ))}
-        </div>
-      </Card>
-    </>
+      }
+    >
+      {post.publishDate && <Title level={3}>{post.publishDate}</Title>}
+      <Button
+        className={openPostStyle}
+        data-desktop="false"
+        type="link"
+        href={post.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        size="large"
+      >
+        Open post
+      </Button>
+      {post.address && (
+        <Title level={5}>
+          <Link
+            href={`https://www.google.ru/maps/place/${post.address}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Location: {post.address}
+          </Link>
+        </Title>
+      )}
+      <Title level={5}>{post.price}</Title>
+      <Description description={post.description} />
+      <div className={imagesStyle}>
+        {post.photos.map((photo) => (
+          <div key={photo} className={imageContainerStyle}>
+            <Image
+              className={imageStyle}
+              loading="lazy"
+              src={photo}
+              alt="some photo"
+            />
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 };

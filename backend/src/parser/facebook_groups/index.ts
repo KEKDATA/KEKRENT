@@ -23,6 +23,7 @@ interface ParseParams {
   timeStamps: number[] | null;
   minPrice?: string;
   maxPrice?: string;
+  groupTitle?: string;
 }
 
 const isDesktop = true;
@@ -34,6 +35,7 @@ export const parseFacebookGroups = async ({
   maxPrice,
   minPrice,
   timeStamps,
+  groupTitle,
 }: ParseParams) => {
   const { posts, isError } = await getParsedFacebookGroups({
     selectedGroupId,
@@ -41,6 +43,7 @@ export const parseFacebookGroups = async ({
     timeStamps,
     minPrice,
     maxPrice,
+    groupTitle,
   });
 
   let actualPosts = posts;
@@ -52,6 +55,7 @@ export const parseFacebookGroups = async ({
       timeStamps,
       minPrice,
       maxPrice,
+      groupTitle,
     });
 
     if (afterError.isError) {
@@ -70,6 +74,7 @@ const getParsedFacebookGroups = async ({
   maxPrice,
   minPrice,
   timeStamps,
+  groupTitle,
 }: ParseParams) => {
   const browser = await chromium.launch({
     headless: true,
@@ -204,6 +209,7 @@ const getParsedFacebookGroups = async ({
       maxPrice,
       minPrice,
       timeStamps,
+      groupTitle,
     });
 
     // const predictedPosts = await getPredictedPosts(filteredPosts);

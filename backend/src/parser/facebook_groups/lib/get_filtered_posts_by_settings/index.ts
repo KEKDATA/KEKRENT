@@ -3,6 +3,7 @@ import { UniqPosts } from '../../../../types/posts';
 interface FilteredPostsBySettings {
   posts: UniqPosts;
   timeStamps: number[] | null;
+  groupTitle?: string;
   minPrice?: string;
   maxPrice?: string;
 }
@@ -12,6 +13,7 @@ export const getFilteredPostsBySettings = ({
   timeStamps,
   minPrice,
   maxPrice,
+  groupTitle,
 }: FilteredPostsBySettings) => {
   let filteredPosts: UniqPosts = {};
   const normalizedPosts = Object.entries(posts);
@@ -52,6 +54,10 @@ export const getFilteredPostsBySettings = ({
       if (!priceMoreThanMin && !priceLessThanMax) {
         break;
       }
+    }
+
+    if (groupTitle) {
+      bodyOfPost.groupTitle = groupTitle;
     }
 
     filteredPosts[stupidId] = bodyOfPost;

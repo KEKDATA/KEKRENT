@@ -8,6 +8,7 @@ export interface Posts {
   mode: Modes;
   min?: number;
   max?: number;
+  title?: string;
 }
 
 export interface PartPosts {

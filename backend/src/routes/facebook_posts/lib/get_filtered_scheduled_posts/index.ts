@@ -5,6 +5,7 @@ interface PostsWithSettings {
   timeStamps: number[] | null;
   minPrice?: string;
   maxPrice?: string;
+  groupTitle?: string;
 }
 
 export const getFilteredScheduledPosts = ({
@@ -12,6 +13,7 @@ export const getFilteredScheduledPosts = ({
   timeStamps,
   minPrice,
   maxPrice,
+  groupTitle,
 }: PostsWithSettings) => {
   const [from, to] = timeStamps || [];
   const filteredPosts: Posts = [];
@@ -48,6 +50,10 @@ export const getFilteredScheduledPosts = ({
       if (!priceMoreThanMin && !priceLessThanMax) {
         break;
       }
+    }
+
+    if (groupTitle) {
+      post.groupTitle = groupTitle;
     }
 
     filteredPosts.push(post);

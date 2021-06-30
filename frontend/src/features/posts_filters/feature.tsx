@@ -12,11 +12,12 @@ import {
   filterPostsByDateToggled,
   filterPostsByPriceToggled,
   filterPostsCleared,
-  PostsFilter,
 } from 'models/posts_filters/model';
 import { useStore } from 'effector-react';
-import { $somePartOfPostsLoaded } from '../../models/posts/model';
+import { $somePartOfPostsLoaded } from 'models/posts/model';
 import { css } from '@emotion/css';
+import { PostsBySelectedGroups } from './components/posts_by_selected_groups';
+import { PostsFilter } from 'typings/posts_filters';
 
 const style = css`
   margin: 0 20px 20px 20px;
@@ -78,6 +79,7 @@ export const PostsFilters = () => {
         onClick={filterPostsByDateToggled}
         name="Date"
       />
+      <PostsBySelectedGroups />
       <Button
         type="primary"
         shape="round"

@@ -13,6 +13,7 @@ export interface Post {
   timestamp: number;
   link?: string;
   photos: string[];
+  groupTitle?: string;
 }
 
 interface PredictedPost extends Post {
@@ -32,6 +33,7 @@ export interface PostsSettings {
   timeStamps?: string;
   minPrice?: string;
   maxPrice?: string;
+  title?: string;
 }
 
 export interface PartPostsSettings {

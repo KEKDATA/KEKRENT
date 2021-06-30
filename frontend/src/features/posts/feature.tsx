@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useStore } from 'effector-react';
 
 import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
@@ -10,6 +10,22 @@ const listStyle = css`
   list-style: none;
   padding: 0;
   margin: 0 20px;
+
+  @media screen and (min-width: 768px) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &[data-loading='true'] {
+    display: block;
+  }
+`;
+
+const postStyle = css`
+  @media screen and (min-width: 768px) {
+    max-width: 49%;
+  }
 `;
 
 export const Posts = () => {
@@ -17,18 +33,20 @@ export const Posts = () => {
   const isLoading = useStore(getPostsFx.pending);
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
 
+  const isTotallySomePostsLoading = isLoading && !somePartOfPostsLoaded;
+
   return (
-    <ul className={listStyle}>
-      {isLoading && !somePartOfPostsLoaded && (
+    <ul className={listStyle} data-loading={isTotallySomePostsLoading}>
+      {isTotallySomePostsLoading && (
         <Row justify="center">
           <Spin size="large" tip="Loading" />
         </Row>
       )}
       {posts.map((post) => (
-        <Fragment key={post.id}>
+        <li key={post.id} className={postStyle}>
           <Post post={post} />
           <Divider />
-        </Fragment>
+        </li>
       ))}
     </ul>
   );

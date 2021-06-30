@@ -18,6 +18,7 @@ export const facebookPostsRoute = () => {
         maxPrice,
         minPrice,
         mode,
+        title: groupTitle,
       } = request.query || {};
       const cacheKey = [
         selectedGroupId,
@@ -46,6 +47,7 @@ export const facebookPostsRoute = () => {
               timeStamps: normalizedTimeStamps,
               maxPrice,
               minPrice,
+              groupTitle,
             });
           }
 
@@ -65,6 +67,7 @@ export const facebookPostsRoute = () => {
         timeStamps: normalizedTimeStamps,
         minPrice,
         maxPrice,
+        groupTitle,
       });
 
       set(cacheKey, actualPosts, 1800);

@@ -7,7 +7,7 @@ import {
   Array,
   Literal,
   Null,
-} from "runtypes";
+} from 'runtypes';
 
 const Post = Record({
   id: String,
@@ -19,12 +19,13 @@ const Post = Record({
   timestamp: Number,
   link: Optional(String),
   photos: Array(String),
+  groupTitle: Optional(String),
 });
 
 export const PostsContract = Array(Post);
 
 export const SavePostsContract = Record({
-  status: Literal("success").Or(Literal("failed")),
+  status: Literal('success').Or(Literal('failed')),
   postsByGroup: Optional(Number).Or(Null),
   cacheKey: Optional(String).Or(Null),
 });
