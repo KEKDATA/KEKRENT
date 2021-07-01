@@ -39,7 +39,7 @@ const openPostStyle = css`
       display: flex !important;
       align-items: center;
       justify-content: center;
-      margin-top: -12px;
+      margin: -12px 0 0 0;
     }
   }
 `;
@@ -78,7 +78,6 @@ export const Post = ({ post }: { post: PostType }) => {
         </Button>
       }
     >
-      {post.publishDate && <Title level={3}>{post.publishDate}</Title>}
       <Button
         className={openPostStyle}
         data-desktop="false"
@@ -90,6 +89,7 @@ export const Post = ({ post }: { post: PostType }) => {
       >
         Open post
       </Button>
+      {post.publishDate && <Title level={4}>{post.publishDate}</Title>}
       {post.address && (
         <Title level={5}>
           <Link

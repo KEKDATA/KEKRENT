@@ -9,10 +9,13 @@ import {
   filterPostsByCheckedGroupsSelected,
   filterPostsByCheckedGroupsSubmitted,
 } from 'models/posts_filters/model';
+import { $isMobileScreenType } from 'models/screen_type/model';
+import { FacebookOutlined } from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group;
 
 export const PostsBySelectedGroups = () => {
+  const isMobile = useStore($isMobileScreenType);
   const groupsTitles = useStore($submittedGroups);
   const checkedGroups = useStore($checkedGroups);
 
@@ -49,7 +52,8 @@ export const PostsBySelectedGroups = () => {
   return (
     <>
       <Button type="primary" shape="round" onClick={showModal}>
-        Select groups
+        {isMobile && <FacebookOutlined />}
+        {!isMobile && 'Select groups'}
       </Button>
       <Modal
         title="Select groups"

@@ -1,61 +1,22 @@
 import React from 'react';
-import { Button, Space } from 'antd';
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  ClearOutlined,
-  FilterOutlined,
-} from '@ant-design/icons';
+import { Space } from 'antd';
 import {
   $dateFilter,
   $priceFilter,
   filterPostsByDateToggled,
   filterPostsByPriceToggled,
-  filterPostsCleared,
 } from 'models/posts_filters/model';
 import { useStore } from 'effector-react';
 import { $somePartOfPostsLoaded } from 'models/posts/model';
 import { css } from '@emotion/css';
-import { PostsBySelectedGroups } from './components/posts_by_selected_groups';
-import { PostsFilter } from 'typings/posts_filters';
+import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
+import { FilterName } from 'typings/filter_name';
+import { Filter } from './components/filter/component';
+import { ClearFilters } from './components/clear_filters/component';
 
 const style = css`
   margin: 0 20px 20px 20px;
 `;
-
-const Filter = ({
-  filter,
-  onClick,
-  name,
-}: {
-  filter: PostsFilter | null;
-  onClick: () => void;
-  name: string;
-}) => {
-  let icon: React.ReactNode | undefined;
-
-  switch (filter) {
-    case PostsFilter.FromMin: {
-      icon = <ArrowUpOutlined />;
-      break;
-    }
-
-    case PostsFilter.FromMax: {
-      icon = <ArrowDownOutlined />;
-      break;
-    }
-
-    default: {
-      icon = <FilterOutlined />;
-    }
-  }
-
-  return (
-    <Button type="primary" shape="round" onClick={onClick} icon={icon}>
-      {name}
-    </Button>
-  );
-};
 
 export const PostsFilters = () => {
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
@@ -72,22 +33,15 @@ export const PostsFilters = () => {
       <Filter
         filter={priceFilter}
         onClick={filterPostsByPriceToggled}
-        name="Price"
+        name={FilterName.Price}
       />
       <Filter
         filter={dateFilter}
         onClick={filterPostsByDateToggled}
-        name="Date"
+        name={FilterName.Date}
       />
       <PostsBySelectedGroups />
-      <Button
-        type="primary"
-        shape="round"
-        onClick={filterPostsCleared}
-        icon={<ClearOutlined />}
-      >
-        Clear filters
-      </Button>
+      <ClearFilters />
     </Space>
   );
 };

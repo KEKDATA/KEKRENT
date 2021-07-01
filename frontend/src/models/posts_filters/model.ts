@@ -55,13 +55,10 @@ export const $checkedGroups = restore(
 sample({
   source: [$checkedGroups, $nonFiltersPosts],
   clock: filterPostsByCheckedGroupsSubmitted,
-  fn: ([checkedGroups, posts]) => {
-    const normalizedPosts = posts.filter(
+  fn: ([checkedGroups, posts]) =>
+    posts.filter(
       ({ groupTitle }) => groupTitle && checkedGroups.includes(groupTitle),
-    );
-
-    return normalizedPosts;
-  },
+    ),
   target: postsUpdated,
 });
 
