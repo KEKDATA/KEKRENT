@@ -1,5 +1,7 @@
 import { css } from '@emotion/css';
 import { useStore } from 'effector-react';
+import { Button, Typography, Row, Col, Space, Divider } from 'antd';
+import React from 'react';
 import {
   $groupsSettings,
   groupSettingsEvents,
@@ -8,8 +10,6 @@ import { SelectGroup } from '../select_group/component';
 import { Dates } from '../dates/component';
 import { Price } from '../price/component';
 import { NumberOfPosts } from '../number_of_posts/component';
-import { Button, Typography, Row, Col, Space, Divider } from 'antd';
-import React from 'react';
 import { Mode } from '../mode/component';
 
 const groupsStyle = css`
@@ -26,7 +26,7 @@ const deleteStyle = css`
 export const Groups = () => {
   const groupsSettings = useStore($groupsSettings);
 
-  if (!groupsSettings.length) {
+  if (groupsSettings.length === 0) {
     return <Typography> Empty settings :( </Typography>;
   }
 

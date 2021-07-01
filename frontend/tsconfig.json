@@ -1,35 +1,38 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "baseUrl": "src",
-    "downlevelIteration": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
-    "lib": ["es6", "es2015", "es2017", "dom", "ES2019", "DOM.Iterable"],
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": false,
-    "pretty": true,
-    "sourceMap": true,
     "strict": true,
-    "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "target": "es2016",
-    "types": ["react", "jest", "node", "webpack-env"]
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "api/*": ["./src/api/*"],
+      "contracts/*": ["./src/contracts/*"],
+      "features/*": ["./src/features/*"],
+      "lib/*": ["./src/lib/*"],
+      "models/*": ["./src/models/*"],
+      "pages/*": ["./src/pages/*"],
+      "typings/*": ["./src/typings/*"],
+      "ui/*": ["./src/ui/*"]
+    }
   },
+  "include": ["./",
+    ".eslintrc"
+  ],
   "exclude": [
+    "node_modules",
     "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "../razzle.config.js"
-  ]
+    "scripts"
+  ],
+  "filesGlob": ["!node_modules/**"]
 }

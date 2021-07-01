@@ -1,9 +1,9 @@
 import { useStore } from 'effector-react';
-import { $isMobileScreenType } from 'models/screen_type/model';
 import { Button } from 'antd';
-import { filterPostsCleared } from 'models/posts_filters/model';
 import { ClearOutlined } from '@ant-design/icons';
 import React from 'react';
+import { filterPostsCleared } from 'models/posts_filters/model';
+import { $isMobileScreenType } from 'models/screen_type/model';
 
 export const ClearFilters = () => {
   const isMobile = useStore($isMobileScreenType);

@@ -1,12 +1,12 @@
 import React from 'react';
 import { Select } from 'antd';
 import { useStore } from 'effector-react';
-import { $groups } from '../../../../models/groups/model';
+import { css } from '@emotion/css';
+import { $groups } from 'models/groups/model';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
-} from '../../../../models/group_settings/model';
-import { css } from '@emotion/css';
+} from 'models/group_settings/model';
 
 const style = css`
   width: 100%;

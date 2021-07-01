@@ -1,0 +1,43 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry",
+        "corejs": 3,
+        "modules": false,
+        "loose": true,
+        "exclude": ["transform-async-to-generator", "transform-regenerator"]
+      }
+    ],
+    "@babel/preset-typescript",
+    "@babel/preset-react"
+  ],
+  "plugins": [
+    ["module:fast-async", {
+      "env": {
+        "log":false
+      },
+      "compiler": {
+        "promises": true,
+        "generators": false
+      },
+      "runtimePattern":null,
+      "useRuntimeModule":false,
+      "spec": true
+    }],
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    [
+      "babel-plugin-jsx-remove-data-test-id",
+      {
+        "attributes": ["data-test-id", "data-cy"]
+      }
+    ]
+  ]
+}

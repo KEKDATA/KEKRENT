@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Layout, Row, Space, Typography } from 'antd';
 import { css } from '@emotion/css';
 
-import { Pages } from 'pages';
 import { BackToTop } from 'ui/back_to_top/ui';
 import { useScreenType } from 'features/screen_type/feature';
+import { Pages } from './pages';
 
 import './application.css';
+import 'antd/dist/antd.min.css';
 
 const { Header, Footer, Content } = Layout;
 const { Title } = Typography;

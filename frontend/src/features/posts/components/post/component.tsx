@@ -1,7 +1,6 @@
-import { Button, Card, Image } from 'antd';
+import { Button, Card, Image, Typography } from 'antd';
 import React from 'react';
 import { css } from '@emotion/css';
-import { Typography } from 'antd';
 
 import { PostType } from 'contracts/posts/contract';
 import { Description } from '../description/component';

@@ -1,16 +1,16 @@
 import React from 'react';
 import { Space } from 'antd';
+import { useStore } from 'effector-react';
+import { css } from '@emotion/css';
 import {
   $dateFilter,
   $priceFilter,
   filterPostsByDateToggled,
   filterPostsByPriceToggled,
 } from 'models/posts_filters/model';
-import { useStore } from 'effector-react';
 import { $somePartOfPostsLoaded } from 'models/posts/model';
-import { css } from '@emotion/css';
-import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
 import { FilterName } from 'typings/filter_name';
+import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
 import { Filter } from './components/filter/component';
 import { ClearFilters } from './components/clear_filters/component';
 

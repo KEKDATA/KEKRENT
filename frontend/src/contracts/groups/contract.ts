@@ -1,4 +1,4 @@
-import { Record, String, Static, Array } from "runtypes";
+import { Record, String, Static, Array } from 'runtypes';
 
 const Group = Record({
   id: String,

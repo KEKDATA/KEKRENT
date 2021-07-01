@@ -3,6 +3,7 @@ import { useStore } from 'effector-react';
 import { Button, Modal, Checkbox, Divider } from 'antd';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import { FacebookOutlined } from '@ant-design/icons';
 import {
   $checkedGroups,
   $submittedGroups,
@@ -10,7 +11,6 @@ import {
   filterPostsByCheckedGroupsSubmitted,
 } from 'models/posts_filters/model';
 import { $isMobileScreenType } from 'models/screen_type/model';
-import { FacebookOutlined } from '@ant-design/icons';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -26,7 +26,7 @@ export const PostsBySelectedGroups = () => {
 
   const onChange = (list: CheckboxValueType[]) => {
     filterPostsByCheckedGroupsSelected(list as string[]);
-    setIndeterminate(!!list.length && list.length < groupsTitles.length);
+    setIndeterminate(list.length > 0 && list.length < groupsTitles.length);
     setCheckAll(list.length === groupsTitles.length);
   };
 

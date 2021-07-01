@@ -1,7 +1,7 @@
-import React from "react";
-import { InputNumber, Row } from "antd";
+import React from 'react';
+import { InputNumber, Row } from 'antd';
 
-import { groupSettingsEvents } from "../../../../models/group_settings/model";
+import { groupSettingsEvents } from 'models/group_settings/model';
 
 export const NumberOfPosts = ({
   id,
@@ -17,7 +17,7 @@ export const NumberOfPosts = ({
   return (
     <Row>
       <InputNumber
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         placeholder="Number of posts (default: 20)"
         value={numberOfPosts || undefined}
         min={1}

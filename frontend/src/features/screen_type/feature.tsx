@@ -1,5 +1,5 @@
-import { ScreenType, screenTypeChanged } from 'models/screen_type/model';
 import { useEffect } from 'react';
+import { ScreenType, screenTypeChanged } from 'models/screen_type/model';
 
 export enum DefaultBreakpoints {
   Desktop = 992,
@@ -38,7 +38,7 @@ const setScreenType = ({
     }
 
     default: {
-      return;
+      return null;
     }
   }
 };

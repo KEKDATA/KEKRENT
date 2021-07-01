@@ -1,9 +1,9 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 
-import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
 import { css } from '@emotion/css';
 import { Divider, Row, Spin } from 'antd';
+import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
 import { Post } from './components/post/component';
 
 const listStyle = css`

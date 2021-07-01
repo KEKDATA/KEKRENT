@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
-import { AddGroupSettings } from "../add_group_settings/component";
-import { Groups } from "../groups/component";
+import React, { useState } from 'react';
+import { Button, Modal } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
+import { AddGroupSettings } from '../add_group_settings/component';
+import { Groups } from '../groups/component';
 
 export const GroupsSettingsModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

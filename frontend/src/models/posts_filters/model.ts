@@ -91,7 +91,7 @@ sample({
 });
 
 const getPriceFromString = (value: string) =>
-  parseFloat(value.replace(/[^0-9]+/g, '')) || 0;
+  Number.parseFloat(value.replace(/[^0-9]+/g, '')) || 0;
 sample({
   clock: $priceFilter,
   source: $posts,

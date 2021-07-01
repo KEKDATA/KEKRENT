@@ -5,13 +5,11 @@ import {
   forward,
   guard,
 } from 'effector-root';
-import { partPostsApi, postsApi } from 'api/posts';
+import { postsApi } from 'api/posts';
 import { PostsContract, PostsType } from 'contracts/posts/contract';
-import { PartPosts, Posts } from 'typings/posts';
+import { Posts } from 'typings/posts';
 
 export const getPostsFx = createEffect<Posts, PostsType>(postsApi);
-
-const partPostsFx = createEffect<PartPosts, unknown>(partPostsApi);
 
 const postsReceived = guard(getPostsFx.doneData, {
   filter: (response) => PostsContract.guard(response),

@@ -1,6 +1,4 @@
-import { PostsFilter } from 'typings/posts_filters';
 import { useStore } from 'effector-react';
-import { $isMobileScreenType } from 'models/screen_type/model';
 import { Button } from 'antd';
 import React from 'react';
 import {
@@ -10,6 +8,8 @@ import {
   DollarCircleOutlined,
   FilterOutlined,
 } from '@ant-design/icons';
+import { PostsFilter } from 'typings/posts_filters';
+import { $isMobileScreenType } from 'models/screen_type/model';
 import { FilterName } from 'typings/filter_name';
 
 const getIcon = (filter: PostsFilter | null) => {

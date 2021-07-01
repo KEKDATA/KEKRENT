@@ -1,12 +1,13 @@
 import React from 'react';
 import { Select } from 'antd';
-import { $groups } from '../../../../models/groups/model';
+
 import { useStore } from 'effector-react';
 import { css } from '@emotion/css';
+import { $groups } from 'models/groups/model';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
-} from '../../../../models/group_settings/model';
+} from 'models/group_settings/model';
 
 const { Option } = Select;
 
