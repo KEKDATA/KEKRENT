@@ -1,4 +1,4 @@
-import { createEffect, createStore, guard } from 'effector-root';
+import { createEffect, createStore, guard } from 'effector';
 import { getGroupsApi } from 'api/groups';
 import { GroupsContract, GroupsType } from 'contracts/groups/contract';
 

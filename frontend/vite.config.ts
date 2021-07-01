@@ -2,6 +2,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import { babel } from '@rollup/plugin-babel';
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,6 +13,7 @@ export default defineConfig({
       extensions: ['.ts', '.tsx'],
       babelHelpers: 'bundled',
     }),
+    viteCompression(),
   ],
   resolve: {
     alias: {

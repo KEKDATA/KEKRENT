@@ -1,4 +1,4 @@
-import { createEvent, createStore } from 'effector-root';
+import { createEvent, createStore } from 'effector';
 import { nanoid } from 'nanoid';
 import { GroupSettings, Modes } from 'typings/groups';
 

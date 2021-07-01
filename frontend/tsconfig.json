@@ -26,10 +26,9 @@
       "ui/*": ["./src/ui/*"]
     }
   },
-  "include": ["./",
-    ".eslintrc"
-  ],
+  "include": ["./src"],
   "exclude": [
+    "dist",
     "node_modules",
     "build",
     "scripts"

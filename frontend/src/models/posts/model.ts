@@ -4,7 +4,7 @@ import {
   createStore,
   forward,
   guard,
-} from 'effector-root';
+} from 'effector';
 import { postsApi } from 'api/posts';
 import { PostsContract, PostsType } from 'contracts/posts/contract';
 import { Posts } from 'typings/posts';

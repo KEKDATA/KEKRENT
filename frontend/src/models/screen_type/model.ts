@@ -1,4 +1,4 @@
-import { createEvent, restore } from 'effector-root';
+import { createEvent, restore } from 'effector';
 
 export enum ScreenType {
   Mobile = 'mobile',

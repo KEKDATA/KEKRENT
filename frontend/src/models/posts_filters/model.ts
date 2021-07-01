@@ -1,10 +1,4 @@
-import {
-  createEvent,
-  createStore,
-  guard,
-  restore,
-  sample,
-} from 'effector-root';
+import { createEvent, createStore, guard, restore, sample } from 'effector';
 import {
   $nonFiltersPosts,
   $posts,
