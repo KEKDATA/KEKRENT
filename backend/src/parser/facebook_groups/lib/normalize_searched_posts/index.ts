@@ -1,41 +1,17 @@
 import { UniqPosts } from '../../../../types/posts';
 import cheerio from 'cheerio';
-import { mobileSelectors } from '../../../../constants/selectors/mobile';
+import { mobileFacebookSelectors } from '../../../../constants/selectors/facebook/mobile';
 import { nanoid } from 'nanoid';
-import { desktopSelectors } from '../../../../constants/selectors/desktop';
+import { desktopFacebookSelectors } from '../../../../constants/selectors/facebook/desktop';
 import { facebookLinks } from '../../../../constants/links/facebook';
 import Root = cheerio.Root;
 import Cheerio = cheerio.Cheerio;
 import { parsePostDate } from '../parse_post_date';
-
-interface ParseNodeParams {
-  desktopSelector: string;
-  mobileSelector: string;
-  node: cheerio.Cheerio;
-  isDesktop: boolean;
-}
-
-const getSelectedSelector = ({
-  desktopSelector,
-  mobileSelector,
-  isDesktop,
-}: {
-  desktopSelector: ParseNodeParams['desktopSelector'];
-  mobileSelector: ParseNodeParams['mobileSelector'];
-  isDesktop: ParseNodeParams['isDesktop'];
-}) => (isDesktop ? desktopSelector : mobileSelector);
-
-const findNode = ({
-  desktopSelector,
-  mobileSelector,
-  node,
-  isDesktop,
-}: ParseNodeParams) =>
-  node.find(
-    getSelectedSelector({ desktopSelector, mobileSelector, isDesktop }),
-  );
-
-const getText = (params: ParseNodeParams) => findNode(params)?.text();
+import {
+  findNode,
+  getSelectedSelector,
+  getText,
+} from '../../../../lib/dom/node';
 
 export const normalizeSearchedPosts = async ({
   selectedGroupId,
@@ -60,8 +36,8 @@ export const normalizeSearchedPosts = async ({
     const postNode = root(post);
 
     const title = getText({
-      mobileSelector: mobileSelectors.title,
-      desktopSelector: desktopSelectors.title,
+      mobileSelector: mobileFacebookSelectors.title,
+      desktopSelector: desktopFacebookSelectors.title,
       node: postNode,
       isDesktop,
     });
@@ -71,8 +47,8 @@ export const normalizeSearchedPosts = async ({
 
     if (isAuth) {
       const priceContent = findNode({
-        mobileSelector: mobileSelectors.price,
-        desktopSelector: desktopSelectors.priceAuth,
+        mobileSelector: mobileFacebookSelectors.price,
+        desktopSelector: desktopFacebookSelectors.priceAuth,
         node: postNode,
         isDesktop,
       }).contents();
@@ -81,15 +57,15 @@ export const normalizeSearchedPosts = async ({
       address = priceContent[2]?.data ?? '';
     } else {
       address = getText({
-        mobileSelector: mobileSelectors.address,
-        desktopSelector: desktopSelectors.address,
+        mobileSelector: mobileFacebookSelectors.address,
+        desktopSelector: desktopFacebookSelectors.address,
         node: postNode,
         isDesktop,
       });
 
       const priceContent = findNode({
-        mobileSelector: mobileSelectors.price,
-        desktopSelector: desktopSelectors.price,
+        mobileSelector: mobileFacebookSelectors.price,
+        desktopSelector: desktopFacebookSelectors.price,
         node: postNode,
         isDesktop,
       }).contents()[0]?.data;
@@ -97,8 +73,8 @@ export const normalizeSearchedPosts = async ({
         price = priceContent;
       } else {
         price = getText({
-          mobileSelector: mobileSelectors.price,
-          desktopSelector: desktopSelectors.price,
+          mobileSelector: mobileFacebookSelectors.price,
+          desktopSelector: desktopFacebookSelectors.price,
           node: postNode,
           isDesktop,
         });
@@ -106,10 +82,10 @@ export const normalizeSearchedPosts = async ({
     }
 
     const descriptionNode = findNode({
-      mobileSelector: mobileSelectors.description,
+      mobileSelector: mobileFacebookSelectors.description,
       desktopSelector: isAuth
-        ? desktopSelectors.descriptionAuth
-        : desktopSelectors.description,
+        ? desktopFacebookSelectors.descriptionAuth
+        : desktopFacebookSelectors.description,
       node: postNode,
       isDesktop,
     });
@@ -145,12 +121,12 @@ export const normalizeSearchedPosts = async ({
 
     const linkedDescription = isDesktop
       ? ''
-      : postNode.find(mobileSelectors.linkedDescription).text();
+      : postNode.find(mobileFacebookSelectors.linkedDescription).text();
 
     const someTimesAgo = postNode.find(
       getSelectedSelector({
-        desktopSelector: desktopSelectors.someTimesAgo,
-        mobileSelector: mobileSelectors.someTimesAgo,
+        desktopSelector: desktopFacebookSelectors.someTimesAgo,
+        mobileSelector: mobileFacebookSelectors.someTimesAgo,
         isDesktop,
       }),
     );
@@ -159,9 +135,9 @@ export const normalizeSearchedPosts = async ({
     const photosContainer = postNode.find(
       getSelectedSelector({
         desktopSelector: isAuth
-          ? desktopSelectors.photosAuth
-          : desktopSelectors.photos,
-        mobileSelector: mobileSelectors.photosContainer,
+          ? desktopFacebookSelectors.photosAuth
+          : desktopFacebookSelectors.photos,
+        mobileSelector: mobileFacebookSelectors.photosContainer,
         isDesktop,
       }),
     );
@@ -186,16 +162,15 @@ export const normalizeSearchedPosts = async ({
 
     const photosContainerSecondVariant = postNode.find(
       getSelectedSelector({
-        desktopSelector: desktopSelectors.photosSecondVariant,
-        mobileSelector: mobileSelectors.photosContainerSecondVariant,
+        desktopSelector: desktopFacebookSelectors.photosSecondVariant,
+        mobileSelector: mobileFacebookSelectors.photosContainerSecondVariant,
         isDesktop,
       }),
     );
     if (photosContainerSecondVariant && photos.length === 0) {
-      if (isDesktop) {
-        link = `${facebookLinks.desktop}${photosContainerSecondVariant.attr(
-          'href',
-        )}`;
+      const href = photosContainerSecondVariant.attr('href');
+      if (isDesktop && href) {
+        link = `${facebookLinks.desktop}${href}`;
         const src = photosContainerSecondVariant.find('img').attr('src');
 
         if (src) {
@@ -204,7 +179,7 @@ export const normalizeSearchedPosts = async ({
       } else {
         photosContainerSecondVariant.children().each((_, photoContainer) => {
           const src = root(photoContainer)
-            .find(mobileSelectors.photo)
+            .find(mobileFacebookSelectors.photo)
             .attr('src');
 
           if (src) {
@@ -212,6 +187,10 @@ export const normalizeSearchedPosts = async ({
           }
         });
       }
+    }
+
+    if (!link) {
+      return;
     }
 
     let timestamp = new Date().getTime();
@@ -222,8 +201,8 @@ export const normalizeSearchedPosts = async ({
         getSelectedSelector({
           mobileSelector: '',
           desktopSelector: isAuth
-            ? desktopSelectors.dateAuth
-            : desktopSelectors.date,
+            ? desktopFacebookSelectors.dateAuth
+            : desktopFacebookSelectors.date,
           isDesktop,
         }),
       );
@@ -241,6 +220,10 @@ export const normalizeSearchedPosts = async ({
       const date = publishTime ? new Date(publishTime * 1000) : null;
       timestamp = date?.getTime() ?? timestamp;
       publishDate = date?.toLocaleDateString('en-US') ?? someTimesAgo.text();
+    }
+
+    if (!timestamp) {
+      return;
     }
 
     const resultedDescription = descriptions;

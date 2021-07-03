@@ -5,7 +5,7 @@ import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings
 import { UniqPosts } from '../../types/posts';
 import { getPredictedPosts } from './lib/predict';
 import { facebookLinks } from '../../constants/links/facebook';
-import { desktopSelectors } from '../../constants/selectors/desktop';
+import { desktopFacebookSelectors } from '../../constants/selectors/facebook/desktop';
 import cheerio from 'cheerio';
 import Cheerio = cheerio.Cheerio;
 import Root = cheerio.Root;
@@ -182,7 +182,7 @@ const getParsedFacebookGroups = async ({
             document
               .querySelectorAll(selector)
               .forEach((node: HTMLButtonElement) => node?.click()),
-          [desktopSelectors.showAllDescription],
+          [desktopFacebookSelectors.showAllDescription],
         );
       }
     }

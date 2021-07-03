@@ -7,7 +7,7 @@ import { getFilteredScheduledPosts } from './lib/get_filtered_scheduled_posts';
 export const facebookPostsRoute = () => {
   return initializedFastify.get<{
     Querystring: PostsSettings;
-  }>('/posts', async request => {
+  }>('/parse/posts', async request => {
     console.info(`Posts by pid ${process.pid} requested`);
 
     try {

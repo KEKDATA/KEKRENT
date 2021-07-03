@@ -23,7 +23,8 @@
       {
         "tryExtensions": [".ts"]
       }
-    ]
+    ],
+    "node/no-unsupported-features/es-builtins": 0
   },
   "settings": {
     "import/parsers": {

@@ -1,5 +1,5 @@
 import { sleep } from '../../../../lib/timeout/sleep';
-import { mobileSelectors } from '../../../../constants/selectors/mobile';
+import { mobileFacebookSelectors } from '../../../../constants/selectors/facebook/mobile';
 import { Page } from 'playwright';
 import { asyncGenerator } from '../../../../lib/generators/async_generator';
 
@@ -24,7 +24,7 @@ export const searchPosts = async ({
     if (!isDesktop) {
       await sleep(100);
 
-      const loadMore = await page.$(mobileSelectors.moreItem);
+      const loadMore = await page.$(mobileFacebookSelectors.moreItem);
       if (loadMore) {
         await loadMore.click();
       }
@@ -32,7 +32,9 @@ export const searchPosts = async ({
       if (!noisyPopupClosed) {
         await sleep(100);
 
-        const noisyPopup = await page.$(mobileSelectors.noisyLoginPopup);
+        const noisyPopup = await page.$(
+          mobileFacebookSelectors.noisyLoginPopup,
+        );
         if (noisyPopup) {
           await noisyPopup.click();
           updatedNoisyPopupStatus = true;
@@ -41,7 +43,7 @@ export const searchPosts = async ({
 
       await sleep(100);
 
-      await page.waitForSelector(mobileSelectors.withoutLoader, {
+      await page.waitForSelector(mobileFacebookSelectors.withoutLoader, {
         timeout: 10000,
       });
     } else {

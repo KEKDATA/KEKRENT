@@ -1,10 +1,10 @@
 import { Page } from 'playwright';
-import { desktopSelectors } from '../../../../constants/selectors/desktop';
+import { desktopFacebookSelectors } from '../../../../constants/selectors/facebook/desktop';
 import { privatePass, privatePhone } from '../../../../../private/data';
 import { sleep } from '../../../../lib/timeout/sleep';
 
 export const authUser = async (page: Page, isDesktop: boolean) => {
-  const authBar = await page.$(desktopSelectors.authBar);
+  const authBar = await page.$(desktopFacebookSelectors.authBar);
 
   if (!authBar) {
     try {
@@ -12,7 +12,7 @@ export const authUser = async (page: Page, isDesktop: boolean) => {
       await page.fill('input[name="pass"]', privatePass, { timeout: 1500 });
 
       if (isDesktop) {
-        await page.click(desktopSelectors.loginButton);
+        await page.click(desktopFacebookSelectors.loginButton);
       }
 
       await sleep(1000);

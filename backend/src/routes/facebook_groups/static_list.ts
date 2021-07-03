@@ -12,10 +12,22 @@ export const staticListFacebookGroups = [
     posts: '~110',
   },
   {
+    id: 'All.Phuket.Rental',
+    title: 'All.Phuket.Rental',
+    size: '12k+',
+    posts: '~130',
+  },
+  {
+    id: '1412722952361145',
+    title: 'Phuket Long Term Rentals Property Under 20 000 THB/Month',
+    size: '5k+',
+    posts: '~50',
+  },
+  {
     id: '952284168117431',
     title: 'Phuket Real Estate Rent and Sale',
     size: '5k+',
-    posts: '~110',
+    posts: '~70',
   },
   {
     id: 'phuketrentsale',
@@ -53,14 +65,6 @@ export const staticListFacebookGroups = [
     size: '3k+',
     posts: '~60',
   },
-  // TAI LANG ONLY
-  // {
-  //   id: '1857287744498018',
-  //   title:
-  //     'หาห้องเช่าบ้านเช่าในจังหวัดภูเก็ต Rooms and Houses for Rent in Phuket',
-  //   size: '76k+',
-  //   posts: '~110',
-  // },
   {
     id: '1453127094951019',
     title: 'Phuket property house,land ,for sale and rent.',

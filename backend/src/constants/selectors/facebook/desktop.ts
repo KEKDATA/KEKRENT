@@ -31,7 +31,7 @@ const loginButtonSelector =
 const authBarSelector =
   '.ehxjyohh.kr520xx4.poy2od1o.b3onmgus.hv4rvrfc.n7fi1qx3';
 
-export const desktopSelectors = {
+export const desktopFacebookSelectors = {
   someTimesAgo: someTimesAgoSelector,
   post: postSelector,
   title: titleSelector,

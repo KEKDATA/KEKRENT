@@ -35,7 +35,11 @@ export const scheduleParseGroups = () => {
     for await (const group of staticListFacebookGroups) {
       const { id } = group;
 
-      await getAllParsedFacebookGroups(id);
+      try {
+        await getAllParsedFacebookGroups(id);
+      } catch (err) {
+        console.error(err);
+      }
     }
   });
 };
