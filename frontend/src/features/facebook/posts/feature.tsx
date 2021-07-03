@@ -1,32 +1,11 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 
-import { css } from '@emotion/css';
 import { Divider, Row, Spin } from 'antd';
 import { $posts, $somePartOfPostsLoaded, getPostsFx } from 'models/posts/model';
+import { CardList } from 'ui/card/ui';
+import { cardStyles } from 'ui/card/styles';
 import { Post } from './components/post/component';
-
-const listStyle = css`
-  list-style: none;
-  padding: 0;
-  margin: 0 20px;
-
-  @media screen and (min-width: 768px) {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  &[data-loading='true'] {
-    display: block;
-  }
-`;
-
-const postStyle = css`
-  @media screen and (min-width: 768px) {
-    max-width: 49%;
-  }
-`;
 
 export const FacebookPosts = () => {
   const posts = useStore($posts);
@@ -36,18 +15,18 @@ export const FacebookPosts = () => {
   const isTotallySomePostsLoading = isLoading && !somePartOfPostsLoaded;
 
   return (
-    <ul className={listStyle} data-loading={isTotallySomePostsLoading}>
+    <CardList dataLoading={isTotallySomePostsLoading}>
       {isTotallySomePostsLoading && (
         <Row justify="center">
           <Spin size="large" tip="Loading" />
         </Row>
       )}
       {posts.map((post) => (
-        <li key={post.id} className={postStyle}>
+        <li key={post.id} className={cardStyles.post}>
           <Post post={post} />
           <Divider />
         </li>
       ))}
-    </ul>
+    </CardList>
   );
 };

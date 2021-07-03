@@ -17,7 +17,7 @@ const Post = Record({
   description: Array(String),
   publishDate: String,
   timestamp: Number,
-  link: Optional(String),
+  link: String,
   photos: Array(String),
   groupTitle: Optional(String),
 });

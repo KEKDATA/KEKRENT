@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
-import { Button, Card, Divider, Image, Typography } from 'antd';
+import { Button, Card, Collapse, Divider, Typography } from 'antd';
 import { useList } from 'effector-react';
 import TruncateMarkup from 'react-truncate-markup';
+import { css } from '@emotion/css';
 import { $fazwaz } from 'models/fazwaz/model';
+import { CardExtra, CardImages, CardList, CardTitle } from 'ui/card/ui';
 import { cardStyles } from 'ui/card/styles';
+import { PostFeatures } from 'features/fazwaz/post_features/component';
+import { BasicInforms } from 'features/fazwaz/basic_informs/component';
 
+const { Panel } = Collapse;
 const { Title, Link } = Typography;
+
+const collapseStyle = css`
+  .ant-collapse-content-box {
+    padding: 0 !important;
+  }
+`;
 
 const Description = ({ description }: { description: string }) => {
   const [isShowMore, setShowMoreStatus] = useState(false);
@@ -13,7 +24,7 @@ const Description = ({ description }: { description: string }) => {
   const handleShowMore = () => setShowMoreStatus(true);
 
   if (isShowMore) {
-    return <span>{description}</span>;
+    return <span className={cardStyles.description}>{description}</span>;
   }
 
   return (
@@ -25,48 +36,22 @@ const Description = ({ description }: { description: string }) => {
         </Button>
       }
     >
-      <span>{description}</span>
+      <span className={cardStyles.description}>{description}</span>
     </TruncateMarkup>
   );
 };
 
 export const Fazwaz = () => {
   return (
-    <ul className={cardStyles.list}>
+    <CardList>
       {useList($fazwaz, (fazwazPost) => {
         return (
-          <li key={fazwazPost.id}>
+          <li className={cardStyles.post} key={fazwazPost.id}>
             <Card
-              title={
-                <Title className={cardStyles.postTitle} level={3}>
-                  {fazwazPost.title}
-                </Title>
-              }
-              extra={
-                <Button
-                  className={cardStyles.openPost}
-                  data-desktop="true"
-                  type="link"
-                  href={fazwazPost.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  size="large"
-                >
-                  Open post
-                </Button>
-              }
+              title={<CardTitle title={fazwazPost.title} />}
+              extra={<CardExtra isDesktop href={fazwazPost.link} />}
             >
-              <Button
-                className={cardStyles.openPost}
-                data-desktop="false"
-                type="link"
-                href={fazwazPost.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                size="large"
-              >
-                Open post
-              </Button>
+              <CardExtra isDesktop={false} href={fazwazPost.link} />
               <Title level={5}>
                 <Link
                   href={`https://www.google.ru/maps/place/${fazwazPost.location}`}
@@ -78,43 +63,20 @@ export const Fazwaz = () => {
               </Title>
               <Title level={5}>{fazwazPost.price}</Title>
               <Description description={fazwazPost.description} />
-              <div className={cardStyles.images}>
-                {fazwazPost.photos.map((photo) => (
-                  <div key={photo} className={cardStyles.imageContainer}>
-                    <Image
-                      className={cardStyles.image}
-                      loading="lazy"
-                      src={photo}
-                      alt="some photo"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div>
-                {fazwazPost.basicInforms.map((basicInfo) => (
-                  <div key={basicInfo.topic}>
-                    <div>{basicInfo.topic}</div>
-                    <div>{basicInfo.info}</div>
-                  </div>
-                ))}
-              </div>
-              <div>
-                {fazwazPost.features.map((feature) => (
-                  <div key={feature.text}>
-                    <img
-                      src={feature.image}
-                      loading="lazy"
-                      alt={feature.text}
-                    />
-                    <div>{feature.text}</div>
-                  </div>
-                ))}
-              </div>
+              <CardImages images={fazwazPost.photos} />
+              <Collapse className={collapseStyle} ghost>
+                <Panel header="Features" key="1">
+                  <PostFeatures features={fazwazPost.features} />
+                </Panel>
+                <Panel header="Basic Information" key="2">
+                  <BasicInforms basicInforms={fazwazPost.basicInforms} />
+                </Panel>
+              </Collapse>
             </Card>
             <Divider />
           </li>
         );
       })}
-    </ul>
+    </CardList>
   );
 };

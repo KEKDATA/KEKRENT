@@ -29,3 +29,6 @@ export const $screenType = $currentScreenType.map((currentType) => {
 export const $isMobileScreenType = $currentScreenType.map(
   (currentType) => currentType === ScreenType.Mobile,
 );
+export const $isDesktopScreenType = $currentScreenType.map(
+  (currentType) => currentType === ScreenType.Desktop,
+);

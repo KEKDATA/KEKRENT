@@ -59,6 +59,18 @@ const openPost = css`
   }
 `;
 
+const description = css`
+  padding: 0;
+  margin: 4px 0 10px 0;
+  display: block;
+`;
+
+const post = css`
+  @media screen and (min-width: 768px) {
+    max-width: 49%;
+  }
+`;
+
 export const cardStyles = {
   postTitle,
   openPost,
@@ -66,4 +78,6 @@ export const cardStyles = {
   images,
   imageContainer,
   list,
+  description,
+  post,
 };

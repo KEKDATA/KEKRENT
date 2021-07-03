@@ -1,9 +1,9 @@
-import { Button, Card, Image, Typography } from 'antd';
+import { Card, Typography } from 'antd';
 import React from 'react';
 import { css } from '@emotion/css';
 
 import { PostType } from 'contracts/posts/contract';
-import { cardStyles } from 'ui/card/styles';
+import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 import { Description } from '../description/component';
 
 const postStyle = css`
@@ -17,36 +17,10 @@ export const Post = ({ post }: { post: PostType }) => {
     <Card
       hoverable
       className={postStyle}
-      title={
-        <Title className={cardStyles.postTitle} level={3}>
-          {post.title}
-        </Title>
-      }
-      extra={
-        <Button
-          className={cardStyles.openPost}
-          data-desktop="true"
-          type="link"
-          href={post.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="large"
-        >
-          Open post
-        </Button>
-      }
+      title={<CardTitle title={post.title} />}
+      extra={<CardExtra isDesktop href={post.link} />}
     >
-      <Button
-        className={cardStyles.openPost}
-        data-desktop="false"
-        type="link"
-        href={post.link}
-        target="_blank"
-        rel="noopener noreferrer"
-        size="large"
-      >
-        Open post
-      </Button>
+      <CardExtra isDesktop={false} href={post.link} />
       {post.publishDate && <Title level={4}>{post.publishDate}</Title>}
       {post.address && (
         <Title level={5}>
@@ -61,18 +35,7 @@ export const Post = ({ post }: { post: PostType }) => {
       )}
       <Title level={5}>{post.price}</Title>
       <Description description={post.description} />
-      <div className={cardStyles.images}>
-        {post.photos.map((photo) => (
-          <div key={photo} className={cardStyles.imageContainer}>
-            <Image
-              className={cardStyles.image}
-              loading="lazy"
-              src={photo}
-              alt="some photo"
-            />
-          </div>
-        ))}
-      </div>
+      <CardImages images={post.photos} />
     </Card>
   );
 };

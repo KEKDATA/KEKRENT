@@ -160,12 +160,13 @@ export const getParsedFazwazRent = async ({
 
       basicInformsNode.children().each((_, basicInfoElement) => {
         const basicInfoNode = root(basicInfoElement);
-        const topic = getText({
+
+        const topic = findNode({
           desktopSelector: '',
           mobileSelector: fazwazRentMobileSelectors.basicInfoTopic,
           node: basicInfoNode,
           isDesktop,
-        });
+        }).contents()[0]?.data;
         const info = getText({
           desktopSelector: '',
           mobileSelector: fazwazRentMobileSelectors.basicInfo,

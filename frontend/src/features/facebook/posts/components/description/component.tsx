@@ -3,11 +3,7 @@ import TruncateMarkup from 'react-truncate-markup';
 import { Button } from 'antd';
 import { css } from '@emotion/css';
 import { findPhoneNumbersInText } from 'libphonenumber-js';
-
-const listStyle = css`
-  padding: 0;
-  margin: 4px 0 10px 0;
-`;
+import { cardStyles } from 'ui/card/styles';
 
 const descriptionStyle = css`
   display: block;
@@ -20,7 +16,7 @@ export const Description = ({ description }: { description: string[] }) => {
 
   const list = useMemo(
     () => (
-      <div className={listStyle}>
+      <div className={cardStyles.description}>
         {description.map((partOfDescription, index) => {
           const aboutSearchedNumber = findPhoneNumbersInText(
             partOfDescription,
