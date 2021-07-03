@@ -8,7 +8,7 @@ import { CacheKeys } from '../../constants/cache_keys';
 const fourHours = 14400;
 
 export const fazwazRentRoute = () => {
-  return initializedFastify.get('/fazwaz', async (request, reply) => {
+  return initializedFastify.get('/parse/fazwaz', async (request, reply) => {
     console.info(`Fazwaz by pid ${process.pid} requested`);
 
     const scheduledPosts: FazwazPosts = await get(CacheKeys.Fazwaz);

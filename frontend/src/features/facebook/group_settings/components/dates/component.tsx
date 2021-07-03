@@ -1,6 +1,6 @@
 import React from 'react';
 import { DatePicker, Space } from 'antd';
-import { groupSettingsEvents } from '../../../../models/group_settings/model';
+import { groupSettingsEvents } from 'models/group_settings/model';
 
 const { RangePicker } = DatePicker;
 

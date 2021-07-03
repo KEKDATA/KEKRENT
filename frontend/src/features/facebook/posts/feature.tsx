@@ -28,7 +28,7 @@ const postStyle = css`
   }
 `;
 
-export const Posts = () => {
+export const FacebookPosts = () => {
   const posts = useStore($posts);
   const isLoading = useStore(getPostsFx.pending);
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);

@@ -3,52 +3,11 @@ import React from 'react';
 import { css } from '@emotion/css';
 
 import { PostType } from 'contracts/posts/contract';
+import { cardStyles } from 'ui/card/styles';
 import { Description } from '../description/component';
 
 const postStyle = css`
   cursor: initial !important;
-`;
-
-const imageStyle = css`
-  width: 300px !important;
-  height: 200px !important;
-`;
-
-const imageContainerStyle = css`
-  width: auto;
-`;
-
-const imagesStyle = css`
-  display: flex;
-  flex-direction: row;
-  overflow-y: auto;
-`;
-
-const openPostStyle = css`
-  &[data-desktop='false'] {
-    display: none !important;
-  }
-
-  @media screen and (max-width: 768px) {
-    &[data-desktop='true'] {
-      display: none !important;
-    }
-
-    &[data-desktop='false'] {
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      margin: -12px 0 0 0;
-    }
-  }
-`;
-
-const postTitleStyle = css`
-  white-space: initial;
-
-  @media screen and (max-width: 768px) {
-    font-size: 22px !important;
-  }
 `;
 
 const { Title, Link } = Typography;
@@ -59,13 +18,13 @@ export const Post = ({ post }: { post: PostType }) => {
       hoverable
       className={postStyle}
       title={
-        <Title className={postTitleStyle} level={3}>
+        <Title className={cardStyles.postTitle} level={3}>
           {post.title}
         </Title>
       }
       extra={
         <Button
-          className={openPostStyle}
+          className={cardStyles.openPost}
           data-desktop="true"
           type="link"
           href={post.link}
@@ -78,7 +37,7 @@ export const Post = ({ post }: { post: PostType }) => {
       }
     >
       <Button
-        className={openPostStyle}
+        className={cardStyles.openPost}
         data-desktop="false"
         type="link"
         href={post.link}
@@ -102,11 +61,11 @@ export const Post = ({ post }: { post: PostType }) => {
       )}
       <Title level={5}>{post.price}</Title>
       <Description description={post.description} />
-      <div className={imagesStyle}>
+      <div className={cardStyles.images}>
         {post.photos.map((photo) => (
-          <div key={photo} className={imageContainerStyle}>
+          <div key={photo} className={cardStyles.imageContainer}>
             <Image
-              className={imageStyle}
+              className={cardStyles.image}
               loading="lazy"
               src={photo}
               alt="some photo"

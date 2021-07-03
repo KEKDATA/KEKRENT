@@ -14,7 +14,7 @@ const wrapperModalStyle = css`
   margin-left: 12px;
 `;
 
-export const GroupSettings = () => {
+export const FacebookGroupSettings = () => {
   return (
     <>
       <SelectGroups />

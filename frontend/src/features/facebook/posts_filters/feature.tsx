@@ -18,7 +18,7 @@ const style = css`
   margin: 0 20px 20px 20px;
 `;
 
-export const PostsFilters = () => {
+export const FacebookPostsFilters = () => {
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
 
   const priceFilter = useStore($priceFilter);

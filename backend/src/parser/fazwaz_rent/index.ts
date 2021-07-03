@@ -6,6 +6,15 @@ import { fazwazRentMobileSelectors } from '../../constants/selectors/fazwaz_rent
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
 import { FazwazPost, FazwazPosts } from '../../types/fazwaz';
 import { asyncGenerator } from '../../lib/generators/async_generator';
+import { nanoid } from 'nanoid';
+
+interface ResultBypage {
+  photos: FazwazPost['photos'];
+  price: FazwazPost['price'];
+  title: FazwazPost['title'];
+  location: FazwazPost['location'];
+  link: FazwazPost['link'];
+}
 
 const perPage = 30;
 const isDesktop = false;
@@ -20,7 +29,7 @@ export const getParsedFazwazRent = async ({
   });
   const context = await browser.newContext(devices['iPhone X']);
 
-  const totalParsedPosts: FazwazPosts = [];
+  const totalParsedPosts = [];
 
   for await (const page of asyncGenerator(
     Math.ceil(countOfSearchItems / perPage),
@@ -28,7 +37,7 @@ export const getParsedFazwazRent = async ({
     const pageContext = await context.newPage();
     await pageContext.goto(`${fazwazRentLink}&page=${page + 1}`);
 
-    const resultByPage: FazwazPosts = [];
+    const resultByPage: ResultBypage[] = [];
 
     const contentPage = await pageContext.evaluate(getHTML);
     const root = cheerio.load(contentPage);
@@ -102,7 +111,7 @@ export const getParsedFazwazRent = async ({
     totalParsedPosts.push(...resultByPage);
   }
 
-  const infoAboutPosts = [];
+  const infoAboutPosts: FazwazPosts = [];
 
   for await (const postNum of asyncGenerator(totalParsedPosts.length)) {
     try {
@@ -174,6 +183,7 @@ export const getParsedFazwazRent = async ({
 
       infoAboutPosts.push({
         ...parsedPost,
+        id: nanoid(),
         description,
         features,
         basicInforms,
