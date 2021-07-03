@@ -23,6 +23,8 @@ const basicInfoItem = '.basic-information__item';
 const basicInfoTopic = '.basic-information-topic';
 const basicInfo = '.basic-information-info';
 
+const availableNow = '.available_now';
+
 export const fazwazRentMobileSelectors = {
   searchItem,
   imagesContainer,
@@ -37,4 +39,5 @@ export const fazwazRentMobileSelectors = {
   basicInfoTopic,
   basicInforms,
   basicInfoItem,
+  availableNow,
 };

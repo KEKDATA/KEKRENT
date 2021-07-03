@@ -1,4 +1,4 @@
-import { Record, String, Static, Array, Optional } from 'runtypes';
+import { Record, String, Static, Array, Optional, Boolean } from 'runtypes';
 
 const Fazwaz = Record({
   id: String,
@@ -8,6 +8,12 @@ const Fazwaz = Record({
   location: String,
   link: String,
   description: String,
+  availableNow: String,
+  petsInfo: Record({
+    isAllowed: Boolean,
+    isNA: Boolean,
+    description: String,
+  }),
   features: Array(Record({ text: String, image: Optional(String) })),
   basicInforms: Array(Record({ topic: String, info: String })),
 });

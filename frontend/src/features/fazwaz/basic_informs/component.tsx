@@ -7,14 +7,17 @@ const { Text } = Typography;
 
 const basicInformsStyle = css`
   list-style: none;
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-gap: 10px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;
 
 const basicInformStyle = css`
-  width: 100px;
+  width: 140px;
   margin-bottom: 4px;
+  margin-right: 12px;
 `;
 
 export const BasicInforms = ({

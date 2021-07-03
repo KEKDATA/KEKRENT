@@ -4,11 +4,11 @@ import { getHTML } from '../../lib/dom/get_html';
 import cheerio from 'cheerio';
 import { fazwazRentMobileSelectors } from '../../constants/selectors/fazwaz_rent/mobile';
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
-import { FazwazPost, FazwazPosts } from '../../types/fazwaz';
+import { FazwazPost, FazwazPosts, PetsInfo } from '../../types/fazwaz';
 import { asyncGenerator } from '../../lib/generators/async_generator';
 import { nanoid } from 'nanoid';
 
-interface ResultBypage {
+interface ResultByPage {
   photos: FazwazPost['photos'];
   price: FazwazPost['price'];
   title: FazwazPost['title'];
@@ -37,7 +37,7 @@ export const getParsedFazwazRent = async ({
     const pageContext = await context.newPage();
     await pageContext.goto(`${fazwazRentLink}&page=${page + 1}`);
 
-    const resultByPage: ResultBypage[] = [];
+    const resultByPage: ResultByPage[] = [];
 
     const contentPage = await pageContext.evaluate(getHTML);
     const root = cheerio.load(contentPage);
@@ -149,6 +149,12 @@ export const getParsedFazwazRent = async ({
         features.push({ text: text.replace(/\n/g, ''), image });
       });
 
+      let petsInfo: PetsInfo = {
+        isAllowed: false,
+        isNA: false,
+        description: 'N/A',
+      };
+
       const basicInforms: Array<{ topic: string; info: string }> = [];
 
       const basicInformsNode = findNode({
@@ -175,11 +181,28 @@ export const getParsedFazwazRent = async ({
         });
 
         if (topic && info) {
+          if (topic === 'Pets') {
+            const isNotAllowed = info.includes('Not Allowed');
+            const isNA = info.includes('N/A');
+
+            petsInfo = {
+              isAllowed: !isNotAllowed && !isNA,
+              isNA,
+              description: info,
+            };
+          }
           basicInforms.push({
             topic: topic.replace(/\n/g, ''),
             info: info.replace(/\n/g, ''),
           });
         }
+      });
+
+      const availableNow = getText({
+        mobileSelector: fazwazRentMobileSelectors.availableNow,
+        desktopSelector: '',
+        isDesktop,
+        node: body,
       });
 
       infoAboutPosts.push({
@@ -188,6 +211,8 @@ export const getParsedFazwazRent = async ({
         description,
         features,
         basicInforms,
+        availableNow,
+        petsInfo,
       });
     } catch (err) {
       console.error(err);

@@ -8,6 +8,8 @@ import { CardExtra, CardImages, CardList, CardTitle } from 'ui/card/ui';
 import { cardStyles } from 'ui/card/styles';
 import { PostFeatures } from 'features/fazwaz/post_features/component';
 import { BasicInforms } from 'features/fazwaz/basic_informs/component';
+import { Icons } from 'assets/icons';
+import { Pet } from 'features/fazwaz/pets/component';
 
 const { Panel } = Collapse;
 const { Title, Link } = Typography;
@@ -51,6 +53,7 @@ export const Fazwaz = () => {
               title={<CardTitle title={fazwazPost.title} />}
               extra={<CardExtra isDesktop href={fazwazPost.link} />}
             >
+              <Pet petsInfo={fazwazPost.petsInfo} />
               <CardExtra isDesktop={false} href={fazwazPost.link} />
               <Title level={5}>
                 <Link
@@ -62,6 +65,7 @@ export const Fazwaz = () => {
                 </Link>
               </Title>
               <Title level={5}>{fazwazPost.price}</Title>
+              <Title level={5}>{fazwazPost.availableNow}</Title>
               <Description description={fazwazPost.description} />
               <CardImages images={fazwazPost.photos} />
               <Collapse className={collapseStyle} ghost>

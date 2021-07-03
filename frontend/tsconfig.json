@@ -23,7 +23,8 @@
       "models/*": ["./src/models/*"],
       "pages/*": ["./src/pages/*"],
       "typings/*": ["./src/typings/*"],
-      "ui/*": ["./src/ui/*"]
+      "ui/*": ["./src/ui/*"],
+      "assets/*": ["./src/assets/*"]
     }
   },
   "include": ["./src"],

@@ -9,13 +9,16 @@ const featuresStyles = css`
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   padding: 0;
+
+  @media screen and (max-width: 768px) {
+    justify-content: space-between;
+  }
 `;
 
 const featureStyle = css`
   text-align: center;
-  width: 100px;
+  width: 120px;
   margin-bottom: 12px;
 
   @media screen and (max-width: 768px) {

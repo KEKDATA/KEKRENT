@@ -5,7 +5,7 @@ import { cardStyles } from 'ui/card/styles';
 const { Title } = Typography;
 
 export const CardTitle = ({ title }: { title: string }) => (
-  <Title className={cardStyles.postTitle} level={3}>
+  <Title className={cardStyles.postTitle} level={4}>
     {title}
   </Title>
 );
