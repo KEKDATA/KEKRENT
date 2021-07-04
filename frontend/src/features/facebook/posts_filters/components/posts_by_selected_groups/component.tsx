@@ -1,5 +1,6 @@
 import React from 'react';
 import { useStore } from 'effector-react';
+import { FacebookOutlined } from '@ant-design/icons';
 import {
   $checkedGroups,
   $submittedGroups,
@@ -14,6 +15,8 @@ export const PostsBySelectedGroups = () => {
 
   return (
     <ModalSelectFilters
+      mobileTitle={<FacebookOutlined />}
+      title="Select groups"
       checkedGroups={checkedGroups}
       titles={groupsTitles}
       submitCallback={filterPostsByCheckedGroupsSubmitted}

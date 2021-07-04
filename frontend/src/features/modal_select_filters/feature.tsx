@@ -10,14 +10,18 @@ const CheckboxGroup = Checkbox.Group;
 
 export const ModalSelectFilters = ({
   titles,
+  mobileTitle,
   checkedGroups,
   onChangeCallback,
   submitCallback,
+  title,
 }: {
   titles: string[];
   checkedGroups: string[];
   onChangeCallback: (list: string[]) => void;
   submitCallback: () => void;
+  title: string;
+  mobileTitle: JSX.Element | string;
 }) => {
   const isMobile = useStore($isMobileScreenType);
 
@@ -54,11 +58,11 @@ export const ModalSelectFilters = ({
   return (
     <>
       <Button type="primary" shape="round" onClick={showModal}>
-        {isMobile && <FacebookOutlined />}
-        {!isMobile && 'Select groups'}
+        {isMobile && mobileTitle}
+        {!isMobile && title}
       </Button>
       <Modal
-        title="Select groups"
+        title={title}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleClose}

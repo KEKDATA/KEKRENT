@@ -14,6 +14,8 @@ export const Features = () => {
 
   return (
     <ModalSelectFilters
+      mobileTitle="Features"
+      title="Select features"
       checkedGroups={checkedFeatures}
       titles={features}
       submitCallback={filterFazwazFeaturesSubmitted}
