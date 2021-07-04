@@ -5,7 +5,6 @@ const searchItem = '.result-search__item';
 // Include Array images
 const imagesContainer = '.embla__container';
 const link = '.link-unit';
-const price = '.mobile-block-price';
 const title = '.unit-info__description-title';
 const location = '.location-unit';
 
@@ -25,6 +24,11 @@ const basicInfo = '.basic-information-info';
 
 const availableNow = '.available_now';
 
+const price = '.header-detail-page-price__rate';
+
+const projectHighlight = '.project-highlight';
+const projectHighlightTitle = '.highlight__title';
+
 export const fazwazRentMobileSelectors = {
   searchItem,
   imagesContainer,
@@ -40,4 +44,6 @@ export const fazwazRentMobileSelectors = {
   basicInforms,
   basicInfoItem,
   availableNow,
+  projectHighlight,
+  projectHighlightTitle,
 };

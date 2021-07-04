@@ -3,6 +3,7 @@ import { PostMode, Posts, PostsSettings } from '../../types/posts';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
 import { get, set } from 'node-cache-redis';
 import { getFilteredScheduledPosts } from './lib/get_filtered_scheduled_posts';
+import { CacheTime } from '../../constants/cache_time';
 
 export const facebookPostsRoute = () => {
   return initializedFastify.get<{
@@ -70,7 +71,12 @@ export const facebookPostsRoute = () => {
         groupTitle,
       });
 
-      set(cacheKey, actualPosts, 1800);
+      /**
+       * Тут заточенные посты под конкретный тип парсинга,
+       * если мы не закешировали во время все посты нужной группы,
+       * то кешируем определенный пак на 20 минут
+       */
+      set(cacheKey, actualPosts, 1200);
 
       return actualPosts;
     } catch (err) {

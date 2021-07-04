@@ -9,7 +9,7 @@ import {
   $submittedGroups,
   filterPostsByCheckedGroupsSelected,
   filterPostsByCheckedGroupsSubmitted,
-} from 'models/posts_filters/model';
+} from 'models/facebook/posts_filters/model';
 import { $isMobileScreenType } from 'models/screen_type/model';
 
 const CheckboxGroup = Checkbox.Group;

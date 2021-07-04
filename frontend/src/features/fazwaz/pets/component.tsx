@@ -36,11 +36,11 @@ export const Pet = ({ petsInfo }: { petsInfo: FazwazType['petsInfo'] }) => {
   return (
     <Tooltip title={description}>
       <div className={containerStyle} data-na-pet={isNA}>
-        {isAllowed && <Icons.Pet width={38} height={38} />}
+        {isAllowed && <Icons.Pet width={38} height={38} fill="black" />}
         {isNA && (
           <div>
             <QuestionOutlined className={questionStyle} />
-            <Icons.Pet width={38} height={38} />
+            <Icons.Pet width={38} height={38} fill="black" />
           </div>
         )}
         {!isAllowed && !isNA && <Icons.NoPet width={38} height={38} />}

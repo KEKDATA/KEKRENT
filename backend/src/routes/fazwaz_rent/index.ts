@@ -4,8 +4,7 @@ import { initializedFastify } from '../../config';
 import { getParsedFazwazRent } from '../../parser/fazwaz_rent';
 import { FazwazPosts } from '../../types/fazwaz';
 import { CacheKeys } from '../../constants/cache_keys';
-
-const fourHours = 14400;
+import { CacheTime } from '../../constants/cache_time';
 
 export const fazwazRentRoute = () => {
   return initializedFastify.get('/parse/fazwaz', async (request, reply) => {
@@ -14,9 +13,9 @@ export const fazwazRentRoute = () => {
     const scheduledPosts: FazwazPosts = await get(CacheKeys.Fazwaz);
 
     if (!scheduledPosts) {
-      const posts = await getParsedFazwazRent({ countOfSearchItems: 60 });
+      const posts = await getParsedFazwazRent({ countOfSearchItems: 90 });
 
-      set(CacheKeys.Fazwaz, posts, fourHours);
+      set(CacheKeys.Fazwaz, posts, CacheTime.Fazwaz);
 
       return posts;
     }

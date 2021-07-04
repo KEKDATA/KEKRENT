@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputNumber, Row } from 'antd';
 import { css } from '@emotion/css';
-import { groupSettingsEvents } from 'models/group_settings/model';
+import { groupSettingsEvents } from 'models/facebook/group_settings/model';
 
 const style = css`
   width: 125px !important;

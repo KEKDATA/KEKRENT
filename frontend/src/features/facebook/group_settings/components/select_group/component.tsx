@@ -3,11 +3,11 @@ import { Select } from 'antd';
 
 import { useStore } from 'effector-react';
 import { css } from '@emotion/css';
-import { $groups } from 'models/groups/model';
+import { $groups } from 'models/facebook/groups/model';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
-} from 'models/group_settings/model';
+} from 'models/facebook/group_settings/model';
 
 const { Option } = Select;
 

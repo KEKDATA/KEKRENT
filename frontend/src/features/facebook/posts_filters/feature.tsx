@@ -7,12 +7,13 @@ import {
   $priceFilter,
   filterPostsByDateToggled,
   filterPostsByPriceToggled,
-} from 'models/posts_filters/model';
-import { $somePartOfPostsLoaded } from 'models/posts/model';
+  filterPostsCleared,
+} from 'models/facebook/posts_filters/model';
+import { $somePartOfPostsLoaded } from 'models/facebook/posts/model';
 import { FilterName } from 'typings/filter_name';
+import { ClearFilters } from '../../clear_filters/feature';
 import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
 import { Filter } from './components/filter/component';
-import { ClearFilters } from './components/clear_filters/component';
 
 const style = css`
   margin: 0 20px 20px 20px;
@@ -41,7 +42,7 @@ export const FacebookPostsFilters = () => {
         name={FilterName.Date}
       />
       <PostsBySelectedGroups />
-      <ClearFilters />
+      <ClearFilters callback={filterPostsCleared} />
     </Space>
   );
 };

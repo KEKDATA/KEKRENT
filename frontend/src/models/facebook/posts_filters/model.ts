@@ -5,7 +5,7 @@ import {
   $somePartOfPostsLoaded,
   postsCleared,
   postsUpdated,
-} from 'models/posts/model';
+} from 'models/facebook/posts/model';
 import { PostsFilter } from 'typings/posts_filters';
 import { $groups } from '../groups/model';
 import { $selectedGroupsIds } from '../group_settings/model';

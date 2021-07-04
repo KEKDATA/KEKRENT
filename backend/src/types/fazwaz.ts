@@ -4,6 +4,12 @@ export interface PetsInfo {
   description: string;
 }
 
+export type ProjectHighlights = Array<{
+  link: string;
+  image: string;
+  title: string;
+}>;
+
 export interface FazwazPost {
   id: string;
   photos: string[];
@@ -14,6 +20,7 @@ export interface FazwazPost {
   description: string;
   availableNow: string;
   petsInfo: PetsInfo;
+  projectHighlights: ProjectHighlights;
   features: { text: string; image?: string | undefined }[];
   basicInforms: { topic: string; info: string }[];
 }

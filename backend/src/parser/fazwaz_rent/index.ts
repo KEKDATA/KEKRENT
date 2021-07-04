@@ -1,16 +1,20 @@
 import { chromium, devices } from 'playwright';
-import { fazwazRentLink } from '../../constants/links/fazwaz_rent';
+import { fazwazLink, fazwazRentLink } from '../../constants/links/fazwaz_rent';
 import { getHTML } from '../../lib/dom/get_html';
 import cheerio from 'cheerio';
 import { fazwazRentMobileSelectors } from '../../constants/selectors/fazwaz_rent/mobile';
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
-import { FazwazPost, FazwazPosts, PetsInfo } from '../../types/fazwaz';
+import {
+  FazwazPost,
+  FazwazPosts,
+  PetsInfo,
+  ProjectHighlights,
+} from '../../types/fazwaz';
 import { asyncGenerator } from '../../lib/generators/async_generator';
 import { nanoid } from 'nanoid';
 
 interface ResultByPage {
   photos: FazwazPost['photos'];
-  price: FazwazPost['price'];
   title: FazwazPost['title'];
   location: FazwazPost['location'];
   link: FazwazPost['link'];
@@ -74,15 +78,6 @@ export const getParsedFazwazRent = async ({
           )
           ?.attr('href') ?? null;
 
-      const price = getText({
-        mobileSelector: fazwazRentMobileSelectors.price,
-        desktopSelector: '',
-        node: postNode,
-        isDesktop,
-      })
-        .replace(/\n/g, '')
-        .replace('/mo', '');
-
       const title = getText({
         mobileSelector: fazwazRentMobileSelectors.title,
         desktopSelector: '',
@@ -101,7 +96,6 @@ export const getParsedFazwazRent = async ({
         resultByPage.push({
           photos,
           link,
-          price,
           title,
           location,
         });
@@ -205,14 +199,61 @@ export const getParsedFazwazRent = async ({
         node: body,
       });
 
+      const price =
+        findNode({
+          desktopSelector: '',
+          mobileSelector: fazwazRentMobileSelectors.price,
+          node: body,
+          isDesktop,
+        }).contents()[0]?.data || 'N/A';
+
+      const projectHighlights: ProjectHighlights = [];
+
+      const projectHighlightNode = findNode({
+        desktopSelector: '',
+        mobileSelector: fazwazRentMobileSelectors.projectHighlight,
+        node: body,
+        isDesktop,
+      });
+
+      projectHighlightNode.contents().each((_, projectHighlightElement) => {
+        const projectHighlightNode = root(projectHighlightElement);
+
+        let link = projectHighlightNode.attr('href');
+        let image = projectHighlightNode.find('img').attr('src');
+
+        const title = getText({
+          mobileSelector: fazwazRentMobileSelectors.projectHighlightTitle,
+          desktopSelector: '',
+          isDesktop,
+          node: projectHighlightNode,
+        });
+
+        if (link && image) {
+          if (image.includes('.svg')) {
+            image = `${fazwazLink}${image}`;
+          }
+
+          link = `${parsedPost.link}?popup=${link.replace('#', '')}`;
+
+          projectHighlights.push({
+            link,
+            image,
+            title,
+          });
+        }
+      });
+
       infoAboutPosts.push({
         ...parsedPost,
         id: nanoid(),
+        price,
         description,
         features,
         basicInforms,
         availableNow,
         petsInfo,
+        projectHighlights,
       });
     } catch (err) {
       console.error(err);

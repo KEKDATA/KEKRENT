@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputNumber, Row } from 'antd';
 
-import { groupSettingsEvents } from 'models/group_settings/model';
+import { groupSettingsEvents } from 'models/facebook/group_settings/model';
 
 export const NumberOfPosts = ({
   id,
@@ -21,7 +21,7 @@ export const NumberOfPosts = ({
         placeholder="Number of posts (default: 20)"
         value={numberOfPosts || undefined}
         min={1}
-        max={110}
+        max={140}
         onChange={handleChange}
       />
     </Row>

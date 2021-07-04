@@ -14,6 +14,13 @@ const Fazwaz = Record({
     isNA: Boolean,
     description: String,
   }),
+  projectHighlights: Array(
+    Record({
+      link: String,
+      image: String,
+      title: String,
+    }),
+  ),
   features: Array(Record({ text: String, image: Optional(String) })),
   basicInforms: Array(Record({ topic: String, info: String })),
 });

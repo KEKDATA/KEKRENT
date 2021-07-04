@@ -6,9 +6,9 @@ import { combine } from 'effector';
 import {
   $groupsSettings,
   $selectedGroupsIds,
-} from 'models/group_settings/model';
-import { getPostsFx } from 'models/posts/model';
-import { $groups } from 'models/groups/model';
+} from 'models/facebook/group_settings/model';
+import { getPostsFx } from 'models/facebook/posts/model';
+import { $groups } from 'models/facebook/groups/model';
 
 const $normalizedSelectedGroups = combine(
   $selectedGroupsIds,

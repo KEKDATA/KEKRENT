@@ -1,9 +1,18 @@
 import React from 'react';
 
-export const Pet = ({ width, height }: { width: number; height: number }) => (
+export const Pet = ({
+  width,
+  height,
+  fill,
+}: {
+  width: number;
+  height: number;
+  fill: string;
+}) => (
   <svg
     className="icon"
     viewBox="0 0 1024 1024"
+    fill={fill}
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
     width={width}

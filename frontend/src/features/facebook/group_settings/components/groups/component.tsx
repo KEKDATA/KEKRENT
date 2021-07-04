@@ -5,7 +5,7 @@ import React from 'react';
 import {
   $groupsSettings,
   groupSettingsEvents,
-} from 'models/group_settings/model';
+} from 'models/facebook/group_settings/model';
 import { SelectGroup } from '../select_group/component';
 import { Dates } from '../dates/component';
 import { Price } from '../price/component';

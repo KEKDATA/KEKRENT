@@ -2,8 +2,7 @@ import { set } from 'node-cache-redis';
 import schedule from 'node-schedule';
 import { getParsedFazwazRent } from '../../parser/fazwaz_rent';
 import { CacheKeys } from '../../constants/cache_keys';
-
-const fourHours = 14400;
+import { CacheTime } from '../../constants/cache_time';
 
 export const scheduleFazwazRent = () => {
   const rule = new schedule.RecurrenceRule();
@@ -16,8 +15,8 @@ export const scheduleFazwazRent = () => {
       `Start parse fazwaz rent ${currentDate.getHours()}:${currentDate.getMinutes()}`,
     );
 
-    const parsedPosts = await getParsedFazwazRent({ countOfSearchItems: 60 });
+    const parsedPosts = await getParsedFazwazRent({ countOfSearchItems: 90 });
 
-    set(CacheKeys.Fazwaz, parsedPosts, fourHours);
+    set(CacheKeys.Fazwaz, parsedPosts, CacheTime.Fazwaz);
   });
 };

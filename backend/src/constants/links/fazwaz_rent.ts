@@ -1,2 +1,2 @@
-export const fazwazRentLink =
-  'https://www.fazwaz.com/property-for-rent/thailand/phuket?order_by=created_at|desc';
+export const fazwazLink = 'https://www.fazwaz.com';
+export const fazwazRentLink = `${fazwazLink}/property-for-rent/thailand/phuket?order_by=created_at|desc`;
