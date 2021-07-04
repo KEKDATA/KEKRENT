@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Collapse, Divider, Typography } from 'antd';
 import { useList } from 'effector-react';
 import { css } from '@emotion/css';
-import { $fazwaz } from 'models/fazwaz/model';
+import { $fazwazPosts } from 'models/fazwaz/model';
 import { CardExtra, CardImages, CardList, CardTitle } from 'ui/card/ui';
 import { cardStyles } from 'ui/card/styles';
 import { PostFeatures } from 'features/fazwaz/post_features/component';
@@ -23,7 +23,7 @@ const collapseStyle = css`
 export const Posts = () => {
   return (
     <CardList>
-      {useList($fazwaz, (fazwazPost) => {
+      {useList($fazwazPosts, (fazwazPost) => {
         return (
           <li className={cardStyles.post} key={fazwazPost.id}>
             <Card

@@ -15,8 +15,8 @@ export const scheduleFazwazRent = () => {
       `Start parse fazwaz rent ${currentDate.getHours()}:${currentDate.getMinutes()}`,
     );
 
-    const parsedPosts = await getParsedFazwazRent({ countOfSearchItems: 90 });
+    const parsed = await getParsedFazwazRent({ countOfSearchItems: 90 });
 
-    set(CacheKeys.Fazwaz, parsedPosts, CacheTime.Fazwaz);
+    set(CacheKeys.Fazwaz, parsed, CacheTime.Fazwaz);
   });
 };

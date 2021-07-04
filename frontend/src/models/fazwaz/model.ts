@@ -28,11 +28,27 @@ export const fazwazReceived = guard<unknown, FazwazsType>(
   },
 );
 
-export const $fazwaz = restore(fazwazReceived, []);
-const $nonFiltersFazwaz = restore(fazwazReceived, []);
+export const $fazwazPosts = restore(
+  fazwazReceived.map((fazwaz) => fazwaz.posts),
+  [],
+);
+
+export const $fazwazTotalFeatures = restore(
+  fazwazReceived.map((fazwaz) => fazwaz.totalFeatures),
+  [],
+);
+
+const $nonFiltersFazwazPosts = restore(
+  fazwazReceived.map((fazwaz) => fazwaz.posts),
+  [],
+);
 
 export const filterFazwazCleared = createEvent<unknown>();
 export const petsFilterToggled = createEvent<unknown>();
+export const filterFazwazFeaturesSelected =
+  createEvent<FazwazsType['totalFeatures']>();
+export const filterFazwazFeaturesSubmitted = createEvent();
+
 export const $petsFilter = createStore<PetsFilter | null>(null)
   .on(petsFilterToggled, (prev) => {
     switch (prev) {
@@ -47,8 +63,25 @@ export const $petsFilter = createStore<PetsFilter | null>(null)
   })
   .reset(filterFazwazCleared);
 
+export const $checkedFeatures = restore(filterFazwazFeaturesSelected, []).reset(
+  filterFazwazCleared,
+);
+
 sample({
-  source: $nonFiltersFazwaz,
+  source: [$checkedFeatures, $nonFiltersFazwazPosts],
+  clock: filterFazwazFeaturesSubmitted,
+  fn: ([checkedFeatures, posts]) =>
+    posts.filter(({ features }) => {
+      const normalizedFeatures = features.map(({ text }) => text);
+      return checkedFeatures.some((checkedFeature) =>
+        normalizedFeatures.includes(checkedFeature),
+      );
+    }),
+  target: $fazwazPosts,
+});
+
+sample({
+  source: $nonFiltersFazwazPosts,
   clock: $petsFilter,
   fn: (fazwazPosts, petsFilter) =>
     fazwazPosts.filter(({ petsInfo }) => {
@@ -64,5 +97,11 @@ sample({
         }
       }
     }),
-  target: $fazwaz,
+  target: $fazwazPosts,
+});
+
+sample({
+  source: $nonFiltersFazwazPosts,
+  clock: filterFazwazCleared,
+  target: $fazwazPosts,
 });

@@ -10,6 +10,11 @@ export type ProjectHighlights = Array<{
   title: string;
 }>;
 
+export interface Feature {
+  text: string;
+  image?: string | undefined;
+}
+
 export interface FazwazPost {
   id: string;
   photos: string[];
@@ -21,7 +26,7 @@ export interface FazwazPost {
   availableNow: string;
   petsInfo: PetsInfo;
   projectHighlights: ProjectHighlights;
-  features: { text: string; image?: string | undefined }[];
+  features: Feature[];
   basicInforms: { topic: string; info: string }[];
 }
 

@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 
 import { Divider, Row, Spin } from 'antd';
 import {
-  $posts,
+  $facebookPosts,
   $somePartOfPostsLoaded,
   getPostsFx,
 } from 'models/facebook/posts/model';
@@ -12,7 +12,7 @@ import { cardStyles } from 'ui/card/styles';
 import { Post } from './components/post/component';
 
 export const FacebookPosts = () => {
-  const posts = useStore($posts);
+  const posts = useStore($facebookPosts);
   const isLoading = useStore(getPostsFx.pending);
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
 

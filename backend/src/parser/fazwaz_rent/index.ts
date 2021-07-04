@@ -7,6 +7,7 @@ import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
 import {
   FazwazPost,
   FazwazPosts,
+  Feature,
   PetsInfo,
   ProjectHighlights,
 } from '../../types/fazwaz';
@@ -105,6 +106,7 @@ export const getParsedFazwazRent = async ({
     totalParsedPosts.push(...resultByPage);
   }
 
+  const totalFeatures: { [key: string]: Feature } = {};
   const infoAboutPosts: FazwazPosts = [];
 
   for await (const postNum of asyncGenerator(totalParsedPosts.length)) {
@@ -126,7 +128,7 @@ export const getParsedFazwazRent = async ({
         isDesktop,
       });
 
-      const features: Array<{ text: string; image?: string }> = [];
+      const features: FazwazPost['features'] = [];
 
       const featuresNode = findNode({
         desktopSelector: '',
@@ -140,7 +142,10 @@ export const getParsedFazwazRent = async ({
         const text = featureNode.text();
         const image = featureNode.find('img').attr('src');
 
-        features.push({ text: text.replace(/\n/g, ''), image });
+        const feature = { text: text.replace(/\n/g, ''), image };
+
+        totalFeatures[text] = feature;
+        features.push(feature);
       });
 
       let petsInfo: PetsInfo = {
@@ -149,7 +154,7 @@ export const getParsedFazwazRent = async ({
         description: 'N/A',
       };
 
-      const basicInforms: Array<{ topic: string; info: string }> = [];
+      const basicInforms: FazwazPost['basicInforms'] = [];
 
       const basicInformsNode = findNode({
         desktopSelector: '',
@@ -262,5 +267,8 @@ export const getParsedFazwazRent = async ({
 
   await browser.close();
 
-  return infoAboutPosts;
+  return {
+    posts: infoAboutPosts,
+    totalFeatures: Object.values(totalFeatures).map(({ text }) => text),
+  };
 };

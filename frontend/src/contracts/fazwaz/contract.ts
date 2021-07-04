@@ -1,5 +1,7 @@
 import { Record, String, Static, Array, Optional, Boolean } from 'runtypes';
 
+const Features = Array(Record({ text: String, image: Optional(String) }));
+
 const Fazwaz = Record({
   id: String,
   photos: Array(String),
@@ -21,10 +23,13 @@ const Fazwaz = Record({
       title: String,
     }),
   ),
-  features: Array(Record({ text: String, image: Optional(String) })),
+  features: Features,
   basicInforms: Array(Record({ topic: String, info: String })),
 });
 
-export const FazwazContract = Array(Fazwaz);
+export const FazwazContract = Record({
+  posts: Array(Fazwaz),
+  totalFeatures: Array(String),
+});
 export type FazwazType = Static<typeof Fazwaz>;
 export type FazwazsType = Static<typeof FazwazContract>;

@@ -17,10 +17,10 @@ const postsReceived = guard(getPostsFx.doneData, {
 
 export const postsCleared = createEvent();
 export const postsUpdated = createEvent<PostsType>();
-export const $nonFiltersPosts = createStore<PostsType>([])
+export const $nonFiltersFacebookPosts = createStore<PostsType>([])
   .on(postsReceived, (prevPosts, posts) => [...prevPosts, ...posts])
   .reset(postsCleared);
-export const $posts = createStore<PostsType>([])
+export const $facebookPosts = createStore<PostsType>([])
   .on(postsReceived, (prevPosts, posts) => [...prevPosts, ...posts])
   .on(postsUpdated, (_, posts) => posts)
   .reset(postsCleared);

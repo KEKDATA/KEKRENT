@@ -1,7 +1,7 @@
 import { createEvent, createStore, guard, restore, sample } from 'effector';
 import {
-  $nonFiltersPosts,
-  $posts,
+  $nonFiltersFacebookPosts,
+  $facebookPosts,
   $somePartOfPostsLoaded,
   postsCleared,
   postsUpdated,
@@ -47,7 +47,7 @@ export const $checkedGroups = restore(
 ).reset([postsCleared, filterPostsCleared]);
 
 sample({
-  source: [$checkedGroups, $nonFiltersPosts],
+  source: [$checkedGroups, $nonFiltersFacebookPosts],
   clock: filterPostsByCheckedGroupsSubmitted,
   fn: ([checkedGroups, posts]) =>
     posts.filter(
@@ -88,7 +88,7 @@ const getPriceFromString = (value: string) =>
   Number.parseFloat(value.replace(/[^0-9]+/g, '')) || 0;
 sample({
   clock: $priceFilter,
-  source: $posts,
+  source: $facebookPosts,
   fn: (posts, priceFilter) => {
     if (!priceFilter) {
       return posts;
@@ -110,7 +110,7 @@ sample({
 
 sample({
   clock: $dateFilter,
-  source: $posts,
+  source: $facebookPosts,
   fn: (posts, dateFilter) => {
     if (!dateFilter) {
       return posts;
@@ -132,6 +132,6 @@ sample({
 
 sample({
   clock: filterPostsCleared,
-  source: $nonFiltersPosts,
+  source: $nonFiltersFacebookPosts,
   target: postsUpdated,
 });
