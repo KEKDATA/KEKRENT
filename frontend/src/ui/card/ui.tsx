@@ -32,14 +32,9 @@ export const CardExtra = ({
 
 export const CardImages = ({ images }: { images: string[] }) => (
   <div className={cardStyles.images}>
-    {images.map((image) => (
-      <div key={image} className={cardStyles.imageContainer}>
-        <Image
-          className={cardStyles.image}
-          loading="lazy"
-          src={image}
-          alt="some photo"
-        />
+    {images.map((image, index) => (
+      <div key={index} className={cardStyles.imageContainer}>
+        <Image className={cardStyles.image} loading="lazy" src={image} />
       </div>
     ))}
   </div>

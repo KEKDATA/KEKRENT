@@ -29,6 +29,11 @@ const price = '.header-detail-page-price__rate';
 const projectHighlight = '.project-highlight';
 const projectHighlightTitle = '.highlight__title';
 
+const photos = '.swiper-container.instance-1 > .swiper-wrapper';
+const photo = '.img-swipe';
+
+const contact = '.ask-a-question__btn';
+
 export const fazwazRentMobileSelectors = {
   searchItem,
   imagesContainer,
@@ -46,4 +51,7 @@ export const fazwazRentMobileSelectors = {
   availableNow,
   projectHighlight,
   projectHighlightTitle,
+  photos,
+  photo,
+  contact,
 };

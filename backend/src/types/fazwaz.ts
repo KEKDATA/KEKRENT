@@ -27,7 +27,9 @@ export interface FazwazPost {
   petsInfo: PetsInfo;
   projectHighlights: ProjectHighlights;
   features: Feature[];
+  contacts: Array<{ image: string; text: string; link: string }>;
   basicInforms: { topic: string; info: string }[];
 }
 
 export type FazwazPosts = Array<FazwazPost>;
+export type Fazwaz = { posts: FazwazPosts; totalFeatures: string[] };

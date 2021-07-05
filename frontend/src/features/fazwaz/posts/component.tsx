@@ -10,6 +10,7 @@ import { BasicInforms } from 'features/fazwaz/basic_informs/component';
 import { Pet } from 'features/fazwaz/pets/component';
 import { Description } from 'features/fazwaz/description/component';
 import { ProjectHighlights } from 'features/fazwaz/project_highlights/component';
+import { Contacts } from 'features/fazwaz/contacts/component';
 
 const { Panel } = Collapse;
 const { Title, Link } = Typography;
@@ -56,6 +57,9 @@ export const Posts = () => {
                 </Panel>
                 <Panel header="Basic Information" key="basicInformation">
                   <BasicInforms basicInforms={fazwazPost.basicInforms} />
+                </Panel>
+                <Panel header="Contacts" key="contacts">
+                  <Contacts contacts={fazwazPost.contacts} />
                 </Panel>
               </Collapse>
             </Card>

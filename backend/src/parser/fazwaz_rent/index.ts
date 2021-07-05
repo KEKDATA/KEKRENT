@@ -13,6 +13,8 @@ import {
 } from '../../types/fazwaz';
 import { asyncGenerator } from '../../lib/generators/async_generator';
 import { nanoid } from 'nanoid';
+import { sleep } from '../../lib/timeout/sleep';
+import { scrollOnElement } from '../../lib/webdriver/scroll_on_element';
 
 interface ResultByPage {
   photos: FazwazPost['photos'];
@@ -115,6 +117,10 @@ export const getParsedFazwazRent = async ({
 
       const pageContext = await context.newPage();
       await pageContext.goto(parsedPost.link, { timeout: 20000 });
+
+      await scrollOnElement(pageContext, '.mobile-for-description');
+
+      await sleep(500);
 
       const contentPage = await pageContext.evaluate(getHTML);
       const root = cheerio.load(contentPage);
@@ -249,8 +255,55 @@ export const getParsedFazwazRent = async ({
         }
       });
 
+      const photosContainer = body.find(
+        getSelectedSelector({
+          desktopSelector: '',
+          mobileSelector: fazwazRentMobileSelectors.photos,
+          isDesktop,
+        }),
+      );
+
+      const photos: FazwazPost['photos'] = [];
+      photosContainer.children().each((_, photoContainer) => {
+        const dataUrl = root(photoContainer)
+          .find(fazwazRentMobileSelectors.photo)
+          .attr('data-background');
+
+        if (dataUrl) {
+          photos.push(dataUrl);
+        }
+      });
+
+      const contacts: FazwazPost['contacts'] = [];
+
+      const contactsContainer = body.find(
+        getSelectedSelector({
+          desktopSelector: '',
+          mobileSelector: fazwazRentMobileSelectors.contact,
+          isDesktop,
+        }),
+      );
+
+      contactsContainer.each((_, contactContainer) => {
+        const contact = root(contactContainer);
+        const link = contact.attr('href');
+        const imagePostfix = contact.find('img').attr('src');
+        const text = contact.contents()[1]?.data;
+
+        if (imagePostfix && text && link) {
+          const image = `${fazwazLink}${imagePostfix}`;
+
+          contacts.push({
+            image,
+            text,
+            link,
+          });
+        }
+      });
+
       infoAboutPosts.push({
         ...parsedPost,
+        photos: [...parsedPost.photos, ...photos],
         id: nanoid(),
         price,
         description,
@@ -259,6 +312,7 @@ export const getParsedFazwazRent = async ({
         availableNow,
         petsInfo,
         projectHighlights,
+        contacts,
       });
     } catch (err) {
       console.error(err);

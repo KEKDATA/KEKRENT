@@ -24,6 +24,7 @@ const Fazwaz = Record({
     }),
   ),
   features: Features,
+  contacts: Array(Record({ image: String, text: String, link: String })),
   basicInforms: Array(Record({ topic: String, info: String })),
 });
 
