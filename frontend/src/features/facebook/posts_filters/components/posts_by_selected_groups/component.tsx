@@ -1,13 +1,13 @@
-import React from 'react';
-import { useStore } from 'effector-react';
 import { FacebookOutlined } from '@ant-design/icons';
+import { useStore } from 'effector-react';
+import { ModalSelectFilters } from 'features/modal_select_filters/feature';
 import {
   $checkedGroups,
   $submittedGroups,
   filterPostsByCheckedGroupsSelected,
   filterPostsByCheckedGroupsSubmitted,
 } from 'models/facebook/posts_filters/model';
-import { ModalSelectFilters } from 'features/modal_select_filters/feature';
+import React from 'react';
 
 export const PostsBySelectedGroups = () => {
   const groupsTitles = useStore($submittedGroups);

@@ -1,13 +1,12 @@
-import React from 'react';
-import { Select } from 'antd';
-
-import { useStore } from 'effector-react';
 import { css } from '@emotion/css';
-import { $groups } from 'models/facebook/groups/model';
+import { Select } from 'antd';
+import { useStore } from 'effector-react';
 import {
   $selectedGroupsIds,
   groupSettingsEvents,
 } from 'models/facebook/group_settings/model';
+import { $groups } from 'models/facebook/groups/model';
+import React from 'react';
 
 const { Option } = Select;
 

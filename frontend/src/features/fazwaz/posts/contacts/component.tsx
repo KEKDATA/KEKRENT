@@ -1,7 +1,7 @@
-import React from 'react';
-import { Image, Typography } from 'antd';
 import { css } from '@emotion/css';
+import { Image, Typography } from 'antd';
 import { FazwazType } from 'contracts/fazwaz/contract';
+import React from 'react';
 
 const { Link } = Typography;
 

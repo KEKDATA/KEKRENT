@@ -1,9 +1,9 @@
-import React from 'react';
 import { css } from '@emotion/css';
 import { Tooltip } from 'antd';
-import { useStore } from 'effector-react';
 import { FazwazType } from 'contracts/fazwaz/contract';
+import { useStore } from 'effector-react';
 import { $isMobileScreenType } from 'models/screen_type/model';
+import React from 'react';
 
 const featuresStyles = css`
   list-style: none;

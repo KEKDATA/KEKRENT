@@ -1,7 +1,7 @@
-import React from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { groupSettingsEvents } from 'models/facebook/group_settings/model';
+import React from 'react';
 
 export const AddGroupSettings = () => {
   return (

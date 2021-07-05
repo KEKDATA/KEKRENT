@@ -1,18 +1,16 @@
-import React from 'react';
-import { useStore } from 'effector-react';
-
+import { Post } from './components/post/component';
 import { Divider, Row, Spin } from 'antd';
+import { useList, useStore } from 'effector-react';
 import {
   $facebookPosts,
   $somePartOfPostsLoaded,
   getPostsFx,
 } from 'models/facebook/posts/model';
-import { CardList } from 'ui/card/ui';
+import React from 'react';
 import { cardStyles } from 'ui/card/styles';
-import { Post } from './components/post/component';
+import { CardList } from 'ui/card/ui';
 
 export const FacebookPosts = () => {
-  const posts = useStore($facebookPosts);
   const isLoading = useStore(getPostsFx.pending);
   const somePartOfPostsLoaded = useStore($somePartOfPostsLoaded);
 
@@ -25,7 +23,7 @@ export const FacebookPosts = () => {
           <Spin size="large" tip="Loading" />
         </Row>
       )}
-      {posts.map((post) => (
+      {useList($facebookPosts, (post) => (
         <li key={post.id} className={cardStyles.post}>
           <Post post={post} />
           <Divider />

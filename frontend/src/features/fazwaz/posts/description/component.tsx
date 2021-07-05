@@ -1,6 +1,6 @@
+import { Button } from 'antd';
 import React, { useState } from 'react';
 import TruncateMarkup from 'react-truncate-markup';
-import { Button } from 'antd';
 import { cardStyles } from 'ui/card/styles';
 
 export const Description = ({ description }: { description: string }) => {

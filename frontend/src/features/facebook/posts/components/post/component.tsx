@@ -1,10 +1,9 @@
-import { Card, Typography } from 'antd';
-import React from 'react';
-import { css } from '@emotion/css';
-
-import { PostType } from 'contracts/posts/contract';
-import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 import { Description } from '../description/component';
+import { css } from '@emotion/css';
+import { Card, Typography } from 'antd';
+import { PostType } from 'contracts/posts/contract';
+import React from 'react';
+import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 
 const postStyle = css`
   cursor: initial !important;

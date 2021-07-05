@@ -1,9 +1,10 @@
-import React from 'react';
-import { useGate, useStore } from 'effector-react';
-import { Row, Spin } from 'antd';
 import { css } from '@emotion/css';
+import { Row, Spin } from 'antd';
+import { useGate, useStore } from 'effector-react';
+import { Filters } from 'features/fazwaz/filters/feature';
+import { Posts } from 'features/fazwaz/posts/feature';
 import { FazwazGate, getFazwazFx } from 'models/fazwaz/model';
-import { Fazwaz } from 'features/fazwaz/feature';
+import React from 'react';
 
 const spinContainerStyles = css`
   margin: 10px;
@@ -21,7 +22,12 @@ export const FazwazPage = () => {
           <Spin size="large" tip="Loading" />
         </Row>
       )}
-      {!isLoading && <Fazwaz />}
+      {!isLoading && (
+        <>
+          <Filters />
+          <Posts />
+        </>
+      )}
     </>
   );
 };

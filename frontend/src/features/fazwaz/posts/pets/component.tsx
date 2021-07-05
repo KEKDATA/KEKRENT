@@ -1,9 +1,9 @@
-import React from 'react';
-import { Tooltip } from 'antd';
-import { css } from '@emotion/css';
 import { QuestionOutlined } from '@ant-design/icons';
-import { FazwazType } from 'contracts/fazwaz/contract';
+import { css } from '@emotion/css';
+import { Tooltip } from 'antd';
 import { Icons } from 'assets/icons';
+import { FazwazType } from 'contracts/fazwaz/contract';
+import React from 'react';
 
 const containerStyle = css`
   width: max-content;
@@ -30,7 +30,7 @@ const questionStyle = css`
   }
 `;
 
-export const Pet = ({ petsInfo }: { petsInfo: FazwazType['petsInfo'] }) => {
+export const Pets = ({ petsInfo }: { petsInfo: FazwazType['petsInfo'] }) => {
   const { isAllowed, description, isNA } = petsInfo;
 
   return (

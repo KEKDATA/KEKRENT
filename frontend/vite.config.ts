@@ -1,11 +1,15 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
+import { VitePWA } from 'vite-plugin-pwa';
 import { babel } from '@rollup/plugin-babel';
 import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    sourcemap: process.env.SOURCE_MAP === 'true',
+  },
   plugins: [
     reactRefresh(),
     babel({
@@ -14,6 +18,7 @@ export default defineConfig({
       babelHelpers: 'bundled',
     }),
     viteCompression(),
+    VitePWA(),
   ],
   resolve: {
     alias: {

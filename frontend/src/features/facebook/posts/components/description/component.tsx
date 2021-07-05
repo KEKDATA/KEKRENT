@@ -1,8 +1,8 @@
+import { css } from '@emotion/css';
+import { Button } from 'antd';
+import { findPhoneNumbersInText } from 'libphonenumber-js';
 import React, { useMemo, useState } from 'react';
 import TruncateMarkup from 'react-truncate-markup';
-import { Button } from 'antd';
-import { css } from '@emotion/css';
-import { findPhoneNumbersInText } from 'libphonenumber-js';
 import { cardStyles } from 'ui/card/styles';
 
 const descriptionStyle = css`

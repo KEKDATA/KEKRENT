@@ -1,3 +1,5 @@
+import { postsApi } from 'api/posts';
+import { PostsContract, PostsType } from 'contracts/posts/contract';
 import {
   createEffect,
   createEvent,
@@ -5,8 +7,6 @@ import {
   forward,
   guard,
 } from 'effector';
-import { postsApi } from 'api/posts';
-import { PostsContract, PostsType } from 'contracts/posts/contract';
 import { Posts } from 'typings/posts';
 
 export const getPostsFx = createEffect<Posts, PostsType>(postsApi);

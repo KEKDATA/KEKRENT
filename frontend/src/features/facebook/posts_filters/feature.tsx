@@ -1,7 +1,10 @@
-import React from 'react';
+import { ClearFilters } from '../../clear_filters/feature';
+import { Filter } from './components/filter/component';
+import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
+import { css } from '@emotion/css';
 import { Space } from 'antd';
 import { useStore } from 'effector-react';
-import { css } from '@emotion/css';
+import { $somePartOfPostsLoaded } from 'models/facebook/posts/model';
 import {
   $dateFilter,
   $priceFilter,
@@ -9,11 +12,8 @@ import {
   filterPostsByPriceToggled,
   filterPostsCleared,
 } from 'models/facebook/posts_filters/model';
-import { $somePartOfPostsLoaded } from 'models/facebook/posts/model';
+import React from 'react';
 import { FilterName } from 'typings/filter_name';
-import { ClearFilters } from '../../clear_filters/feature';
-import { PostsBySelectedGroups } from './components/posts_by_selected_groups/component';
-import { Filter } from './components/filter/component';
 
 const style = css`
   margin: 0 20px 20px 20px;

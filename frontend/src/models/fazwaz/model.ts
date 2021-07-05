@@ -1,3 +1,5 @@
+import { getFazwazApi } from 'api/fazwaz';
+import { FazwazContract, FazwazsType } from 'contracts/fazwaz/contract';
 import {
   createEffect,
   createEvent,
@@ -8,17 +10,27 @@ import {
   sample,
 } from 'effector';
 import { createGate } from 'effector-react';
-import { getFazwazApi } from 'api/fazwaz';
-import { FazwazContract, FazwazsType } from 'contracts/fazwaz/contract';
+import { withPersist } from 'models/persist/model';
+import { condition } from 'patronum';
 import { PetsFilter } from 'typings/pets';
 
 export const FazwazGate = createGate();
+
+const prependRequest = createEvent();
+const previousFazwazPostsTriggered = createEvent();
 
 export const getFazwazFx = createEffect(getFazwazApi);
 
 forward({
   from: FazwazGate.open,
-  to: getFazwazFx,
+  to: prependRequest,
+});
+
+condition({
+  source: prependRequest,
+  if: () => Boolean(window.navigator.onLine),
+  then: getFazwazFx,
+  else: previousFazwazPostsTriggered,
 });
 
 export const fazwazReceived = guard<unknown, FazwazsType>(
@@ -28,10 +40,21 @@ export const fazwazReceived = guard<unknown, FazwazsType>(
   },
 );
 
-export const $fazwazPosts = restore(
-  fazwazReceived.map((fazwaz) => fazwaz.posts),
-  [],
-);
+const oneHour = 3800000;
+export const $fazwazPosts = withPersist(createStore<FazwazsType['posts']>([]), {
+  expire: Date.now() + oneHour,
+  key: 'fazwazPosts',
+})
+  .on(fazwazReceived, (_, fazwaz) => fazwaz.posts)
+  .on(previousFazwazPostsTriggered, () => {
+    const previousPosts = localStorage.getItem('fazwazPosts');
+
+    if (previousPosts) {
+      return JSON.parse(previousPosts) as FazwazsType['posts'];
+    }
+
+    return [];
+  });
 
 export const $fazwazTotalFeatures = restore(
   fazwazReceived.map((fazwaz) => fazwaz.totalFeatures),

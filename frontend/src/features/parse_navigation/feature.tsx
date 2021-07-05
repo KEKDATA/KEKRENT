@@ -1,7 +1,7 @@
-import { Link, useLocation } from 'wouter';
-import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { paths } from 'pages/paths';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'wouter';
 
 export const ParseNavigation = () => {
   const [location] = useLocation();

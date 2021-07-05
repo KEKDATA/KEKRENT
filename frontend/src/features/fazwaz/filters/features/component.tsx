@@ -1,12 +1,12 @@
-import React from 'react';
 import { useStore } from 'effector-react';
+import { ModalSelectFilters } from 'features/modal_select_filters/feature';
 import {
   $checkedFeatures,
   $fazwazTotalFeatures,
   filterFazwazFeaturesSelected,
   filterFazwazFeaturesSubmitted,
 } from 'models/fazwaz/model';
-import { ModalSelectFilters } from 'features/modal_select_filters/feature';
+import React from 'react';
 
 export const Features = () => {
   const features = useStore($fazwazTotalFeatures);

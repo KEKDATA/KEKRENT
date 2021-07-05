@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useStore } from 'effector-react';
-import { Button, Modal, Checkbox, Divider } from 'antd';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { FacebookOutlined } from '@ant-design/icons';
+import { Button, Modal, Checkbox, Divider } from 'antd';
+import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import { useStore } from 'effector-react';
 import { $isMobileScreenType } from 'models/screen_type/model';
+import React, { useState } from 'react';
 
 const CheckboxGroup = Checkbox.Group;
 

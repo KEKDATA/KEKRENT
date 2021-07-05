@@ -1,12 +1,12 @@
-import { css } from '@emotion/css';
 import { FilterOutlined } from '@ant-design/icons';
-import React from 'react';
+import { css } from '@emotion/css';
 import { Button } from 'antd';
+import { Icons } from 'assets/icons';
 import { useStore } from 'effector-react';
 import { $petsFilter, petsFilterToggled } from 'models/fazwaz/model';
-import { Icons } from 'assets/icons';
-import { PetsFilter } from 'typings/pets';
 import { $isMobileScreenType } from 'models/screen_type/model';
+import React from 'react';
+import { PetsFilter } from 'typings/pets';
 
 const petsButtonStyle = css`
   display: flex !important;
@@ -16,10 +16,12 @@ const petsButtonStyle = css`
 `;
 
 const outlinedStyle = css`
-  margin-right: -6px;
-  svg {
-    width: 15px;
-    height: 15px;
+  @media screen and (min-width: 768px) {
+    margin-right: -6px;
+    svg {
+      width: 15px;
+      height: 15px;
+    }
   }
 `;
 

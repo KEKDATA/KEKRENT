@@ -1,10 +1,10 @@
-import React from 'react';
-import { Space } from 'antd';
 import { css } from '@emotion/css';
-import { filterFazwazCleared } from 'models/fazwaz/model';
+import { Space } from 'antd';
 import { ClearFilters } from 'features/clear_filters/feature';
-import { Pets } from 'features/fazwaz/filters/Pets';
-import { Features } from 'features/fazwaz/filters/Features';
+import { Features } from 'features/fazwaz/filters/features/component';
+import { Pets } from 'features/fazwaz/filters/pets/component';
+import { filterFazwazCleared } from 'models/fazwaz/model';
+import React from 'react';
 
 const filtersStyle = css`
   margin: 10px 20px 5px 20px;

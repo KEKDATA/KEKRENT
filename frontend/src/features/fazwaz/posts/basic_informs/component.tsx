@@ -1,7 +1,7 @@
-import React from 'react';
 import { css } from '@emotion/css';
 import { Typography } from 'antd';
 import { FazwazType } from 'contracts/fazwaz/contract';
+import React from 'react';
 
 const { Text } = Typography;
 

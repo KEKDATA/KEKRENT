@@ -1,7 +1,6 @@
-import React from 'react';
 import { InputNumber, Row } from 'antd';
-
 import { groupSettingsEvents } from 'models/facebook/group_settings/model';
+import React from 'react';
 
 export const NumberOfPosts = ({
   id,

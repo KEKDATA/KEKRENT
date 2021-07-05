@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import { Button, Image, Typography } from 'antd';
+import React, { FC } from 'react';
 import { cardStyles } from 'ui/card/styles';
 
 const { Title } = Typography;

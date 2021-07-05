@@ -1,6 +1,6 @@
-import { createEffect, guard, restore } from 'effector';
 import { getGroupsApi } from 'api/groups';
 import { GroupsContract, GroupsType } from 'contracts/groups/contract';
+import { createEffect, guard, restore } from 'effector';
 
 export const getGroupsFx = createEffect(getGroupsApi);
 

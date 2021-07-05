@@ -1,10 +1,10 @@
-import React from 'react';
-import { Route } from 'wouter';
-import { ParseNavigation } from 'features/parse_navigation/feature';
-import { FazwazPage } from 'pages/fazwaz/page';
+import { Error404Page } from './error404/page';
 import { FacebookPage } from './facebook/page';
 import { paths } from './paths';
-import { Error404Page } from './error404/page';
+import { ParseNavigation } from 'features/parse_navigation/feature';
+import { FazwazPage } from 'pages/fazwaz/page';
+import React from 'react';
+import { Route } from 'wouter';
 
 export const Pages = () => {
   return (

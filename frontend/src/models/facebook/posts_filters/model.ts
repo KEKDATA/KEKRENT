@@ -1,3 +1,5 @@
+import { $selectedGroupsIds } from '../group_settings/model';
+import { $groups } from '../groups/model';
 import { createEvent, createStore, guard, restore, sample } from 'effector';
 import {
   $nonFiltersFacebookPosts,
@@ -7,8 +9,6 @@ import {
   postsUpdated,
 } from 'models/facebook/posts/model';
 import { PostsFilter } from 'typings/posts_filters';
-import { $groups } from '../groups/model';
-import { $selectedGroupsIds } from '../group_settings/model';
 
 const toggleFilter = (filterValue: PostsFilter | null) => {
   if (filterValue === null || filterValue === PostsFilter.FromMax) {

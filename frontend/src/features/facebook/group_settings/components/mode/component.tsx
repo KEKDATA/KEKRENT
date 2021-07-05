@@ -1,6 +1,6 @@
-import React from 'react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { groupSettingsEvents } from 'models/facebook/group_settings/model';
+import React from 'react';
 import { Modes } from 'typings/groups';
 
 export const Mode = ({ id }: { id: string }) => {

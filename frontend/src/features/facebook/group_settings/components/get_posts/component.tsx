@@ -1,14 +1,14 @@
-import React from 'react';
-import { Button } from 'antd';
-import { useStore } from 'effector-react';
 import { SearchOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 import { combine } from 'effector';
+import { useStore } from 'effector-react';
 import {
   $groupsSettings,
   $selectedGroupsIds,
 } from 'models/facebook/group_settings/model';
-import { getPostsFx } from 'models/facebook/posts/model';
 import { $groups } from 'models/facebook/groups/model';
+import { getPostsFx } from 'models/facebook/posts/model';
+import React from 'react';
 
 const $normalizedSelectedGroups = combine(
   $selectedGroupsIds,
