@@ -74,106 +74,14 @@ const parseNonAuthPostDate = (
      * Yesterday
      * 12 July at 08:59
      */
-    const isMinutes = time.includes('min');
-    const isHours = time.includes('hr');
-    const isYesterday = time.includes('Yesterday');
-
-    if (!time) {
-      return date;
-    }
-
-    switch (true) {
-      case isMinutes: {
-        const minutes = +time.split(' ')[0];
-
-        if (minutes) {
-          date.setMinutes(date.getMinutes() - minutes);
-        }
-
-        break;
-      }
-
-      case isHours: {
-        const hours = +time.split(' ')[0];
-
-        if (hours) {
-          date.setHours(date.getHours() - hours);
-        }
-
-        break;
-      }
-
-      case isYesterday: {
-        const hoursAndMinutes = time.split(' ')[2];
-        const [hours, minutes] = hoursAndMinutes.split(':');
-
-        const normalizedHours = +hours;
-        const normalizedMinutes = +minutes;
-
-        date.setDate(date.getDate() - 1);
-
-        if (normalizedMinutes) {
-          date.setMinutes(normalizedMinutes);
-        }
-
-        if (normalizedHours) {
-          date.setHours(normalizedHours);
-        }
-
-        break;
-      }
-
-      default: {
-        const [day, month, at, hoursAndMinutes] = time.split(' ');
-
-        const selectedMonth = months.findIndex(m => m === month);
-
-        date.setMonth(selectedMonth);
-
-        date.setDate(+day);
-
-        if (hoursAndMinutes) {
-          const [hours, minutes] = hoursAndMinutes.split(':');
-
-          const normalizedHours = +hours;
-          const normalizedMinutes = +minutes;
-
-          if (normalizedMinutes) {
-            date.setMinutes(normalizedMinutes);
-          }
-
-          if (normalizedHours) {
-            date.setHours(normalizedHours);
-          }
-        }
-
-        break;
-      }
-    }
-  } catch (err) {
-    console.log(err);
-  }
-
-  return date;
-};
-
-export const parsePostDate = (
-  timeNode: cheerio.Cheerio,
-  root: cheerio.Root,
-  isAuth: boolean,
-) => {
-  if (!isAuth) {
-    return parseNonAuthPostDate(timeNode, root);
-  }
-
-  const time = timeNode.text();
-  const date = new Date();
-
-  try {
     const timeWithoutNumbers = time.replace(/[0-9]/g, '');
     const isMinutes = timeWithoutNumbers === 'm';
     const isHours = timeWithoutNumbers === 'h';
     const isDays = timeWithoutNumbers === 'd';
+
+    if (!time) {
+      return date;
+    }
 
     switch (true) {
       case isMinutes: {
@@ -209,7 +117,7 @@ export const parsePostDate = (
       default: {
         const [month, day, at, hoursAndMinutes, hourFormat] = time.split(' ');
 
-        const selectedMonth = months.findIndex(m => m === month);
+        const selectedMonth = months.findIndex(m => m.includes(month));
 
         date.setMonth(selectedMonth);
 
@@ -240,4 +148,91 @@ export const parsePostDate = (
   }
 
   return date;
+};
+
+export const parsePostDate = (
+  timeNode: cheerio.Cheerio,
+  root: cheerio.Root,
+  isAuth: boolean,
+) => {
+  return parseNonAuthPostDate(timeNode, root);
+  /**
+   * Возможно устаревший подход,
+   * при авторизации теперь тоже надо с бубном вытаскивать по букве из каждой ноды
+   */
+  //
+  // const time = timeNode.text();
+  // const date = new Date();
+  //
+  // try {
+  //   const timeWithoutNumbers = time.replace(/[0-9]/g, '');
+  //   const isMinutes = timeWithoutNumbers === 'm';
+  //   const isHours = timeWithoutNumbers === 'h';
+  //   const isDays = timeWithoutNumbers === 'd';
+  //
+  //   switch (true) {
+  //     case isMinutes: {
+  //       const minutes = +time.replace('m', '');
+  //
+  //       if (minutes) {
+  //         date.setMinutes(date.getMinutes() - minutes);
+  //       }
+  //
+  //       break;
+  //     }
+  //
+  //     case isHours: {
+  //       const hours = +time.replace('h', '');
+  //
+  //       if (hours) {
+  //         date.setHours(date.getHours() - hours);
+  //       }
+  //
+  //       break;
+  //     }
+  //
+  //     case isDays: {
+  //       const days = +time.replace('d', '');
+  //
+  //       if (days) {
+  //         date.setDate(date.getDate() - days);
+  //       }
+  //
+  //       break;
+  //     }
+  //
+  //     default: {
+  //       const [month, day, at, hoursAndMinutes, hourFormat] = time.split(' ');
+  //
+  //       const selectedMonth = months.findIndex(m => m === month);
+  //
+  //       date.setMonth(selectedMonth);
+  //
+  //       date.setDate(+day);
+  //
+  //       if (hoursAndMinutes) {
+  //         const normalizedHoursAndMinutes = convertTime12to24(
+  //           `${hoursAndMinutes} ${hourFormat}`,
+  //         );
+  //
+  //         const [hours, minutes] = normalizedHoursAndMinutes.split(':');
+  //
+  //         const normalizedHours = +hours;
+  //         const normalizedMinutes = +minutes;
+  //
+  //         if (normalizedMinutes) {
+  //           date.setMinutes(normalizedMinutes);
+  //         }
+  //
+  //         if (normalizedHours) {
+  //           date.setHours(normalizedHours);
+  //         }
+  //       }
+  //     }
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  // }
+  //
+  // return date;
 };

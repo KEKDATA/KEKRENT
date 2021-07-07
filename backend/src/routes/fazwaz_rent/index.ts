@@ -7,19 +7,24 @@ import { CacheKeys } from '../../constants/cache_keys';
 import { CacheTime } from '../../constants/cache_time';
 
 export const fazwazRentRoute = () => {
-  return initializedFastify.get('/parse/fazwaz', async () => {
-    console.info(`Fazwaz by pid ${process.pid} requested`);
+  return initializedFastify.get('/parse/fazwaz', async (_, reply) => {
+    try {
+      console.info(`Fazwaz by pid ${process.pid} requested`);
 
-    const scheduledPosts: Fazwaz = await get(CacheKeys.Fazwaz);
+      const scheduledPosts: Fazwaz = await get(CacheKeys.Fazwaz);
 
-    if (!scheduledPosts) {
-      const parsed = await getParsedFazwazRent({ countOfSearchItems: 90 });
+      if (!scheduledPosts) {
+        const parsed = await getParsedFazwazRent({ countOfSearchItems: 90 });
 
-      set(CacheKeys.Fazwaz, parsed, CacheTime.Fazwaz);
+        set(CacheKeys.Fazwaz, parsed, CacheTime.Fazwaz);
 
-      return parsed;
+        return parsed;
+      }
+
+      return scheduledPosts;
+    } catch (err) {
+      console.error(err);
+      reply.code(500).send({ message: 'Something wrong' });
     }
-
-    return scheduledPosts;
   });
 };

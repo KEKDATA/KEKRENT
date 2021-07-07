@@ -100,7 +100,7 @@ export const getParsedFazwazRent = async ({
           photos,
           link,
           title,
-          location,
+          location: `https://www.google.ru/maps/place/${location}`,
         });
       }
     });
@@ -230,7 +230,7 @@ export const getParsedFazwazRent = async ({
       projectHighlightNode.contents().each((_, projectHighlightElement) => {
         const projectHighlightNode = root(projectHighlightElement);
 
-        let link = projectHighlightNode.attr('href');
+        let href = projectHighlightNode.attr('href');
         let image = projectHighlightNode.find('img').attr('src');
 
         const title = getText({
@@ -240,12 +240,26 @@ export const getParsedFazwazRent = async ({
           node: projectHighlightNode,
         });
 
-        if (link && image) {
+        if (href && image) {
+          const isMapHref = href.includes('map');
+
           if (image.includes('.svg')) {
             image = `${fazwazLink}${image}`;
           }
 
-          link = `${parsedPost.link}?popup=${link.replace('#', '')}`;
+          /**
+           * Ссылка на карту - map
+           * А сам попап mapview
+           */
+          if (isMapHref) {
+            href = href.replace('map', 'mapview');
+          }
+
+          const link = `${parsedPost.link}?popup=${href.replace('#', '')}`;
+
+          if (isMapHref) {
+            parsedPost.location = link;
+          }
 
           projectHighlights.push({
             link,

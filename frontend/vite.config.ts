@@ -1,9 +1,9 @@
+import { babel } from '@rollup/plugin-babel';
+import reactRefresh from '@vitejs/plugin-react-refresh';
 import path from 'path';
 import { defineConfig } from 'vite';
-import reactRefresh from '@vitejs/plugin-react-refresh';
-import { VitePWA } from 'vite-plugin-pwa';
-import { babel } from '@rollup/plugin-babel';
 import viteCompression from 'vite-plugin-compression';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({

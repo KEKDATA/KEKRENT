@@ -31,11 +31,11 @@ export const Post = ({ fazwazPost }: { fazwazPost: FazwazType }) => {
         <CardExtra isDesktop={false} href={fazwazPost.link} />
         <Title level={5}>
           <Link
-            href={`https://www.google.ru/maps/place/${fazwazPost.location}`}
+            href={fazwazPost.location}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Location: {fazwazPost.location}
+            Show location
           </Link>
         </Title>
         <Title level={5}>{fazwazPost.price}</Title>

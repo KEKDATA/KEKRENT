@@ -30,11 +30,21 @@ export const filterPostsCleared = createEvent<unknown>();
 
 export const $priceFilter = createStore<PostsFilter | null>(null)
   .on(filterPostsByPriceToggled, toggleFilter)
-  .reset([postsCleared, filterPostsByDateToggled, filterPostsCleared]);
+  .reset([
+    postsCleared,
+    filterPostsByDateToggled,
+    filterPostsCleared,
+    filterPostsByCheckedGroupsSubmitted,
+  ]);
 
 export const $dateFilter = createStore<PostsFilter | null>(null)
   .on(filterPostsByDateToggled, toggleFilter)
-  .reset([postsCleared, filterPostsByPriceToggled, filterPostsCleared]);
+  .reset([
+    postsCleared,
+    filterPostsByPriceToggled,
+    filterPostsCleared,
+    filterPostsByCheckedGroupsSubmitted,
+  ]);
 
 export const $submittedGroups = createStore<string[]>([]).reset([
   postsCleared,

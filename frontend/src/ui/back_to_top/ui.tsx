@@ -3,7 +3,7 @@ import { css } from '@emotion/css';
 import { BackTop } from 'antd';
 import React from 'react';
 
-const backTopButtonStyle = css`
+const backToTopButtonStyle = css`
   height: 30px;
   width: 30px;
   line-height: 30px;
@@ -14,14 +14,14 @@ const backTopButtonStyle = css`
   font-size: 14px;
 `;
 
-const backTopStyle = css`
+const backToTopStyle = css`
   right: 20px !important;
   bottom: 20px !important;
 `;
 
 export const BackToTop = () => (
-  <BackTop className={backTopStyle}>
-    <div className={backTopButtonStyle}>
+  <BackTop className={backToTopStyle}>
+    <div className={backToTopButtonStyle}>
       <UpOutlined />
     </div>
   </BackTop>

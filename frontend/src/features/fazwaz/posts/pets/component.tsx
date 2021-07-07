@@ -7,6 +7,7 @@ import React from 'react';
 
 const containerStyle = css`
   width: max-content;
+  margin-bottom: 6px;
 
   &[data-na-pet='true'] {
     position: relative;

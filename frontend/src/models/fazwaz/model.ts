@@ -10,7 +10,12 @@ import {
   sample,
 } from 'effector';
 import { createGate } from 'effector-react';
+import {
+  checkIsSomeFeatureFounded,
+  getResultPetsFilter,
+} from 'models/fazwaz/utils';
 import { withPersist } from 'models/persist/model';
+import { scrolledToLastViewPostCleared } from 'models/scroll_to_last_viewed_post/model';
 import { condition } from 'patronum';
 import { PetsFilter } from 'typings/pets';
 
@@ -24,6 +29,11 @@ export const getFazwazFx = createEffect(getFazwazApi);
 forward({
   from: FazwazGate.open,
   to: prependRequest,
+});
+
+forward({
+  from: getFazwazFx.fail,
+  to: previousFazwazPostsTriggered,
 });
 
 condition({
@@ -40,11 +50,12 @@ export const fazwazReceived = guard<unknown, FazwazsType>(
   },
 );
 
-const oneHour = 3800000;
-export const $fazwazPosts = withPersist(createStore<FazwazsType['posts']>([]), {
-  expire: Date.now() + oneHour,
-  key: 'fazwazPosts',
-})
+const $nonFiltersFazwazPosts = withPersist(
+  createStore<FazwazsType['posts']>([]),
+  {
+    key: 'fazwazPosts',
+  },
+)
   .on(fazwazReceived, (_, fazwaz) => fazwaz.posts)
   .on(previousFazwazPostsTriggered, () => {
     const previousPosts = localStorage.getItem('fazwazPosts');
@@ -61,7 +72,7 @@ export const $fazwazTotalFeatures = restore(
   [],
 );
 
-const $nonFiltersFazwazPosts = restore(
+export const $fazwazPosts = restore(
   fazwazReceived.map((fazwaz) => fazwaz.posts),
   [],
 );
@@ -91,36 +102,60 @@ export const $checkedFeatures = restore(filterFazwazFeaturesSelected, []).reset(
 );
 
 sample({
-  source: [$checkedFeatures, $nonFiltersFazwazPosts],
+  source: [$checkedFeatures, $nonFiltersFazwazPosts, $petsFilter],
   clock: filterFazwazFeaturesSubmitted,
-  fn: ([checkedFeatures, posts]) =>
-    posts.filter(({ features }) => {
-      const normalizedFeatures = features.map(({ text }) => text);
-      return checkedFeatures.some((checkedFeature) =>
-        normalizedFeatures.includes(checkedFeature),
-      );
+  fn: ([checkedFeatures, posts, petsFilter]) =>
+    posts.filter(({ features, petsInfo }) => {
+      const isSomeFeatureFounded = checkIsSomeFeatureFounded({
+        features,
+        checkedFeatures,
+      });
+
+      if (petsFilter && isSomeFeatureFounded) {
+        return getResultPetsFilter({
+          petsInfo,
+          petsFilter,
+          isSomeFeatureFounded,
+        });
+      }
+
+      return isSomeFeatureFounded;
     }),
   target: $fazwazPosts,
 });
 
 sample({
-  source: $nonFiltersFazwazPosts,
+  source: [$checkedFeatures, $nonFiltersFazwazPosts],
   clock: $petsFilter,
-  fn: (fazwazPosts, petsFilter) =>
-    fazwazPosts.filter(({ petsInfo }) => {
-      switch (petsFilter) {
-        case PetsFilter.Allowed: {
-          return petsInfo.isAllowed || petsInfo.isNA;
-        }
-        case PetsFilter.NotAllowed: {
-          return !petsInfo.isAllowed && !petsInfo.isNA;
-        }
-        default: {
-          return true;
-        }
+  fn: ([checkedFeatures, posts], petsFilter) =>
+    posts.filter(({ features, petsInfo }) => {
+      const isCheckedFeatures = checkedFeatures.length > 0;
+
+      let isSomeFeatureFounded = true;
+
+      if (isCheckedFeatures) {
+        isSomeFeatureFounded = checkIsSomeFeatureFounded({
+          features,
+          checkedFeatures,
+        });
       }
+
+      if (petsFilter) {
+        return getResultPetsFilter({
+          petsInfo,
+          petsFilter,
+          isSomeFeatureFounded,
+        });
+      }
+
+      return isSomeFeatureFounded;
     }),
   target: $fazwazPosts,
+});
+
+forward({
+  from: [petsFilterToggled, filterFazwazFeaturesSubmitted, filterFazwazCleared],
+  to: scrolledToLastViewPostCleared,
 });
 
 sample({

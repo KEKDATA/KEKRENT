@@ -26,10 +26,6 @@ const list = css`
     flex-wrap: wrap;
     justify-content: space-between;
   }
-
-  &[data-loading='true'] {
-    display: block;
-  }
 `;
 
 const postTitle = css`
