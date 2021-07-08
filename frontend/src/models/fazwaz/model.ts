@@ -27,13 +27,15 @@ const previousFazwazPostsTriggered = createEvent();
 export const getFazwazFx = createEffect(getFazwazApi);
 
 forward({
-  from: FazwazGate.open,
-  to: prependRequest,
-});
-
-forward({
   from: getFazwazFx.fail,
   to: previousFazwazPostsTriggered,
+});
+
+guard({
+  source: getFazwazFx.pending,
+  clock: FazwazGate.open,
+  filter: (isLoading) => !isLoading,
+  target: prependRequest,
 });
 
 condition({
@@ -55,9 +57,13 @@ const $nonFiltersFazwazPosts = withPersist(
   {
     key: 'fazwazPosts',
   },
-)
-  .on(fazwazReceived, (_, fazwaz) => fazwaz.posts)
-  .on(previousFazwazPostsTriggered, () => {
+);
+
+export const $fazwazPosts = createStore<FazwazsType['posts']>([]);
+
+sample({
+  clock: previousFazwazPostsTriggered,
+  fn: () => {
     const previousPosts = localStorage.getItem('fazwazPosts');
 
     if (previousPosts) {
@@ -65,17 +71,41 @@ const $nonFiltersFazwazPosts = withPersist(
     }
 
     return [];
-  });
+  },
+  target: [$nonFiltersFazwazPosts, $fazwazPosts],
+});
+
+sample({
+  clock: fazwazReceived.map((fazwaz) => fazwaz.posts),
+  target: [$nonFiltersFazwazPosts, $fazwazPosts],
+});
 
 export const $fazwazTotalFeatures = restore(
   fazwazReceived.map((fazwaz) => fazwaz.totalFeatures),
   [],
-);
+).on(previousFazwazPostsTriggered, (prevFeatures) => {
+  if (prevFeatures.length > 0) {
+    return prevFeatures;
+  }
 
-export const $fazwazPosts = restore(
-  fazwazReceived.map((fazwaz) => fazwaz.posts),
-  [],
-);
+  const previousPosts = localStorage.getItem('fazwazPosts');
+
+  if (previousPosts) {
+    const parsedPosts = JSON.parse(previousPosts) as FazwazsType['posts'];
+
+    const previousFeaturesBySavedPosts: Set<string> = new Set();
+
+    parsedPosts.forEach((post) => {
+      post.features.forEach((feature) =>
+        previousFeaturesBySavedPosts.add(feature.text),
+      );
+    });
+
+    return [...previousFeaturesBySavedPosts];
+  }
+
+  return [];
+});
 
 export const filterFazwazCleared = createEvent<unknown>();
 export const petsFilterToggled = createEvent<unknown>();

@@ -1,10 +1,9 @@
-import { FacebookOutlined } from '@ant-design/icons';
 import { Button, Modal, Checkbox, Divider } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { useStore } from 'effector-react';
 import { $isMobileScreenType } from 'models/screen_type/model';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -29,6 +28,12 @@ export const ModalSelectFilters = ({
 
   const [indeterminate, setIndeterminate] = useState(true);
   const [checkAll, setCheckAll] = useState(false);
+
+  useEffect(() => {
+    if (checkedGroups.length === 0) {
+      setCheckAll(false);
+    }
+  }, [checkedGroups]);
 
   const onChange = (list: CheckboxValueType[]) => {
     onChangeCallback(list as string[]);
