@@ -8,6 +8,10 @@ import {
   postsCleared,
   postsUpdated,
 } from 'models/facebook/posts/model';
+import {
+  getFilteredPostsByDate,
+  getFilteredPostsByPrice,
+} from 'models/facebook/posts_filters/utils';
 import { PostsFilter } from 'typings/posts_filters';
 
 const toggleFilter = (filterValue: PostsFilter | null) => {
@@ -30,26 +34,13 @@ export const filterPostsCleared = createEvent<unknown>();
 
 export const $priceFilter = createStore<PostsFilter | null>(null)
   .on(filterPostsByPriceToggled, toggleFilter)
-  .reset([
-    postsCleared,
-    filterPostsByDateToggled,
-    filterPostsCleared,
-    filterPostsByCheckedGroupsSubmitted,
-  ]);
+  .reset([postsCleared, filterPostsByDateToggled, filterPostsCleared]);
 
 export const $dateFilter = createStore<PostsFilter | null>(null)
   .on(filterPostsByDateToggled, toggleFilter)
-  .reset([
-    postsCleared,
-    filterPostsByPriceToggled,
-    filterPostsCleared,
-    filterPostsByCheckedGroupsSubmitted,
-  ]);
+  .reset([postsCleared, filterPostsByPriceToggled, filterPostsCleared]);
 
-export const $submittedGroups = createStore<string[]>([]).reset([
-  postsCleared,
-  filterPostsCleared,
-]);
+export const $submittedGroups = createStore<string[]>([]).reset(postsCleared);
 
 export const $checkedGroups = restore(
   filterPostsByCheckedGroupsSelected,
@@ -57,12 +48,30 @@ export const $checkedGroups = restore(
 ).reset([postsCleared, filterPostsCleared]);
 
 sample({
-  source: [$checkedGroups, $nonFiltersFacebookPosts],
+  source: [$checkedGroups, $nonFiltersFacebookPosts, $priceFilter, $dateFilter],
   clock: filterPostsByCheckedGroupsSubmitted,
-  fn: ([checkedGroups, posts]) =>
-    posts.filter(
+  fn: ([checkedGroups, posts, priceFilter, dateFilter]) => {
+    const filteredPosts = posts.filter(
       ({ groupTitle }) => groupTitle && checkedGroups.includes(groupTitle),
-    ),
+    );
+
+    const isDateFilterActivated = Boolean(dateFilter);
+    const isPriceFilterActivated = Boolean(priceFilter);
+
+    switch (true) {
+      case isDateFilterActivated: {
+        return getFilteredPostsByDate(filteredPosts, dateFilter);
+      }
+
+      case isPriceFilterActivated: {
+        return getFilteredPostsByPrice(filteredPosts, priceFilter);
+      }
+
+      default: {
+        return filteredPosts;
+      }
+    }
+  },
   target: postsUpdated,
 });
 
@@ -94,8 +103,6 @@ sample({
   target: $submittedGroups,
 });
 
-const getPriceFromString = (value: string) =>
-  Number.parseFloat(value.replace(/[^0-9]+/g, '')) || 0;
 sample({
   clock: $priceFilter,
   source: $facebookPosts,
@@ -104,16 +111,7 @@ sample({
       return posts;
     }
 
-    return [...posts].sort((a, b) => {
-      const firstPrice = getPriceFromString(a.price);
-      const secondPrice = getPriceFromString(b.price);
-
-      if (priceFilter === PostsFilter.FromMin) {
-        return secondPrice - firstPrice;
-      }
-
-      return firstPrice - secondPrice;
-    });
+    return getFilteredPostsByPrice(posts, priceFilter);
   },
   target: postsUpdated,
 });
@@ -126,16 +124,7 @@ sample({
       return posts;
     }
 
-    return [...posts].sort((a, b) => {
-      const firstTimestamp = a.timestamp;
-      const secondTimestamp = b.timestamp;
-
-      if (dateFilter === PostsFilter.FromMin) {
-        return secondTimestamp - firstTimestamp;
-      }
-
-      return firstTimestamp - secondTimestamp;
-    });
+    return getFilteredPostsByDate(posts, dateFilter);
   },
   target: postsUpdated,
 });
