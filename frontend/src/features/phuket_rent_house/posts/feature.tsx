@@ -1,23 +1,16 @@
 import { useStore } from 'effector-react';
-import { Post } from 'features/fazwaz/posts/post/component';
 import { useViewedPosts } from 'features/use_viewed_posts/feature';
-import { $fazwazPosts } from 'models/fazwaz/model';
+import { $phuketRentHousePosts } from 'models/phuket_rent_house/model';
 import React from 'react';
 import { CardList } from 'ui/card/ui';
 
 export const Posts = () => {
-  const posts = useStore($fazwazPosts);
+  const posts = useStore($phuketRentHousePosts);
 
   const viewedPosts = useViewedPosts({
     posts,
     postsOnInitialView: 15,
   });
 
-  return (
-    <CardList>
-      {viewedPosts.map((post) => (
-        <Post fazwazPost={post} key={post.id} />
-      ))}
-    </CardList>
-  );
+  return <CardList>{viewedPosts.map((post) => post.title)}</CardList>;
 };

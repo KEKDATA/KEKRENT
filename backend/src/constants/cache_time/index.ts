@@ -1,5 +1,6 @@
 export enum CacheTime {
-  Fazwaz = 16800,
+  Fazwaz = 17000,
+  PhuketRentHouse = 18000,
   Cookies = 3600,
   Facebook = 8400,
 }

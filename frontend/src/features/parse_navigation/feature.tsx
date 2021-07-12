@@ -23,6 +23,9 @@ export const ParseNavigation = () => {
       <Menu.Item key={paths.fazwaz()}>
         <Link href={paths.fazwaz()}>Fazwaz</Link>
       </Menu.Item>
+      <Menu.Item key={paths.phuketRentHouse()}>
+        <Link href={paths.phuketRentHouse()}>Phuket rent house</Link>
+      </Menu.Item>
     </Menu>
   );
 };

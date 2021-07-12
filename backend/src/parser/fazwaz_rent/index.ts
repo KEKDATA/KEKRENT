@@ -27,7 +27,7 @@ const perPage = 30;
 const isDesktop = false;
 
 export const getParsedFazwazRent = async ({
-  countOfSearchItems = 60,
+  countOfSearchItems = 90,
 }: {
   countOfSearchItems: number;
 }) => {
@@ -41,71 +41,75 @@ export const getParsedFazwazRent = async ({
   for await (const page of asyncGenerator(
     Math.ceil(countOfSearchItems / perPage),
   )) {
-    const pageContext = await context.newPage();
-    await pageContext.goto(`${fazwazRentLink}&page=${page + 1}`);
+    try {
+      const pageContext = await context.newPage();
+      await pageContext.goto(`${fazwazRentLink}&page=${page + 1}`);
 
-    const resultByPage: ResultByPage[] = [];
+      const resultByPage: ResultByPage[] = [];
 
-    const contentPage = await pageContext.evaluate(getHTML);
-    const root = cheerio.load(contentPage);
-    const postNodes = root(fazwazRentMobileSelectors.searchItem);
+      const contentPage = await pageContext.evaluate(getHTML);
+      const root = cheerio.load(contentPage);
+      const postNodes = root(fazwazRentMobileSelectors.searchItem);
 
-    postNodes.each(async (index, post) => {
-      const postNode = root(post);
+      postNodes.each((index, post) => {
+        const postNode = root(post);
 
-      const photosContainer = postNode.find(
-        getSelectedSelector({
+        const photosContainer = postNode.find(
+          getSelectedSelector({
+            desktopSelector: '',
+            mobileSelector: fazwazRentMobileSelectors.imagesContainer,
+            isDesktop,
+          }),
+        );
+
+        const photos: FazwazPost['photos'] = [];
+        photosContainer.children().each((_, photoContainer) => {
+          const src = root(photoContainer).attr('src');
+
+          if (src) {
+            photos.push(src);
+          }
+        });
+
+        const link =
+          postNode
+            .find(
+              getSelectedSelector({
+                desktopSelector: '',
+                mobileSelector: fazwazRentMobileSelectors.link,
+                isDesktop,
+              }),
+            )
+            ?.attr('href') ?? null;
+
+        const title = getText({
+          mobileSelector: fazwazRentMobileSelectors.title,
           desktopSelector: '',
-          mobileSelector: fazwazRentMobileSelectors.imagesContainer,
+          node: postNode,
           isDesktop,
-        }),
-      );
+        });
 
-      const photos: FazwazPost['photos'] = [];
-      photosContainer.children().each((_, photoContainer) => {
-        const src = root(photoContainer).attr('src');
+        const location = getText({
+          mobileSelector: fazwazRentMobileSelectors.location,
+          desktopSelector: '',
+          node: postNode,
+          isDesktop,
+        }).trim();
 
-        if (src) {
-          photos.push(src);
+        if (link) {
+          resultByPage.push({
+            photos,
+            link,
+            title,
+            location: `https://www.google.ru/maps/place/${location}`,
+          });
         }
       });
 
-      const link =
-        postNode
-          .find(
-            getSelectedSelector({
-              desktopSelector: '',
-              mobileSelector: fazwazRentMobileSelectors.link,
-              isDesktop,
-            }),
-          )
-          ?.attr('href') ?? null;
-
-      const title = getText({
-        mobileSelector: fazwazRentMobileSelectors.title,
-        desktopSelector: '',
-        node: postNode,
-        isDesktop,
-      });
-
-      const location = getText({
-        mobileSelector: fazwazRentMobileSelectors.location,
-        desktopSelector: '',
-        node: postNode,
-        isDesktop,
-      }).trim();
-
-      if (link) {
-        resultByPage.push({
-          photos,
-          link,
-          title,
-          location: `https://www.google.ru/maps/place/${location}`,
-        });
-      }
-    });
-
-    totalParsedPosts.push(...resultByPage);
+      totalParsedPosts.push(...resultByPage);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const totalFeatures: { [key: string]: Feature } = {};

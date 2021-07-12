@@ -22,13 +22,13 @@ import { PetsFilter } from 'typings/pets';
 export const FazwazGate = createGate();
 
 const prependRequest = createEvent();
-const previousFazwazPostsTriggered = createEvent();
+const previousPostsTriggered = createEvent();
 
 export const getFazwazFx = createEffect(getFazwazApi);
 
 forward({
   from: getFazwazFx.fail,
-  to: previousFazwazPostsTriggered,
+  to: previousPostsTriggered,
 });
 
 guard({
@@ -42,7 +42,7 @@ condition({
   source: prependRequest,
   if: () => Boolean(window.navigator.onLine),
   then: getFazwazFx,
-  else: previousFazwazPostsTriggered,
+  else: previousPostsTriggered,
 });
 
 export const fazwazReceived = guard<unknown, FazwazsType>(
@@ -52,17 +52,14 @@ export const fazwazReceived = guard<unknown, FazwazsType>(
   },
 );
 
-const $nonFiltersFazwazPosts = withPersist(
-  createStore<FazwazsType['posts']>([]),
-  {
-    key: 'fazwazPosts',
-  },
-);
+const $nonFiltersPosts = withPersist(createStore<FazwazsType['posts']>([]), {
+  key: 'fazwazPosts',
+});
 
 export const $fazwazPosts = createStore<FazwazsType['posts']>([]);
 
 sample({
-  clock: previousFazwazPostsTriggered,
+  clock: previousPostsTriggered,
   fn: () => {
     const previousPosts = localStorage.getItem('fazwazPosts');
 
@@ -72,18 +69,18 @@ sample({
 
     return [];
   },
-  target: [$nonFiltersFazwazPosts, $fazwazPosts],
+  target: [$nonFiltersPosts, $fazwazPosts],
 });
 
 sample({
   clock: fazwazReceived.map((fazwaz) => fazwaz.posts),
-  target: [$nonFiltersFazwazPosts, $fazwazPosts],
+  target: [$nonFiltersPosts, $fazwazPosts],
 });
 
 export const $fazwazTotalFeatures = restore(
   fazwazReceived.map((fazwaz) => fazwaz.totalFeatures),
   [],
-).on(previousFazwazPostsTriggered, (prevFeatures) => {
+).on(previousPostsTriggered, (prevFeatures) => {
   if (prevFeatures.length > 0) {
     return prevFeatures;
   }
@@ -132,7 +129,7 @@ export const $checkedFeatures = restore(filterFazwazFeaturesSelected, []).reset(
 );
 
 sample({
-  source: [$checkedFeatures, $nonFiltersFazwazPosts, $petsFilter],
+  source: [$checkedFeatures, $nonFiltersPosts, $petsFilter],
   clock: filterFazwazFeaturesSubmitted,
   fn: ([checkedFeatures, posts, petsFilter]) =>
     posts.filter(({ features, petsInfo }) => {
@@ -155,7 +152,7 @@ sample({
 });
 
 sample({
-  source: [$checkedFeatures, $nonFiltersFazwazPosts],
+  source: [$checkedFeatures, $nonFiltersPosts],
   clock: $petsFilter,
   fn: ([checkedFeatures, posts], petsFilter) =>
     posts.filter(({ features, petsInfo }) => {
@@ -189,7 +186,7 @@ forward({
 });
 
 sample({
-  source: $nonFiltersFazwazPosts,
+  source: $nonFiltersPosts,
   clock: filterFazwazCleared,
   target: $fazwazPosts,
 });
