@@ -1,7 +1,7 @@
-import { Description } from '../description/component';
 import { css } from '@emotion/css';
 import { Card, Typography } from 'antd';
 import { PostType } from 'contracts/posts/contract';
+import { TruncatedDescription } from 'features/truncated_description/feature';
 import React from 'react';
 import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 
@@ -33,7 +33,7 @@ export const Post = ({ post }: { post: PostType }) => {
         </Title>
       )}
       <Title level={5}>{post.price}</Title>
-      <Description description={post.description} />
+      <TruncatedDescription description={post.description} />
       <CardImages images={post.photos} />
     </Card>
   );

@@ -27,5 +27,6 @@ const Post = Record({
 
 export const PhuketRentHouseContract = Array(Post);
 
+export type PhuketRentHouseBasicInfoType = Static<typeof BasicInfoContract>;
 export type PhuketRentHouseType = Static<typeof PhuketRentHouseContract>;
 export type PhuketRentHousePostType = Static<typeof Post>;

@@ -9,7 +9,11 @@ const descriptionStyle = css`
   display: block;
 `;
 
-export const Description = ({ description }: { description: string[] }) => {
+export const TruncatedDescription = ({
+  description,
+}: {
+  description: string[];
+}) => {
   const [isShowMore, setShowMoreStatus] = useState(false);
 
   const handleShowMore = () => setShowMoreStatus(true);
