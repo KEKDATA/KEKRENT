@@ -1,6 +1,7 @@
 import { getPhuketRentHouseApi } from 'api/phuket_rent_house';
 import {
   PhuketRentHouseContract,
+  PhuketRentHousePostsType,
   PhuketRentHouseType,
 } from 'contracts/phuket_rent_house/contract';
 import {
@@ -9,10 +10,12 @@ import {
   createStore,
   forward,
   guard,
+  restore,
   sample,
 } from 'effector';
 import { createGate } from 'effector-react';
 import { withPersist } from 'models/persist/model';
+import { scrolledToLastViewPostCleared } from 'models/scroll_to_last_viewed_post/model';
 import { condition } from 'patronum';
 
 export const PhuketRentHouseGate = createGate();
@@ -48,11 +51,15 @@ export const phuketRentHouseReceived = guard<unknown, PhuketRentHouseType>(
   },
 );
 
-const $nonFiltersPosts = withPersist(createStore<PhuketRentHouseType>([]), {
-  key: 'phuketRentHousePosts',
-});
+const $nonFiltersPosts = withPersist(
+  createStore<PhuketRentHousePostsType>([]),
+  {
+    maxSize: 20,
+    key: 'phuketRentHousePosts',
+  },
+);
 
-export const $phuketRentHousePosts = createStore<PhuketRentHouseType>([]);
+export const $phuketRentHousePosts = createStore<PhuketRentHousePostsType>([]);
 
 sample({
   clock: previousPostsTriggered,
@@ -60,7 +67,7 @@ sample({
     const previousPosts = localStorage.getItem('phuketRentHousePosts');
 
     if (previousPosts) {
-      return JSON.parse(previousPosts) as PhuketRentHouseType;
+      return JSON.parse(previousPosts) as PhuketRentHousePostsType;
     }
 
     return [];
@@ -69,6 +76,66 @@ sample({
 });
 
 sample({
-  clock: phuketRentHouseReceived,
+  clock: phuketRentHouseReceived.map(({ posts }) => posts),
   target: [$nonFiltersPosts, $phuketRentHousePosts],
+});
+
+export const $phuketRentHouseTotalBooleanOptions = restore(
+  phuketRentHouseReceived.map(({ totalBooleanOptions }) => totalBooleanOptions),
+  [],
+);
+
+export const filtersPhuketRentHouseCleared = createEvent<unknown>();
+
+export const filterTotalBooleanOptionsSubmitted = createEvent();
+export const filterTotalBooleanOptionsSelected =
+  createEvent<PhuketRentHouseType['totalBooleanOptions']>();
+export const $checkedTotalBooleanOptions = restore(
+  filterTotalBooleanOptionsSelected,
+  [],
+).reset(filtersPhuketRentHouseCleared);
+
+sample({
+  source: [$checkedTotalBooleanOptions, $nonFiltersPosts],
+  clock: filterTotalBooleanOptionsSubmitted,
+  fn: ([checkedBooleanOptions, posts]) =>
+    posts.filter((post) => {
+      let postBooleanOptions: string[] = [];
+
+      if (post.basicInfoFirst) {
+        postBooleanOptions = [
+          ...postBooleanOptions,
+          ...post.basicInfoFirst.booleanOptions.map(
+            (option) => option.description,
+          ),
+        ];
+      }
+
+      if (post.basicInfoLast) {
+        postBooleanOptions = [
+          ...postBooleanOptions,
+          ...post.basicInfoLast.booleanOptions.map(
+            (option) => option.description,
+          ),
+        ];
+      }
+
+      const isSomeOptionFounded = postBooleanOptions.some((option) =>
+        checkedBooleanOptions.includes(option),
+      );
+
+      return isSomeOptionFounded;
+    }),
+  target: $phuketRentHousePosts,
+});
+
+forward({
+  from: [filterTotalBooleanOptionsSubmitted, filtersPhuketRentHouseCleared],
+  to: scrolledToLastViewPostCleared,
+});
+
+sample({
+  source: $nonFiltersPosts,
+  clock: filtersPhuketRentHouseCleared,
+  target: $phuketRentHousePosts,
 });

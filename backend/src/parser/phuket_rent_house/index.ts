@@ -7,29 +7,32 @@ import { phuketRentHouseMobileSelectors } from '../../constants/selectors/phuket
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
 import { getBasicInfo } from './lib/basic_info';
 import { sleep } from '../../lib/timeout/sleep';
-import { PhuketRentHouse } from '../../types/phuket_rent_house';
+import { PhuketRentHouse, Post } from '../../types/phuket_rent_house';
 
-const perPage = 8;
+const perPage = 10;
 const isDesktop = false;
 
 export const getParsedPhuketRentHouse = async ({
   countOfSearchItems = 24,
 }: {
   countOfSearchItems: number;
-}) => {
+}): Promise<PhuketRentHouse> => {
   const browser = await chromium.launch({
     headless: true,
   });
   const context = await browser.newContext(devices['iPhone X']);
 
-  const links: PhuketRentHouse['link'][] = [];
+  const links: Set<string> = new Set();
 
   for await (const page of asyncGenerator(
     Math.ceil(countOfSearchItems / perPage),
   )) {
+    if (links.size >= countOfSearchItems) {
+      break;
+    }
     const pageContext = await context.newPage();
 
-    let isInifityLoad = false;
+    let isInfinityLoader = false;
 
     try {
       await pageContext.goto(`${phuketRentHouseLink}/page/${page + 1}`);
@@ -38,11 +41,11 @@ export const getParsedPhuketRentHouse = async ({
        * Sometimes infinity load, but page ok
        */
       console.error(err);
-      isInifityLoad = true;
+      isInfinityLoader = true;
     }
 
     try {
-      if (isInifityLoad) {
+      if (isInfinityLoader) {
         await sleep(2000);
       }
 
@@ -66,7 +69,7 @@ export const getParsedPhuketRentHouse = async ({
         if (href) {
           const link = `${phuketRentHouseLink}${href}`;
 
-          links.push(link);
+          links.add(link);
         }
       });
     } catch (err) {
@@ -74,11 +77,19 @@ export const getParsedPhuketRentHouse = async ({
     }
   }
 
-  const infoAboutPosts: PhuketRentHouse[] = [];
+  let totalBooleanOptions: {
+    [key: string]: {
+      isChecked: boolean;
+      description: string;
+    };
+  } = {};
 
-  for await (const linkIndex of asyncGenerator(links.length)) {
+  const infoAboutPosts: Post[] = [];
+  const normalizedLinks = [...links];
+
+  for await (const linkIndex of asyncGenerator(normalizedLinks.length)) {
     try {
-      const link = links[linkIndex];
+      const link = normalizedLinks[linkIndex];
 
       const pageContext = await context.newPage();
       await pageContext.goto(link, { timeout: 20000 });
@@ -87,13 +98,29 @@ export const getParsedPhuketRentHouse = async ({
       const root = cheerio.load(contentPage);
       const body = root('body');
 
-      const price =
-        findNode({
-          desktopSelector: '',
-          mobileSelector: phuketRentHouseMobileSelectors.price,
-          node: body,
-          isDesktop,
-        }).attr('data-price') || null;
+      const priceNodes = findNode({
+        desktopSelector: '',
+        mobileSelector: phuketRentHouseMobileSelectors.price,
+        node: body,
+        isDesktop,
+      });
+
+      let price = null;
+      const aboutPrices: string[] = [];
+
+      priceNodes.each((_, priceElement) => {
+        const priceNode = root(priceElement);
+
+        const from = priceNode.find('small').text();
+        const priceText = priceNode.find('strong').text();
+        const perDate = priceNode.find('.rc').text();
+
+        if (perDate.toLowerCase().includes('month')) {
+          price = priceNode.attr('data-price') || null;
+        }
+
+        aboutPrices.push(`${from} ${priceText} ${perDate}`);
+      });
 
       const basicInfoFirst = getBasicInfo({
         desktopSelector: '',
@@ -110,6 +137,11 @@ export const getParsedPhuketRentHouse = async ({
         isDesktop,
         root,
       });
+
+      [
+        ...(basicInfoFirst?.booleanOptions ?? []),
+        ...(basicInfoLast?.booleanOptions ?? []),
+      ].forEach(option => (totalBooleanOptions[option.description] = option));
 
       const title = getText({
         desktopSelector: '',
@@ -174,6 +206,7 @@ export const getParsedPhuketRentHouse = async ({
       infoAboutPosts.push({
         link,
         price,
+        aboutPrices,
         basicInfoFirst,
         basicInfoLast,
         title,
@@ -188,5 +221,10 @@ export const getParsedPhuketRentHouse = async ({
 
   await browser.close();
 
-  return infoAboutPosts;
+  return {
+    posts: infoAboutPosts,
+    totalBooleanOptions: Object.values(totalBooleanOptions).map(
+      ({ description }) => description,
+    ),
+  };
 };

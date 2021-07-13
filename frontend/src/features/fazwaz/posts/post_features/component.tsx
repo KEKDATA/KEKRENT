@@ -10,6 +10,7 @@ const featuresStyles = css`
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+  justify-content: space-evenly;
 
   @media screen and (max-width: 768px) {
     justify-content: space-between;

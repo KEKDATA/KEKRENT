@@ -35,7 +35,11 @@ export const Post = ({ post }: { post: PhuketRentHousePostType }) => {
             </Link>
           </Title>
         )}
-        <Title level={5}>{post.price}</Title>
+        {post.aboutPrices.map((aboutPrice) => (
+          <Title level={5} key={aboutPrice}>
+            {aboutPrice}
+          </Title>
+        ))}
         <TruncatedDescription description={post.texts} />
         <CardImages images={post.photosLinks} />
         <Collapse className={collapseStyle} ghost>

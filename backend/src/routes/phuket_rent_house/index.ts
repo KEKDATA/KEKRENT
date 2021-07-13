@@ -11,7 +11,7 @@ export const phuketRentHouseRoute = () => {
     try {
       console.info(`Phuket rent house by pid ${process.pid} requested`);
 
-      const scheduledPosts: PhuketRentHouse[] = await get(
+      const scheduledPosts: PhuketRentHouse = await get(
         CacheKeys.PhuketRentHouse,
       );
 

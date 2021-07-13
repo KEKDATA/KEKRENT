@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 import { Row, Spin } from 'antd';
 import { useGate, useStore } from 'effector-react';
+import { Filters } from 'features/phuket_rent_house/filters/feature';
 import { Posts } from 'features/phuket_rent_house/posts/feature';
 import {
   getPhuketRentHouseFx,
@@ -26,6 +27,7 @@ export const PhuketRentHousePage = () => {
       )}
       {!isLoading && (
         <>
+          <Filters />
           <Posts />
         </>
       )}

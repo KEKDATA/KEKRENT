@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { Button } from 'antd';
 import { findPhoneNumbersInText } from 'libphonenumber-js';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, Fragment } from 'react';
 import TruncateMarkup from 'react-truncate-markup';
 import { cardStyles } from 'ui/card/styles';
 
@@ -31,14 +31,16 @@ export const TruncatedDescription = ({
               key={`${partOfDescription}${index}`}
               className={descriptionStyle}
             >
-              {partOfDescription.split(' ').map((string) => {
+              {partOfDescription.split(' ').map((string, index) => {
                 const isPhoneNumber = aboutSearchedNumber.includes(string);
+
+                let content = <> {string}</>;
 
                 if (isPhoneNumber) {
                   const tel = aboutSearchedNumber.find((phoneNumber) =>
                     string.includes(phoneNumber),
                   );
-                  return (
+                  content = (
                     <>
                       {' '}
                       <a href={`tel:${tel}`}>{tel}</a>
@@ -46,7 +48,7 @@ export const TruncatedDescription = ({
                   );
                 }
 
-                return <> {string}</>;
+                return <Fragment key={`${string}${index}`}>{content}</Fragment>;
               })}
             </span>
           );

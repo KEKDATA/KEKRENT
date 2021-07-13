@@ -7,7 +7,9 @@ export interface BasicInfo {
   }>;
 }
 
-export interface PhuketRentHouse {
+export type TotalBooleanOptions = string[];
+
+export interface Post {
   link: string;
   price: string | null;
   basicInfoFirst: BasicInfo | null;
@@ -16,4 +18,10 @@ export interface PhuketRentHouse {
   texts: string[];
   photosLinks: string[];
   siteMapLink: string | null;
+  aboutPrices: string[];
+}
+
+export interface PhuketRentHouse {
+  posts: Post[];
+  totalBooleanOptions: TotalBooleanOptions;
 }

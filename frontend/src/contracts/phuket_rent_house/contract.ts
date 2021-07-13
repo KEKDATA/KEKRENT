@@ -23,10 +23,18 @@ const Post = Record({
   texts: Array(String),
   photosLinks: Array(String),
   siteMapLink: Optional(String).Or(Null),
+  aboutPrices: Array(String),
 });
 
-export const PhuketRentHouseContract = Array(Post);
+const PhuketRentHousePostsContract = Array(Post);
+export const PhuketRentHouseContract = Record({
+  posts: PhuketRentHousePostsContract,
+  totalBooleanOptions: Array(String),
+});
 
 export type PhuketRentHouseBasicInfoType = Static<typeof BasicInfoContract>;
-export type PhuketRentHouseType = Static<typeof PhuketRentHouseContract>;
+export type PhuketRentHousePostsType = Static<
+  typeof PhuketRentHousePostsContract
+>;
 export type PhuketRentHousePostType = Static<typeof Post>;
+export type PhuketRentHouseType = Static<typeof PhuketRentHouseContract>;

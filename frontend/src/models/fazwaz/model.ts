@@ -54,6 +54,7 @@ export const fazwazReceived = guard<unknown, FazwazsType>(
 
 const $nonFiltersPosts = withPersist(createStore<FazwazsType['posts']>([]), {
   key: 'fazwazPosts',
+  maxSize: 20,
 });
 
 export const $fazwazPosts = createStore<FazwazsType['posts']>([]);
@@ -104,7 +105,7 @@ export const $fazwazTotalFeatures = restore(
   return [];
 });
 
-export const filterFazwazCleared = createEvent<unknown>();
+export const filtersFazwazCleared = createEvent<unknown>();
 export const petsFilterToggled = createEvent<unknown>();
 export const filterFazwazFeaturesSelected =
   createEvent<FazwazsType['totalFeatures']>();
@@ -122,10 +123,10 @@ export const $petsFilter = createStore<PetsFilter | null>(null)
       }
     }
   })
-  .reset(filterFazwazCleared);
+  .reset(filtersFazwazCleared);
 
 export const $checkedFeatures = restore(filterFazwazFeaturesSelected, []).reset(
-  filterFazwazCleared,
+  filtersFazwazCleared,
 );
 
 sample({
@@ -181,12 +182,16 @@ sample({
 });
 
 forward({
-  from: [petsFilterToggled, filterFazwazFeaturesSubmitted, filterFazwazCleared],
+  from: [
+    petsFilterToggled,
+    filterFazwazFeaturesSubmitted,
+    filtersFazwazCleared,
+  ],
   to: scrolledToLastViewPostCleared,
 });
 
 sample({
   source: $nonFiltersPosts,
-  clock: filterFazwazCleared,
+  clock: filtersFazwazCleared,
   target: $fazwazPosts,
 });
