@@ -32,8 +32,6 @@ export const getParsedPhuketRentHouse = async ({
     }
     const pageContext = await context.newPage();
 
-    let isInfinityLoader = false;
-
     try {
       await pageContext.goto(`${phuketRentHouseLink}/page/${page + 1}`);
     } catch (err) {
@@ -41,19 +39,16 @@ export const getParsedPhuketRentHouse = async ({
        * Sometimes infinity load, but page ok
        */
       console.error(err);
-      isInfinityLoader = true;
+
+      await sleep(2000);
     }
 
     try {
-      if (isInfinityLoader) {
-        await sleep(2000);
-      }
-
       const contentPage = await pageContext.evaluate(getHTML);
       const root = cheerio.load(contentPage);
-      const postNodes = root(phuketRentHouseMobileSelectors.posts);
+      const postNodes = root(phuketRentHouseMobileSelectors.post);
 
-      postNodes.each((index, postElement) => {
+      postNodes.each((_, postElement) => {
         const postNode = root(postElement);
 
         const href = postNode

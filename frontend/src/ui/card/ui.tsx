@@ -32,11 +32,13 @@ export const CardExtra = ({
 
 export const CardImages = ({ images }: { images: string[] }) => (
   <div className={cardStyles.images}>
-    {images.map((image, index) => (
-      <div key={index} className={cardStyles.imageContainer}>
-        <Image className={cardStyles.image} loading="lazy" src={image} />
-      </div>
-    ))}
+    <Image.PreviewGroup>
+      {images.map((image, index) => (
+        <div key={index} className={cardStyles.imageContainer}>
+          <Image className={cardStyles.image} loading="lazy" src={image} />
+        </div>
+      ))}
+    </Image.PreviewGroup>
   </div>
 );
 

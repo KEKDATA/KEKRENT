@@ -16,6 +16,7 @@ import { CacheKeys } from '../../constants/cache_keys';
 import { CachedCookies, Cookies } from '../../types/cookies';
 import { authUser } from './lib/auth_user';
 import { get } from 'node-cache-redis';
+import { sleep } from '../../lib/timeout/sleep';
 
 interface ParseParams {
   selectedGroupId: number | string;
@@ -118,7 +119,12 @@ const getParsedFacebookGroups = async ({
 
   const url = isDesktop ? facebookLinks.desktop : facebookLinks.mobile;
 
-  await page.goto(`${url}/groups/${selectedGroupId}`);
+  try {
+    await page.goto(`${url}/groups/${selectedGroupId}`);
+  } catch (err) {
+    console.error(err);
+    await browser.close();
+  }
 
   if (isAuth && !isSavedCookies) {
     isAuthCompleted = await authUser(page, isDesktop);
@@ -136,6 +142,10 @@ const getParsedFacebookGroups = async ({
   } catch {}
 
   const totalPosts: UniqPosts = {};
+
+  const maxValueOfEqualLengthPosts = 25;
+  let counterOfEqualLengthPosts = 0;
+
   let numberOfLatestParsedPost = 0;
   let noisyPopupClosed = false;
 
@@ -147,12 +157,13 @@ const getParsedFacebookGroups = async ({
       await authUser(page, isDesktop);
     }
 
+    let prevLengthTotalPosts = Object.keys(totalPosts).length;
     let counter = 1;
     let searchedPostsLength = 0;
     let postNode: null | Cheerio = null;
     let root: null | Root = null;
 
-    const calculatedPartByTotalPosts = Object.keys(totalPosts).length / 10 || 1;
+    const calculatedPartByTotalPosts = prevLengthTotalPosts / 10 || 1;
 
     while (searchedPostsLength < postsByGroup) {
       if (counter >= 10) {
@@ -219,6 +230,19 @@ const getParsedFacebookGroups = async ({
     Object.entries(filteredPosts).forEach(([stupidId, post]) => {
       totalPosts[stupidId] = post;
     });
+
+    /**
+     * Интернет вырубился, либо фейсбук начал лагать,
+     * либо даже аккаунт как спам на время может пометить
+     * тогда посты не будут подгружаться
+     */
+    if (prevLengthTotalPosts === Object.keys(totalPosts).length) {
+      counterOfEqualLengthPosts += 1;
+    }
+
+    if (counterOfEqualLengthPosts > maxValueOfEqualLengthPosts) {
+      await browser.close();
+    }
 
     fromIndexPost = toIndexPost;
     toIndexPost = postNode.length;

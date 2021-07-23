@@ -1,4 +1,4 @@
-const posts = '.listItem';
+const post = '.listItem';
 /**
  * Link website + href node
  */
@@ -41,7 +41,7 @@ const photo = '.cphoto .lazy';
 const siteMap = '.sitemap.screen';
 
 export const phuketRentHouseMobileSelectors = {
-  posts,
+  post,
   link,
   loadMore,
   loadMoreLoading,

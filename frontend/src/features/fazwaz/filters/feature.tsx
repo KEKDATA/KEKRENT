@@ -7,7 +7,7 @@ import { filtersFazwazCleared } from 'models/fazwaz/model';
 import React from 'react';
 
 const filtersStyle = css`
-  margin: 10px 20px 5px 20px;
+  margin: 10px 20px;
 `;
 
 export const Filters = () => {

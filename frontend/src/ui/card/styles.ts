@@ -3,7 +3,7 @@ import { css } from '@emotion/css';
 const images = css`
   display: flex;
   flex-direction: row;
-  overflow-y: auto;
+  overflow-y: scroll;
   max-width: 100vh;
 `;
 

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "kek": "ts-node-dev --respawn --transpile-only src/parser/thai_property/index.ts",
     "pre_prod": "npm run tsc",
     "prod": "npm run pre_prod && npm run schedule && npm run parse",
     "schedule": "pm2 start ./src/schedule/index.js -i 1",

@@ -11,7 +11,11 @@ export const authUser = async (page: Page, isDesktop: boolean) => {
       await page.fill('input[name="email"]', privatePhone, { timeout: 1500 });
       await page.fill('input[name="pass"]', privatePass, { timeout: 1500 });
 
-      if (isDesktop) {
+      const isLoginButtonWithId = await page.$('#loginbutton');
+
+      if (isLoginButtonWithId) {
+        await page.click('#loginbutton');
+      } else if (isDesktop) {
         await page.click(desktopFacebookSelectors.loginButton);
       }
 
