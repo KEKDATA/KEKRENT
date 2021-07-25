@@ -7,7 +7,7 @@ import React from 'react';
 const { Text } = Typography;
 
 const textStyle = css`
-  font-size: 16px;
+  font-size: 15px;
 `;
 
 const iconStyle = css`

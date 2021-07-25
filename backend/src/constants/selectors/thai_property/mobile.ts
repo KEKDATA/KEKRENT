@@ -8,6 +8,7 @@ const link = '.left-block > a';
 const title = '.page-title > a';
 const location = '.location';
 const priceTitle = '.price-title';
+const price = 'input[name="price"]';
 
 /**
  * ul -> li -> data-src
@@ -48,6 +49,7 @@ export const thaiPropertyMobileSelectors = {
   link,
   title,
   location,
+  price,
   priceTitle,
   images,
   description,

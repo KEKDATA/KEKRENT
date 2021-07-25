@@ -8,6 +8,12 @@ export interface ThaiPropertyPost {
   features: { name: string; value: string }[];
   facilities: string[];
   linkToRequestDetails?: string;
+  price?: number;
 }
 
 export type ThaiPropertyPosts = Array<ThaiPropertyPost>;
+
+export interface ThaiProperty {
+  posts: ThaiPropertyPosts;
+  totalFacilities: ThaiPropertyPost['facilities'];
+}

@@ -1,7 +1,8 @@
 import { getThaiPropertyApi } from 'api/thai_property';
 import {
-  ThaiPropertyPostsContract,
+  ThaiPropertyContract,
   ThaiPropertyPostsType,
+  ThaiPropertyType,
 } from 'contracts/thai_property/contract';
 import {
   createEffect,
@@ -9,10 +10,12 @@ import {
   createStore,
   forward,
   guard,
+  restore,
   sample,
 } from 'effector';
 import { createGate } from 'effector-react';
 import { withPersist } from 'models/persist/model';
+import { scrolledToLastViewPostCleared } from 'models/scroll_to_last_viewed_post/model';
 import { condition } from 'patronum';
 
 export const ThaiPropertyGate = createGate();
@@ -41,10 +44,10 @@ condition({
   else: previousPostsTriggered,
 });
 
-export const thaiPropertyReceived = guard<unknown, ThaiPropertyPostsType>(
+export const thaiPropertyReceived = guard<unknown, ThaiPropertyType>(
   getThaiPropertyFx.doneData,
   {
-    filter: ThaiPropertyPostsContract.guard,
+    filter: ThaiPropertyContract.guard,
   },
 );
 
@@ -70,6 +73,46 @@ sample({
 });
 
 sample({
-  clock: thaiPropertyReceived,
+  clock: thaiPropertyReceived.map(({ posts }) => posts),
   target: [$nonFiltersPosts, $thaiPropertyPosts],
+});
+
+export const $thaiPropertyFacilities = restore(
+  thaiPropertyReceived.map(({ totalFacilities }) => totalFacilities),
+  [],
+);
+
+export const filtersThaiPropertyCleared = createEvent<unknown>();
+
+export const filterTotalFacilitiesSubmitted = createEvent();
+export const filterTotalFacilitiesSelected =
+  createEvent<ThaiPropertyType['totalFacilities']>();
+export const $checkedTotalFacilities = restore(
+  filterTotalFacilitiesSelected,
+  [],
+).reset(filtersThaiPropertyCleared);
+
+sample({
+  source: [$checkedTotalFacilities, $nonFiltersPosts],
+  clock: filterTotalFacilitiesSubmitted,
+  fn: ([checkedTotalFacilities, posts]) =>
+    posts.filter((post) => {
+      const isSomeFacilityFounded = post.facilities.some((facility) =>
+        checkedTotalFacilities.includes(facility),
+      );
+
+      return isSomeFacilityFounded;
+    }),
+  target: $thaiPropertyPosts,
+});
+
+forward({
+  from: [filterTotalFacilitiesSubmitted, filtersThaiPropertyCleared],
+  to: scrolledToLastViewPostCleared,
+});
+
+sample({
+  source: $nonFiltersPosts,
+  clock: filtersThaiPropertyCleared,
+  target: $thaiPropertyPosts,
 });

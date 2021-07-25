@@ -3,7 +3,7 @@ import { get, set } from 'node-cache-redis';
 import { initializedFastify } from '../../config';
 import { CacheKeys } from '../../constants/cache_keys';
 import { CacheTime } from '../../constants/cache_time';
-import { ThaiPropertyPosts } from '../../types/thai_property';
+import { ThaiProperty } from '../../types/thai_property';
 import { getParsedThaiRentProperty } from '../../parser/thai_property';
 
 export const thaiPropertyRoute = () => {
@@ -11,9 +11,7 @@ export const thaiPropertyRoute = () => {
     try {
       console.info(`Phuket thai property by pid ${process.pid} requested`);
 
-      const scheduledPosts: ThaiPropertyPosts = await get(
-        CacheKeys.ThaiProperty,
-      );
+      const scheduledPosts: ThaiProperty = await get(CacheKeys.ThaiProperty);
 
       if (!scheduledPosts) {
         const parsed = await getParsedThaiRentProperty({

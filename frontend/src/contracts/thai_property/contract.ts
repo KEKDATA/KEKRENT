@@ -1,4 +1,6 @@
-import { Record, String, Static, Array, Optional } from 'runtypes';
+import { Record, String, Static, Array, Optional, Number } from 'runtypes';
+
+const Facilities = Array(String);
 
 const Post = Record({
   link: String,
@@ -8,11 +10,18 @@ const Post = Record({
   imagesLinks: Array(String),
   descriptions: Array(String),
   features: Array(Record({ name: String, value: String })),
-  facilities: Array(String),
+  facilities: Facilities,
   linkToRequestDetails: Optional(String),
+  price: Optional(Number),
 });
 
-export const ThaiPropertyPostsContract = Array(Post);
+const Posts = Array(Post);
+
+export const ThaiPropertyContract = Record({
+  posts: Posts,
+  totalFacilities: Facilities,
+});
 
 export type ThaiPropertyPostType = Static<typeof Post>;
-export type ThaiPropertyPostsType = Static<typeof ThaiPropertyPostsContract>;
+export type ThaiPropertyPostsType = Static<typeof Posts>;
+export type ThaiPropertyType = Static<typeof ThaiPropertyContract>;

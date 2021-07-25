@@ -1,4 +1,5 @@
 import { useGate, useStore } from 'effector-react';
+import { Filters } from 'features/thai_property/filters/feature';
 import { Posts } from 'features/thai_property/posts/feature';
 import {
   getThaiPropertyFx,
@@ -17,6 +18,7 @@ export const ThaiPropertyPage = () => {
       {isLoading && <Spinner />}
       {!isLoading && (
         <>
+          <Filters />
           <Posts />
         </>
       )}

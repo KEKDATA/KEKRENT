@@ -1,18 +1,22 @@
 import { css } from '@emotion/css';
-import { Card, Typography, Collapse, Divider } from 'antd';
+import { Card, Typography, Collapse, Divider, Row, Col } from 'antd';
 import { ThaiPropertyPostType } from 'contracts/thai_property/contract';
 import { TruncatedDescription } from 'features/truncated_description/feature';
 import React from 'react';
 import { CardExtra, CardImages, CardTitle } from 'ui/card';
 import { cardStyles } from 'ui/card/styles';
 
-const { Title, Link } = Typography;
+const { Title, Link, Text } = Typography;
 const { Panel } = Collapse;
 
 const collapseStyle = css`
   .ant-collapse-content-box {
     padding: 0 !important;
   }
+`;
+
+const textStyle = css`
+  font-size: 15px;
 `;
 
 export const Post = ({ post }: { post: ThaiPropertyPostType }) => {
@@ -42,17 +46,23 @@ export const Post = ({ post }: { post: ThaiPropertyPostType }) => {
         <CardImages images={post.imagesLinks} />
         <Collapse className={collapseStyle} ghost>
           <Panel header="Features" key="features">
-            {post.features.map(({ name, value }) => (
-              <>
-                <span>{name}</span>
-                <span>{value}</span>
-              </>
-            ))}
+            <Row gutter={[16, 8]} justify="space-around">
+              {post.features.map(({ name, value }) => (
+                <Col key={name} span={22}>
+                  <Text className={textStyle}>{name}: </Text>
+                  <Text className={textStyle}>{value}</Text>
+                </Col>
+              ))}
+            </Row>
           </Panel>
           <Panel header="Facility" key="facility">
-            {post.facilities.map((facility) => (
-              <span>{facility}</span>
-            ))}
+            <Row gutter={[16, 8]} justify="space-around">
+              {post.facilities.map((facility) => (
+                <Col key={facility} span={22}>
+                  <Text className={textStyle}>{facility}</Text>
+                </Col>
+              ))}
+            </Row>
           </Panel>
         </Collapse>
       </Card>

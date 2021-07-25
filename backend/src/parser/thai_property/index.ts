@@ -6,7 +6,11 @@ import cheerio from 'cheerio';
 import { thaiPropertyMobileSelectors } from '../../constants/selectors/thai_property/mobile';
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
 import { sleep } from '../../lib/timeout/sleep';
-import { ThaiPropertyPost, ThaiPropertyPosts } from '../../types/thai_property';
+import {
+  ThaiProperty,
+  ThaiPropertyPost,
+  ThaiPropertyPosts,
+} from '../../types/thai_property';
 
 const perPage = 29;
 const isDesktop = false;
@@ -15,7 +19,7 @@ export const getParsedThaiRentProperty = async ({
   countOfSearchItems = perPage,
 }: {
   countOfSearchItems: number;
-}) => {
+}): Promise<ThaiProperty> => {
   const browser = await chromium.launch({
     headless: true,
   });
@@ -66,6 +70,7 @@ export const getParsedThaiRentProperty = async ({
   }
 
   const posts: ThaiPropertyPosts = [];
+  const totalFacilities: Set<string> = new Set();
 
   for await (const linkIndex of asyncGenerator(links.length)) {
     const link = links[linkIndex];
@@ -119,6 +124,13 @@ export const getParsedThaiRentProperty = async ({
           location = `${lat}${lon}`;
         }
       }
+
+      const price = findNode({
+        desktopSelector: '',
+        mobileSelector: thaiPropertyMobileSelectors.price,
+        isDesktop,
+        node: body,
+      }).attr('value');
 
       let priceTitle = '';
 
@@ -233,8 +245,10 @@ export const getParsedThaiRentProperty = async ({
 
       facilitiesNode.children().each((_, facilityElement) => {
         const facilityNode = root(facilityElement);
+        const content = facilityNode.text().trim();
 
-        facilities.push(facilityNode.text().trim());
+        facilities.push(content);
+        totalFacilities.add(content);
       });
 
       const linkToRequestDetails = findNode({
@@ -248,6 +262,7 @@ export const getParsedThaiRentProperty = async ({
         link,
         title,
         location: `https://www.google.ru/maps/place/${location}`,
+        price: price ? Number(price) : undefined,
         priceTitle,
         imagesLinks,
         descriptions,
@@ -262,7 +277,7 @@ export const getParsedThaiRentProperty = async ({
 
   await browser.close();
 
-  return posts;
+  return { posts, totalFacilities: [...totalFacilities] };
 };
 
 getParsedThaiRentProperty({ countOfSearchItems: 1 });
