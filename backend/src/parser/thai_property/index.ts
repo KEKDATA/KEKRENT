@@ -6,6 +6,7 @@ import cheerio from 'cheerio';
 import { thaiPropertyMobileSelectors } from '../../constants/selectors/thai_property/mobile';
 import { findNode, getSelectedSelector, getText } from '../../lib/dom/node';
 import { sleep } from '../../lib/timeout/sleep';
+import { ThaiPropertyPost, ThaiPropertyPosts } from '../../types/thai_property';
 
 const perPage = 29;
 const isDesktop = false;
@@ -16,7 +17,7 @@ export const getParsedThaiRentProperty = async ({
   countOfSearchItems: number;
 }) => {
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
   });
   const context = await browser.newContext(devices['iPhone X']);
 
@@ -64,6 +65,8 @@ export const getParsedThaiRentProperty = async ({
     }
   }
 
+  const posts: ThaiPropertyPosts = [];
+
   for await (const linkIndex of asyncGenerator(links.length)) {
     const link = links[linkIndex];
 
@@ -90,40 +93,45 @@ export const getParsedThaiRentProperty = async ({
         mobileSelector: thaiPropertyMobileSelectors.title,
         isDesktop,
         node: body,
-      });
+      }).trim();
 
       let location = getText({
         desktopSelector: '',
         mobileSelector: thaiPropertyMobileSelectors.location,
         isDesktop,
         node: body,
-      });
+      }).trim();
 
-      if (!location) {
-        const mapImage = findNode({
-          desktopSelector: '',
-          mobileSelector: thaiPropertyMobileSelectors.mapImage,
-          isDesktop,
-          node: body,
-        }).attr('src');
+      const mapImage = findNode({
+        desktopSelector: '',
+        mobileSelector: thaiPropertyMobileSelectors.mapImage,
+        isDesktop,
+        node: body,
+      }).attr('src');
 
-        if (mapImage) {
-          const mapCoordinatesPath = mapImage
-            .split('/static_map/')[1]
-            ?.replace('map_', '');
-          const [lat, lon] = mapCoordinatesPath.split('_');
+      if (mapImage) {
+        const mapCoordinatesPath = mapImage
+          .split('/static_map/')[1]
+          ?.replace('map_', '');
+        const [lat, lon] = mapCoordinatesPath.split('_');
 
-          if (lat && lon) {
-            location = `${lat}${lon}`;
-          }
+        if (lat && lon) {
+          location = `${lat}${lon}`;
         }
       }
 
-      const priceTitle = getText({
+      let priceTitle = '';
+
+      const priceTitleNode = findNode({
         desktopSelector: '',
         mobileSelector: thaiPropertyMobileSelectors.priceTitle,
         isDesktop,
         node: body,
+      });
+
+      priceTitleNode.contents().each((_, partOfPriceTitleElement) => {
+        const partOfPriceTitleNode = root(partOfPriceTitleElement);
+        priceTitle = `${priceTitle}${partOfPriceTitleNode.text().trim()} `;
       });
 
       const imagesContainerNode = findNode({
@@ -133,7 +141,7 @@ export const getParsedThaiRentProperty = async ({
         node: body,
       });
 
-      const imagesLinks: string[] = [];
+      const imagesLinks: ThaiPropertyPost['imagesLinks'] = [];
 
       imagesContainerNode.children().each((_, imageElement) => {
         const imageNode = root(imageElement);
@@ -151,15 +159,10 @@ export const getParsedThaiRentProperty = async ({
         node: body,
       });
 
-      const descriptions: string[] = [];
+      const descriptions: ThaiPropertyPost['descriptions'] = [];
 
       descriptionNode.contents().each((_, descriptionElement) => {
         const partOfDescriptionNode = root(descriptionElement);
-        const isForm = partOfDescriptionNode.get()[0]?.tagName === 'form';
-
-        if (!isForm) {
-          return descriptions.push(partOfDescriptionNode.text());
-        }
 
         const hideContentNode = findNode({
           desktopSelector: '',
@@ -170,21 +173,31 @@ export const getParsedThaiRentProperty = async ({
         const detail = hideContentNode.attr('data-detail');
 
         if (detail) {
+          /**
+           * Если будет кейс
+           * <p>email:</p>
+           * <form>...</form>
+           * Надо клеить скрытый контент с текстом ближайшей нодой
+           */
           const nearestParent = hideContentNode.parent().get()[0];
           const parentTagName = nearestParent?.tagName;
           const isParentNotForm = parentTagName && parentTagName !== 'form';
 
-          if (isParentNotForm) {
-            return descriptions.push(
-              `${nearestParent.children[0].data} ${detail}`,
-            );
-          }
+          const content = isParentNotForm
+            ? `${nearestParent.children[0].data} ${detail}`
+            : detail;
 
-          descriptions.push(detail);
+          return descriptions.push(content);
+        }
+
+        const content = partOfDescriptionNode.text().trim();
+
+        if (content.length) {
+          descriptions.push(partOfDescriptionNode.text().trim());
         }
       });
 
-      const features: Array<{ name: string; value: string }> = [];
+      const features: ThaiPropertyPost['features'] = [];
 
       const featuresNode = findNode({
         desktopSelector: '',
@@ -196,12 +209,10 @@ export const getParsedThaiRentProperty = async ({
       featuresNode.children().each((_, featureElement) => {
         const featureNode = root(featureElement);
 
-        const [valueNode, nameNode] = featureNode
-          .find('.text-center')
-          .contents();
+        const [valueElement, nameNode] = featureNode.contents();
 
         const name = nameNode.data;
-        const value = valueNode.data;
+        const value = root(valueElement).text();
 
         if (name && value) {
           features.push({
@@ -211,7 +222,7 @@ export const getParsedThaiRentProperty = async ({
         }
       });
 
-      const facilities: string[] = [];
+      const facilities: ThaiPropertyPost['facilities'] = [];
 
       const facilitiesNode = findNode({
         desktopSelector: '',
@@ -223,7 +234,7 @@ export const getParsedThaiRentProperty = async ({
       facilitiesNode.children().each((_, facilityElement) => {
         const facilityNode = root(facilityElement);
 
-        facilities.push(facilityNode.text());
+        facilities.push(facilityNode.text().trim());
       });
 
       const linkToRequestDetails = findNode({
@@ -233,9 +244,10 @@ export const getParsedThaiRentProperty = async ({
         node: body,
       }).attr('href');
 
-      console.log({
+      posts.push({
+        link,
         title,
-        location,
+        location: `https://www.google.ru/maps/place/${location}`,
         priceTitle,
         imagesLinks,
         descriptions,
@@ -247,6 +259,10 @@ export const getParsedThaiRentProperty = async ({
       console.error(err);
     }
   }
+
+  await browser.close();
+
+  return posts;
 };
 
 getParsedThaiRentProperty({ countOfSearchItems: 1 });

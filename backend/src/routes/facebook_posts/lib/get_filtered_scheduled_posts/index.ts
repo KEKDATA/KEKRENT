@@ -1,7 +1,7 @@
-import { Posts } from '../../../../types/posts';
+import { FacebookPosts } from '../../../../types/facebook';
 
 interface PostsWithSettings {
-  posts: Posts;
+  posts: FacebookPosts;
   timeStamps: number[] | null;
   minPrice?: string;
   maxPrice?: string;
@@ -16,7 +16,7 @@ export const getFilteredScheduledPosts = ({
   groupTitle,
 }: PostsWithSettings) => {
   const [from, to] = timeStamps || [];
-  const filteredPosts: Posts = [];
+  const filteredPosts: FacebookPosts = [];
 
   for (let i = 0; i < posts.length; i++) {
     const post = posts[i];

@@ -2,7 +2,7 @@ import { chromium, devices } from 'playwright';
 import { searchPosts } from './lib/search_posts';
 import { normalizeSearchedPosts } from './lib/normalize_searched_posts';
 import { getFilteredPostsBySettings } from './lib/get_filtered_posts_by_settings';
-import { UniqPosts } from '../../types/posts';
+import { FacebookUniqPosts } from '../../types/facebook';
 import { getPredictedPosts } from './lib/predict';
 import { facebookLinks } from '../../constants/links/facebook';
 import { desktopFacebookSelectors } from '../../constants/selectors/facebook/desktop';
@@ -141,7 +141,7 @@ const getParsedFacebookGroups = async ({
     // eslint-disable-next-line no-empty
   } catch {}
 
-  const totalPosts: UniqPosts = {};
+  const totalPosts: FacebookUniqPosts = {};
 
   const maxValueOfEqualLengthPosts = 25;
   let counterOfEqualLengthPosts = 0;

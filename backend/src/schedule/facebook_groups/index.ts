@@ -24,7 +24,7 @@ const getAllParsedFacebookGroups = async (selectedGroupId: string) => {
   };
 };
 
-export const scheduleParseGroups = () => {
+export const scheduleFacebookGroups = () => {
   const rule = new schedule.RecurrenceRule();
   rule.hour = 2;
   schedule.scheduleJob(rule, async () => {

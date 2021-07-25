@@ -1,4 +1,4 @@
-import { UniqPosts } from '../../../../types/posts';
+import { FacebookUniqPosts } from '../../../../types/facebook';
 import cheerio from 'cheerio';
 import { mobileFacebookSelectors } from '../../../../constants/selectors/facebook/mobile';
 import { nanoid } from 'nanoid';
@@ -30,7 +30,7 @@ export const normalizeSearchedPosts = async ({
   postNode: Cheerio;
   isAuth: boolean;
 }) => {
-  let posts: UniqPosts = {};
+  let posts: FacebookUniqPosts = {};
 
   postNode.slice(fromIndexPost, toIndexPost).each(async (index, post) => {
     const postNode = root(post);

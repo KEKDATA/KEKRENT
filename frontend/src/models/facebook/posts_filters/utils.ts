@@ -1,8 +1,8 @@
-import { PostsType } from 'contracts/posts/contract';
+import { FacebookPostsType } from 'contracts/facebook_posts/contract';
 import { PostsFilter } from 'typings/posts_filters';
 
 export const getFilteredPostsByDate = (
-  posts: PostsType,
+  posts: FacebookPostsType,
   filter: PostsFilter | null,
 ) =>
   [...posts].sort((a, b) => {
@@ -19,7 +19,7 @@ export const getFilteredPostsByDate = (
 const getPriceFromString = (value: string) =>
   Number.parseFloat(value.replace(/[^0-9]+/g, '')) || 0;
 export const getFilteredPostsByPrice = (
-  posts: PostsType,
+  posts: FacebookPostsType,
   filter: PostsFilter | null,
 ) =>
   [...posts].sort((a, b) => {

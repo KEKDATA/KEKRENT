@@ -1,15 +1,15 @@
-import { PhuketRentHousePostsType } from 'contracts/phuket_rent_house/contract';
+import { ThaiPropertyPostsType } from 'contracts/thai_property/contract';
 import { useStore } from 'effector-react';
-import { Post } from 'features/phuket_rent_house/posts/post/component';
+import { Post } from 'features/thai_property/posts/post/component';
 import { useViewedPosts } from 'features/use_viewed_posts/feature';
-import { $phuketRentHousePosts } from 'models/phuket_rent_house/model';
+import { $thaiPropertyPosts } from 'models/thai_property/model';
 import React from 'react';
 import { CardList } from 'ui/card';
 
 export const Posts = () => {
-  const posts = useStore($phuketRentHousePosts);
+  const posts = useStore($thaiPropertyPosts);
 
-  const viewedPosts: PhuketRentHousePostsType = useViewedPosts({
+  const viewedPosts: ThaiPropertyPostsType = useViewedPosts({
     posts,
     postsOnInitialView: 15,
   });

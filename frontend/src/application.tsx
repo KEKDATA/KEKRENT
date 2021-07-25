@@ -5,7 +5,7 @@ import { Layout, Row, Space, Typography } from 'antd';
 import 'antd/dist/antd.min.css';
 import { useScreenType } from 'features/screen_type/feature';
 import * as React from 'react';
-import { BackToTop } from 'ui/back_to_top/ui';
+import { BackToTop } from 'ui/back_to_top';
 
 const { Header, Footer, Content } = Layout;
 const { Title } = Typography;

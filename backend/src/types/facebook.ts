@@ -1,9 +1,9 @@
-export enum PostMode {
+export enum FacebookPostMode {
   Slowpoke = 'slowpoke',
   Faster = 'faster',
 }
 
-export interface Post {
+export interface FacebookPost {
   id: string;
   title: string;
   price: string;
@@ -16,27 +16,27 @@ export interface Post {
   groupTitle?: string;
 }
 
-interface PredictedPost extends Post {
+interface PredictedPost extends FacebookPost {
   classIndex: number;
   prob: number;
 }
 
-export type UniqPosts = { [key: string]: Post };
-export type Posts = Array<Post>;
-export type PredictedPosts = Array<PredictedPost>;
+export type FacebookUniqPosts = { [key: string]: FacebookPost };
+export type FacebookPosts = Array<FacebookPost>;
+export type FacebookPredictedPosts = Array<PredictedPost>;
 
-export interface PostsSettings {
+export interface FacebookPostsSettings {
   id: string;
   selectedGroupId: string;
   numberOfPosts: string;
-  mode: PostMode;
+  mode: FacebookPostMode;
   timeStamps?: string;
   minPrice?: string;
   maxPrice?: string;
   title?: string;
 }
 
-export interface PartPostsSettings {
+export interface FacebookPartPostsSettings {
   from: string;
   to: string;
   cacheKey: string;

@@ -1,7 +1,7 @@
-import { UniqPosts } from '../../../../types/posts';
+import { FacebookUniqPosts } from '../../../../types/facebook';
 
 interface FilteredPostsBySettings {
-  posts: UniqPosts;
+  posts: FacebookUniqPosts;
   timeStamps: number[] | null;
   groupTitle?: string;
   minPrice?: string;
@@ -15,7 +15,7 @@ export const getFilteredPostsBySettings = ({
   maxPrice,
   groupTitle,
 }: FilteredPostsBySettings) => {
-  let filteredPosts: UniqPosts = {};
+  let filteredPosts: FacebookUniqPosts = {};
   const normalizedPosts = Object.entries(posts);
   const [from, to] = timeStamps || [];
 

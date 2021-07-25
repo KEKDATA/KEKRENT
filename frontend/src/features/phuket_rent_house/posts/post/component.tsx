@@ -4,8 +4,8 @@ import { PhuketRentHousePostType } from 'contracts/phuket_rent_house/contract';
 import { BasicInfo } from 'features/phuket_rent_house/posts/basic_info/component';
 import { TruncatedDescription } from 'features/truncated_description/feature';
 import React from 'react';
+import { CardExtra, CardImages, CardTitle } from 'ui/card';
 import { cardStyles } from 'ui/card/styles';
-import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 
 const { Title, Link } = Typography;
 const { Panel } = Collapse;

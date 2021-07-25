@@ -26,6 +26,9 @@ export const ParseNavigation = () => {
       <Menu.Item key={paths.phuketRentHouse()}>
         <Link href={paths.phuketRentHouse()}>Phuket rent house</Link>
       </Menu.Item>
+      <Menu.Item key={paths.thaiProperty()}>
+        <Link href={paths.thaiProperty()}>Thai property</Link>
+      </Menu.Item>
     </Menu>
   );
 };

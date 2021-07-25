@@ -1,8 +1,8 @@
-import { UniqPosts } from '../../../../types/posts';
+import { FacebookUniqPosts } from '../../../../types/facebook';
 import fetch from 'undici-fetch';
 
-export const getPredictedPosts = async (posts: UniqPosts) => {
-  const predictedPosts: UniqPosts = {};
+export const getPredictedPosts = async (posts: FacebookUniqPosts) => {
+  const predictedPosts: FacebookUniqPosts = {};
   const filteredPosts = Object.entries(posts);
   for (const filteredPost of filteredPosts) {
     const stupidId = filteredPost[0];

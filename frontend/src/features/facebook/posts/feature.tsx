@@ -4,8 +4,8 @@ import { useStore } from 'effector-react';
 import { useViewedPosts } from 'features/use_viewed_posts/feature';
 import { $facebookPosts } from 'models/facebook/posts/model';
 import React from 'react';
+import { CardList } from 'ui/card';
 import { cardStyles } from 'ui/card/styles';
-import { CardList } from 'ui/card/ui';
 
 export const FacebookPosts = () => {
   const facebookPosts = useStore($facebookPosts);

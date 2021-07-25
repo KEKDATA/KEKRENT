@@ -1,4 +1,4 @@
-const post = '.search-list';
+const post = '#search-results > .search-list';
 const link = '.left-block > a';
 
 /**

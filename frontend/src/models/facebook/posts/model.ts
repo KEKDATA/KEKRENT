@@ -1,5 +1,9 @@
 import { postsApi } from 'api/posts';
-import { PostsContract, PostsType, PostType } from 'contracts/posts/contract';
+import {
+  FacebookPostsContract,
+  FacebookPostsType,
+  FacebookPostType,
+} from 'contracts/facebook_posts/contract';
 import {
   createEffect,
   createEvent,
@@ -9,14 +13,14 @@ import {
 } from 'effector';
 import { Posts } from 'typings/posts';
 
-export const getPostsFx = createEffect<Posts, PostsType>(postsApi);
+export const getPostsFx = createEffect<Posts, FacebookPostsType>(postsApi);
 
 const postsReceived = guard(getPostsFx.doneData, {
-  filter: (response) => PostsContract.guard(response),
+  filter: (response) => FacebookPostsContract.guard(response),
 });
 
-const getDeduplicatedPosts = (posts: PostsType) => {
-  const deduplicatedPosts: { [key: string]: PostType } = {};
+const getDeduplicatedPosts = (posts: FacebookPostsType) => {
+  const deduplicatedPosts: { [key: string]: FacebookPostType } = {};
 
   posts.forEach((post) => {
     deduplicatedPosts[`${post.title}${post.price}${post.description.length}`] =
@@ -27,14 +31,14 @@ const getDeduplicatedPosts = (posts: PostsType) => {
 };
 
 export const postsCleared = createEvent();
-export const postsUpdated = createEvent<PostsType>();
+export const postsUpdated = createEvent<FacebookPostsType>();
 
-export const $nonFiltersFacebookPosts = createStore<PostsType>([])
+export const $nonFiltersFacebookPosts = createStore<FacebookPostsType>([])
   .on(postsReceived, (prevPosts, posts) =>
     getDeduplicatedPosts([...prevPosts, ...posts]),
   )
   .reset(postsCleared);
-export const $facebookPosts = createStore<PostsType>([])
+export const $facebookPosts = createStore<FacebookPostsType>([])
   .on(postsReceived, (prevPosts, posts) =>
     getDeduplicatedPosts([...prevPosts, ...posts]),
   )

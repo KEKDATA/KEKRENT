@@ -8,8 +8,8 @@ import { Pets } from 'features/fazwaz/posts/pets/component';
 import { PostFeatures } from 'features/fazwaz/posts/post_features/component';
 import { ProjectHighlights } from 'features/fazwaz/posts/project_highlights/component';
 import React from 'react';
+import { CardExtra, CardImages, CardTitle } from 'ui/card';
 import { cardStyles } from 'ui/card/styles';
-import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
 
 const { Title, Link } = Typography;
 const { Panel } = Collapse;

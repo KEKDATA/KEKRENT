@@ -8,6 +8,7 @@ import { facebookGroupsRoute } from './routes/facebook_groups';
 import { init } from 'node-cache-redis';
 import { fazwazRentRoute } from './routes/fazwaz_rent';
 import { phuketRentHouseRoute } from './routes/phuket_rent_house';
+import { thaiPropertyRoute } from './routes/thai_property';
 
 console.info(`Process pid ${process.pid} started...`);
 
@@ -62,3 +63,5 @@ facebookGroupsRoute();
 fazwazRentRoute();
 
 phuketRentHouseRoute();
+
+thaiPropertyRoute();

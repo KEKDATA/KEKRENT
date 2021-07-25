@@ -26,15 +26,13 @@ const Post = Record({
   aboutPrices: Array(String),
 });
 
-const PhuketRentHousePostsContract = Array(Post);
+const Posts = Array(Post);
 export const PhuketRentHouseContract = Record({
-  posts: PhuketRentHousePostsContract,
+  posts: Posts,
   totalBooleanOptions: Array(String),
 });
 
 export type PhuketRentHouseBasicInfoType = Static<typeof BasicInfoContract>;
-export type PhuketRentHousePostsType = Static<
-  typeof PhuketRentHousePostsContract
->;
+export type PhuketRentHousePostsType = Static<typeof Posts>;
 export type PhuketRentHousePostType = Static<typeof Post>;
 export type PhuketRentHouseType = Static<typeof PhuketRentHouseContract>;

@@ -4,6 +4,7 @@ import { paths } from './paths';
 import { ParseNavigation } from 'features/parse_navigation/feature';
 import { FazwazPage } from 'pages/fazwaz/page';
 import { PhuketRentHousePage } from 'pages/phuket_rent_house/page';
+import { ThaiPropertyPage } from 'pages/thai_property/page';
 import React from 'react';
 import { Route } from 'wouter';
 
@@ -14,6 +15,7 @@ export const Pages = () => {
       <Route path={paths.facebook()} component={FacebookPage} />
       <Route path={paths.fazwaz()} component={FazwazPage} />
       <Route path={paths.phuketRentHouse()} component={PhuketRentHousePage} />
+      <Route path={paths.thaiProperty()} component={ThaiPropertyPage} />
       <Route path="/404" component={Error404Page} />
     </>
   );

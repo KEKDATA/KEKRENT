@@ -22,13 +22,13 @@ const Post = Record({
   groupTitle: Optional(String),
 });
 
-export const PostsContract = Array(Post);
+export const FacebookPostsContract = Array(Post);
 
-export const SavePostsContract = Record({
+export const FacebookSavePostsContract = Record({
   status: Literal('success').Or(Literal('failed')),
   postsByGroup: Optional(Number).Or(Null),
   cacheKey: Optional(String).Or(Null),
 });
-export type PostsType = Static<typeof PostsContract>;
-export type SavePostsType = Static<typeof SavePostsContract>;
-export type PostType = Static<typeof Post>;
+export type FacebookPostsType = Static<typeof FacebookPostsContract>;
+export type FacebookSavePostsType = Static<typeof FacebookSavePostsContract>;
+export type FacebookPostType = Static<typeof Post>;

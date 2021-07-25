@@ -1,5 +1,9 @@
 import { initializedFastify } from '../../config';
-import { PostMode, Posts, PostsSettings } from '../../types/posts';
+import {
+  FacebookPostMode,
+  FacebookPosts,
+  FacebookPostsSettings,
+} from '../../types/facebook';
 import { parseFacebookGroups } from '../../parser/facebook_groups';
 import { get, set } from 'node-cache-redis';
 import { getFilteredScheduledPosts } from './lib/get_filtered_scheduled_posts';
@@ -7,7 +11,7 @@ import { CacheTime } from '../../constants/cache_time';
 
 export const facebookPostsRoute = () => {
   return initializedFastify.get<{
-    Querystring: PostsSettings;
+    Querystring: FacebookPostsSettings;
   }>('/parse/posts', async request => {
     console.info(`Posts by pid ${process.pid} requested`);
 
@@ -36,8 +40,8 @@ export const facebookPostsRoute = () => {
         : null;
       const postsByGroup = Number(numberOfPosts);
 
-      if (mode === PostMode.Faster) {
-        const scheduledPosts: Posts = await get(selectedGroupId);
+      if (mode === FacebookPostMode.Faster) {
+        const scheduledPosts: FacebookPosts = await get(selectedGroupId);
 
         if (scheduledPosts) {
           const oneOfFilterChosenByUser =
@@ -56,7 +60,7 @@ export const facebookPostsRoute = () => {
         }
       }
 
-      const cachedPosts: Posts | undefined = await get(cacheKey);
+      const cachedPosts: FacebookPosts | undefined = await get(cacheKey);
 
       if (cachedPosts) {
         return cachedPosts;

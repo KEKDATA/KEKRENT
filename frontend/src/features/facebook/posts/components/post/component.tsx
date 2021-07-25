@@ -1,9 +1,9 @@
 import { css } from '@emotion/css';
 import { Card, Typography } from 'antd';
-import { PostType } from 'contracts/posts/contract';
+import { FacebookPostType } from 'contracts/facebook_posts/contract';
 import { TruncatedDescription } from 'features/truncated_description/feature';
 import React from 'react';
-import { CardExtra, CardImages, CardTitle } from 'ui/card/ui';
+import { CardExtra, CardImages, CardTitle } from 'ui/card';
 
 const postStyle = css`
   cursor: initial !important;
@@ -11,7 +11,7 @@ const postStyle = css`
 
 const { Title, Link } = Typography;
 
-export const Post = ({ post }: { post: PostType }) => {
+export const Post = ({ post }: { post: FacebookPostType }) => {
   return (
     <Card
       hoverable
