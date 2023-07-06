@@ -1,10 +1,10 @@
 # How to run?
 
-    sudo apt-get install python3.8-dev python3.8-venv
+    sudo apt-get install python3.10-dev python3.10-venv
 
     cd backend/classifier
 
-    python3.8 -m venv venv
+    python3.10 -m venv venv
 
     source venv/bin/activate
 
